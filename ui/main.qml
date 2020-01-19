@@ -145,6 +145,7 @@ Window {
                             navRules.color = "#263441"
                             navSettings.color = "#263441"
                             navAbout.color = "#263441"
+                            navLogs.color = "#263441"
                             navDashboard.color = "#354759"
                             pageLoader.source = "dashboard.qml"
                         }
@@ -167,6 +168,7 @@ Window {
                             navRules.color = "#263441"
                             navSettings.color = "#263441"
                             navAbout.color = "#263441"
+                            navLogs.color = "#263441"
                             navServers.color = "#354759"
                             pageLoader.source = "servers.qml"
                         }
@@ -205,6 +207,7 @@ Window {
                             navServers.color = "#263441"
                             navSettings.color = "#263441"
                             navAbout.color = "#263441"
+                            navLogs.color = "#263441"
                             navRules.color = "#354759"
                             pageLoader.source = "rules.qml"
                         }
@@ -243,6 +246,7 @@ Window {
                             navServers.color = "#263441"
                             navRules.color = "#263441"
                             navAbout.color = "#263441"
+                            navLogs.color = "#263441"
                             navSettings.color = "#354759"
                             pageLoader.source = "settings.qml"
                         }
@@ -266,7 +270,7 @@ Window {
                 }
 
                 Rectangle {
-                    id: navAbout
+                    id: navLogs
                     color: "#263441"
                     width: parent.width
                     height: 40
@@ -281,6 +285,46 @@ Window {
                             navServers.color = "#263441"
                             navRules.color = "#263441"
                             navSettings.color = "#263441"
+                            navAbout.color = "#263441"
+                            navLogs.color = "#354759"
+                            pageLoader.source = "logs.qml"
+                        }
+                    }
+
+                    Image {
+                        source: "qrc:///images/icon-logs.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("Logs")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+                }
+
+                Rectangle {
+                    id: navAbout
+                    color: "#263441"
+                    width: parent.width
+                    height: 40
+                    y: 200
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            navDashboard.color = "#263441"
+                            navServers.color = "#263441"
+                            navRules.color = "#263441"
+                            navSettings.color = "#263441"
+                            navLogs.color = "#263441"
                             navAbout.color = "#354759"
                             pageLoader.source = "about.qml"
                         }
