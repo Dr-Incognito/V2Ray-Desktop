@@ -1,4 +1,6 @@
 import QtQuick 2.3
+import QtQuick.Controls 2.3
+import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 
 
@@ -19,6 +21,46 @@ ColumnLayout {
             text: qsTr("About")
             color: "white"
             font.pointSize: 24
+        }
+    }
+
+    GridLayout {
+        columns: 2
+        flow: GridLayout.LeftToRight
+
+        Label {
+            text: qsTr("V2Ray Desktop Version")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: textAppVersion
+            text: "N/a"
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("V2Ray Core Version")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: textV2rayVersion
+            text: "N/a"
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("Project Page")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
+            color: "white"
         }
     }
 
