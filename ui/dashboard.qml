@@ -1,4 +1,6 @@
 import QtQuick 2.3
+import QtQuick.Controls 2.3
+import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 
 
@@ -19,6 +21,73 @@ ColumnLayout {
             text: qsTr("Dashboard")
             color: "white"
             font.pointSize: 24
+        }
+    }
+
+    GridLayout {
+        columns: 2
+        flow: GridLayout.LeftToRight
+        rowSpacing: 20
+        columnSpacing: 20
+
+        Label {
+            text: qsTr("Current Status")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: labelCurrentStatus
+            text: qsTr("N/a")
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("Proxy Settings")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: labelProxySettings
+            text: qsTr("N/a")
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("Operating System")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: labelOperatingSystem
+            text: qsTr("N/a")
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("V2Ray Desktop Version")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: labelAppVersion
+            text: qsTr("N/a")
+            color: "white"
+        }
+
+        Label {
+            text: qsTr("V2Ray Core Version")
+            color: "white"
+            font.bold: true
+        }
+
+        Label {
+            id: labelV2rayVersion
+            text: qsTr("N/a")
+            color: "white"
         }
     }
 

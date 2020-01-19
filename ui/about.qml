@@ -27,6 +27,8 @@ ColumnLayout {
     GridLayout {
         columns: 2
         flow: GridLayout.LeftToRight
+        rowSpacing: 20
+        columnSpacing: 20
 
         Label {
             text: qsTr("V2Ray Desktop Version")
