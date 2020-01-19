@@ -30,3 +30,13 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32 {
+    RC_ICONS   = images/v2ray.ico
+}
+unix {
+    RC_ICONS   = images/v2ray.ico
+}
+osx {
+    ICON       = images/v2ray.icns
+}
