@@ -76,6 +76,7 @@ Window {
 
             MenuItem {
                 text: qsTr("Feedback")
+                onTriggered: Qt.openUrlExternally("https://github.com/Dr-Incognito/V2Ray-Desktop/issues")
             }
 
             MenuItem {
@@ -89,4 +90,234 @@ Window {
             }
         }
     }
+
+    Rectangle{
+            id: sidebar
+            color: "#293846"
+            width: 240
+            height: parent.height
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            Image {
+                id: logo
+                source: "qrc:///images/logo.png"
+                width: 200
+                height: 50
+                x: 20
+                y: 10
+            }
+
+            Item {
+                width: parent.width
+                height: parent.height - 70
+                y: 70
+
+                Rectangle {
+                    id: dashboardNav
+                    color: "#354759"
+                    width: parent.width
+                    height: 40
+                    y: 0
+
+                    Image {
+                        source: "qrc:///images/icon-dashboard.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("Dashboard")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            serversNav.color = "#263441"
+                            rulesNav.color = "#263441"
+                            settingsNav.color = "#263441"
+                            aboutNav.color = "#263441"
+                            dashboardNav.color = "#354759"
+                            pageLoader.source = "dashboard.qml"
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: serversNav
+                    color: "#263441"
+                    width: parent.width
+                    height: 40
+                    y: 40
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            dashboardNav.color = "#263441"
+                            rulesNav.color = "#263441"
+                            settingsNav.color = "#263441"
+                            aboutNav.color = "#263441"
+                            serversNav.color = "#354759"
+                            pageLoader.source = "servers.qml"
+                        }
+                    }
+
+                    Image {
+                        source: "qrc:///images/icon-servers.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("Servers")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+                }
+
+                Rectangle {
+                    id: rulesNav
+                    color: "#263441"
+                    width: parent.width
+                    height: 40
+                    y: 80
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            dashboardNav.color = "#263441"
+                            serversNav.color = "#263441"
+                            settingsNav.color = "#263441"
+                            aboutNav.color = "#263441"
+                            rulesNav.color = "#354759"
+                            pageLoader.source = "rules.qml"
+                        }
+                    }
+
+                    Image {
+                        source: "qrc:///images/icon-rules.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("Rules")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+                }
+
+                Rectangle {
+                    id: settingsNav
+                    color: "#263441"
+                    width: parent.width
+                    height: 40
+                    y: 120
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            dashboardNav.color = "#263441"
+                            serversNav.color = "#263441"
+                            rulesNav.color = "#263441"
+                            aboutNav.color = "#263441"
+                            settingsNav.color = "#354759"
+                            pageLoader.source = "settings.qml"
+                        }
+                    }
+
+                    Image {
+                        source: "qrc:///images/icon-settings.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("Settings")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+                }
+
+                Rectangle {
+                    id: aboutNav
+                    color: "#263441"
+                    width: parent.width
+                    height: 40
+                    y: 160
+
+                    MouseArea {
+                        width: parent.width
+                        height: parent.height
+
+                        onClicked: function() {
+                            dashboardNav.color = "#263441"
+                            serversNav.color = "#263441"
+                            rulesNav.color = "#263441"
+                            settingsNav.color = "#263441"
+                            aboutNav.color = "#354759"
+                            pageLoader.source = "about.qml"
+                        }
+                    }
+
+                    Image {
+                        source: "qrc:///images/icon-about.svg"
+                        height: 14
+                        width: 14
+                        x: 20
+                        y: 12
+                    }
+
+                    Text {
+                        color: "white"
+                        text: qsTr("About")
+                        font.pointSize: 14
+                        x: 40
+                        y: 10
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: content
+            color: "#2e3e4e"
+            width: parent.width - 240
+            height: parent.height
+            anchors.left: sidebar.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            Loader {
+                id: pageLoader
+                anchors.fill: parent
+                source: "dashboard.qml"
+            }
+        }
 }
