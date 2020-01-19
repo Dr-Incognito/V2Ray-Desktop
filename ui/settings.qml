@@ -56,6 +56,7 @@ ColumnLayout {
 
         ComboBox {
             id: comboServerProtocol
+            Layout.fillWidth: true
             model: ListModel{
                 ListElement { text: "SOCKS 5" }
                 ListElement { text: "HTTP/HTTPS" }

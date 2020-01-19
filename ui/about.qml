@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick 2.9
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
@@ -25,7 +25,7 @@ ColumnLayout {
     }
 
     GridLayout {
-        columns: 2
+        columns: 3
         flow: GridLayout.LeftToRight
         rowSpacing: 20
         columnSpacing: 20
@@ -42,6 +42,20 @@ ColumnLayout {
             color: "white"
         }
 
+        Button {
+            text: qsTr("Check for Updates")
+            contentItem: Text {
+                text: parent.text
+                color: "#3498db"
+            }
+            background: Rectangle {
+                color: "#2e3e4e"
+                radius: 4
+            }
+            onClicked: function() {
+            }
+        }
+
         Label {
             text: qsTr("V2Ray Core Version")
             color: "white"
@@ -54,13 +68,27 @@ ColumnLayout {
             color: "white"
         }
 
+        Button {
+            text: qsTr("Check for Updates")
+            contentItem: Text {
+                text: parent.text
+                color: "#3498db"
+            }
+            background: Rectangle {
+                color: "#2e3e4e"
+                radius: 4
+            }
+            onClicked: function() {
+            }
+        }
+
         Label {
             text: qsTr("Project Page")
             color: "white"
             font.bold: true
         }
 
-        Label {
+        Text {
             text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
             color: "white"
         }
