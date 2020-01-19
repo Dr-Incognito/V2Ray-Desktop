@@ -35,6 +35,7 @@ ColumnLayout {
         }
 
         CheckBox {
+            id: checkboxAutoStart
             checked: true
             leftPadding: -3
         }
@@ -45,7 +46,19 @@ ColumnLayout {
         }
 
         CheckBox {
+            id: checkboxAutoUpdate
             checked: true
+            leftPadding: -3
+        }
+
+        Label {
+            text: qsTr("Enable UDP")
+            color: "white"
+        }
+
+        CheckBox {
+            id: checkboxEnableUdp
+            checked: false
             leftPadding: -3
         }
 
