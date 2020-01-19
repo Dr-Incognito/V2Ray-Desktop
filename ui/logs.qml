@@ -21,12 +21,32 @@ ColumnLayout {
         }
     }
 
-    Item {      // spacer item
+    Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
         Rectangle {
-            anchors.fill: parent
-            color: "transparent"
+            id: rectLogs
+            width:parent.width
+            height:parent.height
+            border.color: "#fff"
+            color: "#2e3e4e"
+
+            Flickable {
+                anchors.fill: parent
+                flickableDirection: Flickable.VerticalFlick
+                clip: true
+                TextEdit {
+                    id: textLogs
+                    width: rectLogs.width
+                    wrapMode: TextEdit.Wrap
+                    anchors.fill: parent
+                    color: "white"
+                    textMargin: 10
+                    readOnly: true
+                    selectByMouse: true
+                    text: ""
+               }
+            }
         }
     }
 }
