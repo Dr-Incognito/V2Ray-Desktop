@@ -114,7 +114,7 @@ Window {
                 y: 70
 
                 Rectangle {
-                    id: dashboardNav
+                    id: navDashboard
                     color: "#354759"
                     width: parent.width
                     height: 40
@@ -141,18 +141,18 @@ Window {
                         height: parent.height
 
                         onClicked: function() {
-                            serversNav.color = "#263441"
-                            rulesNav.color = "#263441"
-                            settingsNav.color = "#263441"
-                            aboutNav.color = "#263441"
-                            dashboardNav.color = "#354759"
+                            navServers.color = "#263441"
+                            navRules.color = "#263441"
+                            navSettings.color = "#263441"
+                            navAbout.color = "#263441"
+                            navDashboard.color = "#354759"
                             pageLoader.source = "dashboard.qml"
                         }
                     }
                 }
 
                 Rectangle {
-                    id: serversNav
+                    id: navServers
                     color: "#263441"
                     width: parent.width
                     height: 40
@@ -163,11 +163,11 @@ Window {
                         height: parent.height
 
                         onClicked: function() {
-                            dashboardNav.color = "#263441"
-                            rulesNav.color = "#263441"
-                            settingsNav.color = "#263441"
-                            aboutNav.color = "#263441"
-                            serversNav.color = "#354759"
+                            navDashboard.color = "#263441"
+                            navRules.color = "#263441"
+                            navSettings.color = "#263441"
+                            navAbout.color = "#263441"
+                            navServers.color = "#354759"
                             pageLoader.source = "servers.qml"
                         }
                     }
@@ -190,7 +190,7 @@ Window {
                 }
 
                 Rectangle {
-                    id: rulesNav
+                    id: navRules
                     color: "#263441"
                     width: parent.width
                     height: 40
@@ -201,11 +201,11 @@ Window {
                         height: parent.height
 
                         onClicked: function() {
-                            dashboardNav.color = "#263441"
-                            serversNav.color = "#263441"
-                            settingsNav.color = "#263441"
-                            aboutNav.color = "#263441"
-                            rulesNav.color = "#354759"
+                            navDashboard.color = "#263441"
+                            navServers.color = "#263441"
+                            navSettings.color = "#263441"
+                            navAbout.color = "#263441"
+                            navRules.color = "#354759"
                             pageLoader.source = "rules.qml"
                         }
                     }
@@ -228,7 +228,7 @@ Window {
                 }
 
                 Rectangle {
-                    id: settingsNav
+                    id: navSettings
                     color: "#263441"
                     width: parent.width
                     height: 40
@@ -239,11 +239,11 @@ Window {
                         height: parent.height
 
                         onClicked: function() {
-                            dashboardNav.color = "#263441"
-                            serversNav.color = "#263441"
-                            rulesNav.color = "#263441"
-                            aboutNav.color = "#263441"
-                            settingsNav.color = "#354759"
+                            navDashboard.color = "#263441"
+                            navServers.color = "#263441"
+                            navRules.color = "#263441"
+                            navAbout.color = "#263441"
+                            navSettings.color = "#354759"
                             pageLoader.source = "settings.qml"
                         }
                     }
@@ -266,7 +266,7 @@ Window {
                 }
 
                 Rectangle {
-                    id: aboutNav
+                    id: navAbout
                     color: "#263441"
                     width: parent.width
                     height: 40
@@ -277,11 +277,11 @@ Window {
                         height: parent.height
 
                         onClicked: function() {
-                            dashboardNav.color = "#263441"
-                            serversNav.color = "#263441"
-                            rulesNav.color = "#263441"
-                            settingsNav.color = "#263441"
-                            aboutNav.color = "#354759"
+                            navDashboard.color = "#263441"
+                            navServers.color = "#263441"
+                            navRules.color = "#263441"
+                            navSettings.color = "#263441"
+                            navAbout.color = "#354759"
                             pageLoader.source = "about.qml"
                         }
                     }
