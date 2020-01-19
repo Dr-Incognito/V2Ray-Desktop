@@ -3,5 +3,18 @@
         <file>ui/main.qml</file>
         <file>images/v2ray.png</file>
         <file>images/v2ray.gray.png</file>
+        <file>ui/dashboard.qml</file>
+        <file>images/v2ray.ico</file>
+        <file>images/v2ray.icns</file>
+        <file>images/logo.png</file>
+        <file>ui/about.qml</file>
+        <file>ui/servers.qml</file>
+        <file>ui/settings.qml</file>
+        <file>ui/rules.qml</file>
+        <file>images/icon-settings.svg</file>
+        <file>images/icon-dashboard.svg</file>
+        <file>images/icon-servers.svg</file>
+        <file>images/icon-about.svg</file>
+        <file>images/icon-rules.svg</file>
     </qresource>
 </RCC>
