@@ -66,6 +66,9 @@ Thumbs.db
 # Python byte code
 *.pyc
 
+# Build Directory
+build/
+
 # Binaries
 # --------
 *.dll
