@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>ui/main.qml</file>
+        <file>images/v2ray.png</file>
+        <file>images/v2ray.gray.png</file>
     </qresource>
 </RCC>
