@@ -3,6 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 
+import com.v2ray.desktop.AppProxy 1.0
 
 ColumnLayout {
     anchors.fill: parent
@@ -98,5 +99,23 @@ ColumnLayout {
             anchors.fill: parent
             color: "transparent"
         }
+    }
+
+    AppProxy {
+        id: appProxy
+
+        onAppVersionReady: function(appVersion) {
+            labelAppVersion.text = appVersion
+        }
+
+        onOperatingSystemReady: function(operatingSystem) {
+            labelOperatingSystem.text = operatingSystem
+        }
+    }
+
+    Component.onCompleted: function() {
+        appProxy.getAppVersion()
+        appProxy.getOperatingSystem()
+        appProxy.getV2RayCoreVersion()
     }
 }
