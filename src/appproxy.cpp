@@ -1,6 +1,8 @@
 #include "appproxy.h"
 
 #include <QDebug>
+#include <QDir>
+#include <QFile>
 #include <QSysInfo>
 
 #include "constants.h"
@@ -31,6 +33,20 @@ QString AppProxy::getV2RayCoreStatus() {
     isInstalled ? (isRunning ? "Running" : "Stopped") : "Not Installed";
   emit v2RayCoreStatusReady(v2rayStatus);
   return v2rayStatus;
+}
+
+QString AppProxy::getLogs() {
+  QFile appLogFile(APP_LOG_FILE_PATH);
+  QStringList logs;
+  if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      QList<QByteArray> _logList = appLogFile.readAll().split('\n');
+      for (QByteArray log : _logList) {
+          logs.append(log);
+      }
+  }
+  QString _logs = logs.join('\n');
+  emit logsReady(_logs);
+  return _logs;
 }
 
 bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {

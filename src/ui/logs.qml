@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 
+import com.v2ray.desktop.AppProxy 1.0
 
 ColumnLayout {
     anchors.fill: parent
@@ -48,5 +49,17 @@ ColumnLayout {
                }
             }
         }
+    }
+
+    AppProxy {
+        id: appProxy
+
+        onLogsReady: function(logs) {
+            textLogs.text = logs
+        }
+    }
+
+    Component.onCompleted: function() {
+        appProxy.getLogs()
     }
 }

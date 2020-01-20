@@ -27,7 +27,7 @@ void messageHandler(QtMsgType msgType,
     case QtFatalMsg: msgTypeStr = "[Fatal]"; break;
     default: break;
   }
-  QFile logFile(LOG_FILE_PATH);
+  QFile logFile(APP_LOG_FILE_PATH);
   logFile.open(QIODevice::WriteOnly | QIODevice::Append);
   QTextStream logTextStream(&logFile);
   logTextStream << logMessage.arg(dt, msgTypeStr, msg) << endl;
