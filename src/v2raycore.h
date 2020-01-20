@@ -7,7 +7,9 @@
 class V2RayCore: public QObject {
     Q_OBJECT
 public:
-    V2RayCore();
+    static V2RayCore& getInstance();
+    V2RayCore(V2RayCore const&)       = delete;
+    void operator=(V2RayCore const&)  = delete;
     bool start();
     bool stop();
     bool restart();
@@ -15,6 +17,7 @@ public:
     bool isInstalled();
 
 private:
+    V2RayCore();
     bool install();
     bool upgrade();
     QString getLatestVersion();

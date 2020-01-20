@@ -2,7 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.9
 import Qt.labs.platform 1.1
 
-import org.v2ray.desktop.AppProxy 1.0
+import com.v2ray.desktop.AppProxy 1.0
 
 ApplicationWindow {
     id: appWindow
@@ -39,7 +39,7 @@ ApplicationWindow {
 
             MenuItem {
                 id: triggerV2RayCore
-                text: qsTr("Detecting V2Ray Core Status ...")
+                text: qsTr("Turn V2Ray On")
                 onTriggered: function() {
                     if (triggerV2RayCore.text === qsTr("V2Ray Core Installing ...")) {
                         appProxy.getV2RayCoreStatus()
@@ -432,7 +432,7 @@ ApplicationWindow {
         Component.onCompleted: {
             // Get App Version
             appProxy.getAppVersion()
-            // Get running state of V2Ray Core
-            appProxy.getV2RayCoreStatus()
+            // Start V2Ray Core Automatically
+            appProxy.setV2RayCoreRunning(true)
         }
 }

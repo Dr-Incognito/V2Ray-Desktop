@@ -28,9 +28,13 @@ V2RayCore::V2RayCore() {
   if (!v2RayInstallFolder.exists()) {
     v2RayInstallFolder.mkpath(".");
   }
-
   // Initialize QProcess
   v2rayProcess = new QProcess(this);
+}
+
+V2RayCore& V2RayCore::getInstance() {
+  static V2RayCore v2RayCoreInstance;
+  return v2RayCoreInstance;
 }
 
 bool V2RayCore::start() {
