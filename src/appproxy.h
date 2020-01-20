@@ -18,12 +18,14 @@ signals:
     void operatingSystemReady(QString operatingSystem);
     void v2RayCoreStatusReady(QString v2RayCoreStatus);
     void v2RayRunningStatusChanging(bool isChanged);
+    void logsReady(QString logs);
 
 public slots:
     QString getAppVersion();
     QString getV2RayCoreVersion();
     QString getOperatingSystem();
     QString getV2RayCoreStatus();
+    QString getLogs();
     bool setV2RayCoreRunning(bool expectedRunning);
 
 private:
