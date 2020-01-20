@@ -9,5 +9,7 @@
 #define V2RAY_ASSETS_URL "https://github.com/v2ray/v2ray-core/releases/download/%1/v2ray-%2.zip"
 #define APP_LOG_FILE_PATH "v2ray-desktop.log"
 #define V2RAY_CORE_LOG_FILE_PATH "v2ray.log"
+#define APP_CFG_FILE_PATH "v2ray-desktop-config.json"
+#define V2RAY_CORE_CFG_FILE_PATH "v2ray-config.json"
 
 #endif // CONSTANTS_H

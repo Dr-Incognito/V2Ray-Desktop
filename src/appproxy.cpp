@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
 #include <QSysInfo>
 
 #include "constants.h"
@@ -33,6 +34,12 @@ QString AppProxy::getV2RayCoreStatus() {
     isInstalled ? (isRunning ? "Running" : "Stopped") : "Not Installed";
   emit v2RayCoreStatusReady(v2rayStatus);
   return v2rayStatus;
+}
+
+QJsonObject AppProxy::getAppConfig() {
+  QJsonObject appConfig = configurator.getConfig();
+  emit appConfigReady(QJsonDocument(appConfig).toJson());
+  return appConfig;
 }
 
 QString AppProxy::getLogs() {

@@ -3,6 +3,8 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 
+import com.v2ray.desktop.AppProxy 1.0
+
 ColumnLayout {
     anchors.fill: parent
     anchors.margins: 10
@@ -35,7 +37,6 @@ ColumnLayout {
 
         CheckBox {
             id: checkboxAutoStart
-            checked: true
             leftPadding: -3
         }
 
@@ -46,7 +47,6 @@ ColumnLayout {
 
         CheckBox {
             id: checkboxHideWindow
-            checked: false
             leftPadding: -3
         }
 
@@ -57,7 +57,6 @@ ColumnLayout {
 
         CheckBox {
             id: checkboxAutoUpdate
-            checked: true
             leftPadding: -3
         }
 
@@ -68,7 +67,6 @@ ColumnLayout {
 
         CheckBox {
             id: checkboxEnableUdp
-            checked: false
             leftPadding: -3
         }
 
@@ -102,11 +100,10 @@ ColumnLayout {
         }
 
         TextField {
-            id: textSocks5IpAddr
+            id: textIpAddr
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 127.0.0.1")
-            text: "127.0.0.1"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -119,7 +116,7 @@ ColumnLayout {
         }
 
         TextField {
-            id: textSocks5Port
+            id: textPort
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1080")
@@ -140,7 +137,6 @@ ColumnLayout {
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1085")
-            text: "1085"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -157,7 +153,6 @@ ColumnLayout {
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8 (-1 for disabled)")
-            text: "-1"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -175,7 +170,6 @@ ColumnLayout {
             Layout.minimumWidth: 180
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
-            text: "8.8.8.8,8.8.4.4"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -205,5 +199,27 @@ ColumnLayout {
             anchors.fill: parent
             color: "transparent"
         }
+    }
+
+    AppProxy {
+        id: appProxy
+
+        onAppConfigReady: function(config) {
+            config = JSON.parse(config)
+            checkboxAutoStart.checked = config["autoStart"]
+            checkboxHideWindow.checked = config["hideWindow"]
+            checkboxAutoUpdate.checked = config["autoUpdate"]
+            checkboxEnableUdp.checked = config["enableUdp"]
+            comboServerProtocol.currentIndex = comboServerProtocol.find(config["serverProtocol"])
+            textIpAddr.text = config["ipAddress"]
+            textPort.text = config["port"]
+            textPacServerPort.text = config["pacPort"]
+            textMux.text = config["mux"]
+            textDnsServer.text = config["dns"]
+        }
+    }
+
+    Component.onCompleted: function() {
+        appProxy.getAppConfig()
     }
 }
