@@ -3,7 +3,6 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 
-
 ColumnLayout {
     anchors.fill: parent
     anchors.margins: 10
@@ -24,7 +23,7 @@ ColumnLayout {
     }
 
     GridLayout {
-        columns: 2
+        columns: 4
         flow: GridLayout.LeftToRight
         rowSpacing: 20
         columnSpacing: 20
@@ -37,6 +36,17 @@ ColumnLayout {
         CheckBox {
             id: checkboxAutoStart
             checked: true
+            leftPadding: -3
+        }
+
+        Label {
+            text: qsTr("Hide Window on Start Up")
+            color: "white"
+        }
+
+        CheckBox {
+            id: checkboxHideWindow
+            checked: false
             leftPadding: -3
         }
 
@@ -121,6 +131,23 @@ ColumnLayout {
         }
 
         Label {
+            text: qsTr("PAC Server Port")
+            color: "white"
+        }
+
+        TextField {
+            id: textPacServerPort
+            color: "white"
+            Layout.fillWidth: true
+            placeholderText: qsTr("Example: 1085")
+            text: "1085"
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+        }
+
+        Label {
             text: qsTr("MUX")
             color: "white"
         }
@@ -145,6 +172,7 @@ ColumnLayout {
         TextField {
             id: textDnsServer
             color: "white"
+            Layout.minimumWidth: 180
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             text: "8.8.8.8,8.8.4.4"
