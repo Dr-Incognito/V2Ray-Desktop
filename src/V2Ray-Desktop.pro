@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     appproxy.h \
+    configurator.h \
     constants.h \
     httprequest.h \
     v2raycore.h \
@@ -22,6 +23,7 @@ HEADERS += \
 
 SOURCES += \
     appproxy.cpp \
+    configurator.cpp \
     httprequest.cpp \
     main.cpp \
     v2raycore.cpp \
