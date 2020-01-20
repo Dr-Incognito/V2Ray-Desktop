@@ -13,11 +13,24 @@
 
 V2RayCore::V2RayCore() {
   v2RayInstallFolderPath = QDir(QDir::currentPath()).filePath("v2ray-core");
+#if defined(Q_OS_WIN)
+  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
+  v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl.exe");
+#elif defined(Q_OS_LINUX)
+  v2RayExecFilePath       = QDir(v2RayInstallFolderPath).filePath("v2ray");
+  v2RayCtlExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ctl");
+#elif defined(Q_OS_MAC)
+  v2RayExecFilePath       = QDir(v2RayInstallFolderPath).filePath("v2ray");
+  v2RayCtlExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ctl");
+#endif
   QDir v2RayInstallFolder(v2RayInstallFolderPath);
   // Create the install folder if not exists
   if (!v2RayInstallFolder.exists()) {
-      v2RayInstallFolder.mkpath(".");
+    v2RayInstallFolder.mkpath(".");
   }
+
+  // Initialize QProcess
+  v2rayProcess = new QProcess(this);
 }
 
 bool V2RayCore::start() {
@@ -26,21 +39,29 @@ bool V2RayCore::start() {
       return false;
     }
   }
+  QStringList arguments;
+  arguments << "--config"
+            << "/usr/local/etc/v2ray/config.json";
+  v2rayProcess->start(v2RayExecFilePath, arguments);
+  return true;
 }
 
-bool V2RayCore::stop() {}
-
-bool V2RayCore::restart() {}
-
-bool V2RayCore::isInstalled() {
-#if defined(Q_OS_WIN)
-  QString v2RayExecPath = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
-#elif defined(Q_OS_LINUX)
-  QString v2RayExecPath = QDir(v2RayInstallFolderPath).filePath("v2ray");
-#elif defined(Q_OS_MAC)
-  QString v2RayExecPath = QDir(v2RayInstallFolderPath).filePath("v2ray");
-#endif
+bool V2RayCore::stop() {
+  v2rayProcess->kill();
+  return v2rayProcess->state() == QProcess::NotRunning;
 }
+
+bool V2RayCore::restart() {
+  stop();
+  start();
+  return isRunning();
+}
+
+bool V2RayCore::isRunning() {
+  return v2rayProcess->state() == QProcess::Running;
+}
+
+bool V2RayCore::isInstalled() { return QFile(v2RayExecFilePath).exists(); }
 
 bool V2RayCore::install() {
   QString latestVersion = getLatestVersion();
@@ -54,9 +75,7 @@ bool V2RayCore::install() {
   // Download the zip file from GitHub
   QString assetsUrl =
     QString(V2RAY_ASSETS_URL).arg(latestVersion, operatingSystem);
-  qDebug() << "Before downloading ...";
   QByteArray assetsBytes = HttpRequest::get(assetsUrl);
-  qDebug() << "After downloading ...";
   QString v2rayZipFilePath =
     QDir(QDir::currentPath())
       .filePath(QString("v2ray-core-%1.zip").arg(latestVersion));
@@ -67,10 +86,18 @@ bool V2RayCore::install() {
   v2RayZipFile.write(assetsBytes);
   v2RayZipFile.close();
 
-  // Unzip the file
+  // Unzip the file and make v2ray executable
   ZipFile::unzipFile(v2rayZipFilePath, v2RayInstallFolderPath);
+  QFile(v2RayExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
+  QFile(v2RayCtlExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
 
   // Save current V2Ray version to config.json
+
+  return true;
 }
 
 bool V2RayCore::upgrade() {
