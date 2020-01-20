@@ -1,12 +1,14 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include <QDebug>
-#include "v2raycore.h"
+#include "appproxy.h"
+#include "constants.h"
 
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+  qmlRegisterType<AppProxy>("org.v2ray.desktop.AppProxy", APP_VERSION_MAJOR,
+                            APP_VERSION_MINOR, "AppProxy");
 
   QQmlApplicationEngine engine;
   const QUrl url(QStringLiteral("qrc:/ui/main.qml"));
@@ -18,11 +20,9 @@ int main(int argc, char *argv[]) {
     Qt::QueuedConnection);
   engine.load(url);
 
-  // Load application config
-
   // Start V2Ray core
-  V2RayCore v2ray;
-  v2ray.start();
+  AppProxy appProxy;
+  appProxy.setV2RayCoreRunning(true);
 
   return app.exec();
 }
