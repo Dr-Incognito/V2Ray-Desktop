@@ -1,6 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include <QDebug>
+#include "v2raycore.h"
+
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
@@ -14,5 +17,12 @@ int main(int argc, char *argv[]) {
     },
     Qt::QueuedConnection);
   engine.load(url);
+
+  // Load application config
+
+  // Start V2Ray core
+  V2RayCore v2ray;
+  v2ray.start();
+
   return app.exec();
 }

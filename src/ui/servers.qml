@@ -359,6 +359,8 @@ ColumnLayout {
                         verticalAlignment: Text.AlignVCenter
                     }
                     onCurrentTextChanged: function() {
+                        labelV2RayTcpHeaderType.visible = false
+                        comboV2RayTcpHeaderType.visible = false
                         labelV2RayKcpMtu.visible = false
                         textV2RayKcpMtu.visible = false
                         labelV2RayKcpTti.visible = false
@@ -387,6 +389,8 @@ ColumnLayout {
                         textV2RayQuicKey.visible = false
 
                         if ( textV2RayNetwork.currentText === qsTr("TCP") ) {
+                            labelV2RayTcpHeaderType.visible = true
+                            comboV2RayTcpHeaderType.visible = true
                         } else if ( textV2RayNetwork.currentText === qsTr("KCP") ) {
                             labelV2RayKcpMtu.visible = true
                             textV2RayKcpMtu.visible = true
@@ -465,19 +469,19 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RayTcpHeaderType
+                    id: comboV2RayTcpHeaderType
                     Layout.columnSpan: 3
                     Layout.fillWidth: true
                     model: ListModel{
-                        ListElement { text: "None" }
-                        ListElement { text: "HTTP" }
+                        ListElement { text: qsTr("None") }
+                        ListElement { text: qsTr("HTTP") }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RayTcpHeaderType.displayText
+                        text: comboV2RayTcpHeaderType.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter

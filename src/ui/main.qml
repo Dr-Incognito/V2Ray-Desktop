@@ -1,18 +1,28 @@
-import QtQuick 2.12
-import QtQuick.Window 2.12
+import QtQuick 2.9
+import QtQuick.Controls 2.9
 import Qt.labs.platform 1.1
 
-Window {
+ApplicationWindow {
+    id: appWindow
     visible: true
     width: 960
     height: 640
     minimumWidth: 640
     minimumHeight: 480
     title: qsTr("V2Ray Desktop")
+    x: (screen.width - appWindow.width) / 2
+    y: (screen.height - appWindow.height) / 2
 
-    // Center the window
-    x: Screen.width / 2 - width / 2
-    y: Screen.height / 2 - height / 2
+    onClosing: function() {
+        appWindow.hide()
+    }
+
+    Shortcut {
+        sequence: StandardKey.Close
+        onActivated: function() {
+            appWindow.close()
+        }
+    }
 
     SystemTrayIcon {
         visible: true
@@ -55,6 +65,9 @@ Window {
 
             MenuItem {
                 text: qsTr("Preferences")
+                onTriggered: function() {
+                    appWindow.show()
+                }
             }
 
             MenuItem {
@@ -106,6 +119,7 @@ Window {
                 height: 50
                 x: 20
                 y: 10
+                mipmap: true
             }
 
             Item {

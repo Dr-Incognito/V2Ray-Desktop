@@ -14,10 +14,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    constants.h
+    constants.h \
+    httprequest.h \
+    v2raycore.h \
+    zipfile.h
 
 SOURCES += \
-        main.cpp
+    httprequest.cpp \
+    main.cpp \
+    v2raycore.cpp \
+    zipfile.cpp
+
+include(3rdparty/quazip/quazip/quazip.pri)
+LIBS += -lz
 
 RESOURCES += qml.qrc
 
