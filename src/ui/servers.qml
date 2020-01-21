@@ -324,13 +324,13 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RaySecurity
+                    id: comboV2RaySecurity
                     Layout.minimumWidth: 180
                     Layout.fillWidth: true
                     model: ListModel{
                         ListElement { text: "Auto" }
+                        ListElement { text: "None" }
                         ListElement { text: "AES-128-GCM" }
-                        ListElement { text: "AES-192-CFB" }
                         ListElement { text: "CHACHA20-PLOY1305" }
                     }
                     background: Rectangle {
@@ -338,7 +338,7 @@ ColumnLayout {
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RaySecurity.displayText
+                        text: comboV2RaySecurity.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -351,23 +351,25 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RayNetwork
+                    id: comboV2RayNetwork
                     Layout.columnSpan: 3
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: "TCP" }
-                        ListElement { text: "KCP" }
-                        ListElement { text: "Websocket" }
-                        ListElement { text: "HTTP/2" }
-                        ListElement { text: "Domain Socket" }
-                        ListElement { text: "QUIC" }
+                        ListElement { text: "TCP"; value: "tcp" }
+                        ListElement { text: "KCP"; value: "kcp" }
+                        ListElement { text: "Websocket"; value: "ws" }
+                        ListElement { text: "HTTP/2"; value: "http" }
+                        ListElement { text: "Domain Socket"; value: "domainsocket" }
+                        ListElement { text: "QUIC"; value: "quic" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RayNetwork.displayText
+                        text: comboV2RayNetwork.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -396,16 +398,16 @@ ColumnLayout {
                         labelV2RayDomainSocketFilePath.visible = false
                         textV2RayDomainSocketFilePath.visible = false
                         labelV2RayQuicSecurity.visible = false
-                        textV2RayQuicSecurity.visible = false
+                        comboV2RayQuicSecurity.visible = false
                         labelV2RayPacketHeader.visible = false
-                        textV2RayPacketHeader.visible = false
+                        comboV2RayPacketHeader.visible = false
                         labelV2RayQuicKey.visible = false
                         textV2RayQuicKey.visible = false
 
-                        if ( textV2RayNetwork.currentText === qsTr("TCP") ) {
+                        if ( comboV2RayNetwork.currentText === qsTr("TCP") ) {
                             labelV2RayTcpHeaderType.visible = true
                             comboV2RayTcpHeaderType.visible = true
-                        } else if ( textV2RayNetwork.currentText === qsTr("KCP") ) {
+                        } else if ( comboV2RayNetwork.currentText === qsTr("KCP") ) {
                             labelV2RayKcpMtu.visible = true
                             textV2RayKcpMtu.visible = true
                             labelV2RayKcpTti.visible = true
@@ -421,21 +423,21 @@ ColumnLayout {
                             labelV2RayKcpCongestion.visible = true
                             checkboxV2RayKcpCongestion.visible = true
                             labelV2RayPacketHeader.visible = true
-                            textV2RayPacketHeader.visible = true
-                        } else if ( textV2RayNetwork.currentText === qsTr("Websocket") ||
-                                    textV2RayNetwork.currentText === qsTr("HTTP/2") ) {
+                            comboV2RayPacketHeader.visible = true
+                        } else if ( comboV2RayNetwork.currentText === qsTr("Websocket") ||
+                                    comboV2RayNetwork.currentText === qsTr("HTTP/2") ) {
                             labelV2RayNetworkHost.visible = true
                             textV2RayNetworktHost.visible = true
                             labelV2RayNetworkPath.visible = true
                             textV2RayNetworkPath.visible = true
-                        } else if ( textV2RayNetwork.currentText === qsTr("Domain Socket") ) {
+                        } else if ( comboV2RayNetwork.currentText === qsTr("Domain Socket") ) {
                             labelV2RayDomainSocketFilePath.visible = true
                             textV2RayDomainSocketFilePath.visible = true
-                        } else if ( textV2RayNetwork.currentText === qsTr("QUIC") ) {
+                        } else if ( comboV2RayNetwork.currentText === qsTr("QUIC") ) {
                             labelV2RayQuicSecurity.visible = true
-                            textV2RayQuicSecurity.visible = true
+                            comboV2RayQuicSecurity.visible = true
                             labelV2RayPacketHeader.visible = true
-                            textV2RayPacketHeader.visible = true
+                            comboV2RayPacketHeader.visible = true
                             labelV2RayQuicKey.visible = true
                             textV2RayQuicKey.visible = true
                         }
@@ -448,7 +450,7 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RayNetworkSecurity
+                    id: comboV2RayNetworkSecurity
                     Layout.fillWidth: true
                     model: ListModel{
                         ListElement { text: "None" }
@@ -459,7 +461,7 @@ ColumnLayout {
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RayNetworkSecurity.displayText
+                        text: comboV2RayNetworkSecurity.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -674,7 +676,7 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RayQuicSecurity
+                    id: comboV2RayQuicSecurity
                     Layout.fillWidth: true
                     model: ListModel{
                         ListElement { text: "None" }
@@ -686,7 +688,7 @@ ColumnLayout {
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RayNetworkSecurity.displayText
+                        text: comboV2RayQuicSecurity.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -700,7 +702,7 @@ ColumnLayout {
                 }
 
                 ComboBox {
-                    id: textV2RayPacketHeader
+                    id: comboV2RayPacketHeader
                     Layout.fillWidth: true
                     model: ListModel{
                         ListElement { text: "srtp" }
@@ -714,7 +716,7 @@ ColumnLayout {
                         border.color: Qt.rgba(120, 130, 140, .2)
                     }
                     contentItem: Text {
-                        text: textV2RayNetworkSecurity.displayText
+                        text: comboV2RayPacketHeader.displayText
                         color: "white"
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -751,6 +753,34 @@ ColumnLayout {
                         radius: 4
                     }
                     onClicked: function() {
+                        buttonV2RayAddServer.enabled = false
+                        appProxy.addV2RayServer(JSON.stringify({
+                            "serverName": textV2RayServerName.text,
+                            "serverAddr": textV2RayServerAddr.text,
+                            "serverPort": textV2RayServerPort.text,
+                            "autoConnect": checkboxV2RayAutoConnect.checked,
+                            "id": textV2RayId.text,
+                            "alterId": textV2RayAlterId.text,
+                            "level": textV2RayLevel.text,
+                            "security": comboV2RaySecurity.currentText,
+                            "network": comboV2RayNetwork.currentValue,
+                            "networkSecurity": comboV2RayNetworkSecurity.currentText,
+                            "allowInsecure": checkboxV2RayAllowInsecure.checked,
+                            "tcpHeaderType": comboV2RayTcpHeaderType.currentText,
+                            "kcpMtu": textV2RayKcpMtu.text,
+                            "kcpTti": textV2RayKcpTti.text,
+                            "kcpUpLink": textV2RayKcpUplinkCapcity.text,
+                            "kcpDownLink": textV2RayKcpDownlinkCapcity.text,
+                            "kcpReadBuffer": textV2RayKcpReadBufferSize.text,
+                            "kcpWriteBuffer": textV2RayKcpWriteBufferSize.text,
+                            "kcpCongestion": checkboxV2RayKcpCongestion.checked,
+                            "networkHost": textV2RayNetworktHost.text,
+                            "networkPath": textV2RayNetworkPath.text,
+                            "domainSocketFilePath": textV2RayDomainSocketFilePath.text,
+                            "quicSecurity": comboV2RayQuicSecurity.currentText,
+                            "packetHeader": comboV2RayPacketHeader.currentText,
+                            "quicKey": textV2RayQuicKey.text
+                        }))
                     }
                 }
             }
@@ -829,7 +859,6 @@ ColumnLayout {
 
                 ComboBox {
                     id: comboShadowsocksEncryptionMethod
-                    Layout.columnSpan: 3
                     Layout.fillWidth: true
                     model: ListModel{
                         ListElement { text: "AES-128-CFB" }
@@ -868,6 +897,21 @@ ColumnLayout {
                     }
                 }
 
+                Label {
+                    text: qsTr("Password")
+                    color: "white"
+                }
+
+                TextField {
+                    id: textShadowsocksPassword
+                    color: "white"
+                    Layout.fillWidth: true
+                    background: Rectangle {
+                        color: Qt.rgba(255, 255, 255, .1)
+                        border.color: Qt.rgba(120, 130, 140, .2)
+                    }
+                }
+
                 Button {
                     id: buttonShadowsocksAddServer
                     text: qsTr("Add Server")
@@ -880,6 +924,15 @@ ColumnLayout {
                         radius: 4
                     }
                     onClicked: function() {
+                        buttonShadowsocksAddServer.enabled = false
+                        appProxy.addShadowsocksServer(JSON.stringify({
+                            "serverName": textShadowsocksServerName.text,
+                            "serverAddr": textShadowsocksServerAddr.text,
+                            "serverPort": textShadowsocksServerPort.text,
+                            "autoConnect": checkboxShadowsocksAutoConnect.checked,
+                            "encryption": comboShadowsocksEncryptionMethod.currentText,
+                            "password": textShadowsocksPassword.text
+                        }))
                     }
                 }
             }
@@ -1026,9 +1079,16 @@ ColumnLayout {
 
         onServersReady: function(servers) {
             servers = JSON.parse(servers)
+            listModelServers.clear()
             for (var i = 0; i < servers.length; ++ i) {
                 listModelServers.append({values: getServerPrettyInformation(servers[i])})
             }
+        }
+
+        onServersChanged: function() {
+            buttonV2RayAddServer.enabled = true
+            buttonShadowsocksAddServer.enabled = true
+            appProxy.getServers()
         }
     }
 

@@ -14,6 +14,9 @@ public:
     QJsonObject getV2RayConfig();
     void setAppConfig(QJsonObject config);
     QJsonArray getServers();
+    int addServer(QJsonObject serverConfig);
+    int editServer(QString serverName, QJsonObject serverConfig);
+    int removeServer(QString serverName);
     QJsonArray getRules();
 
 private:
