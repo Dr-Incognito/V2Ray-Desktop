@@ -101,19 +101,25 @@ QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
 QJsonArray Configurator::getServers() {
   QJsonObject appConfig = getAppConfig();
   QJsonArray servers = appConfig.contains("servers") ? appConfig["servers"].toArray() : QJsonArray();
-  for (auto itr = servers.begin(); itr != servers.end(); ++ itr) {
-
-  }
   return servers;
 }
 
 QJsonArray Configurator::getAutoConnectServers() {
+  QJsonObject appConfig = getAppConfig();
+  int muxValue = appConfig["mux"].toString().toInt();
+
   QJsonArray servers = getServers();
   QJsonArray autoConnectServers;
   for (auto itr = servers.begin(); itr != servers.end(); ++ itr) {
     QJsonObject server = (*itr).toObject();
     if (server["autoConnect"].toBool()) {
       server.remove("autoConnect");
+      if (muxValue > 0 && server["protocol"].toString() == "vmess") {
+        server["mux"] = QJsonObject{
+          {"enabled", true},
+          {"mux", muxValue}
+        };
+      }
       autoConnectServers.append(server);
     }
   }

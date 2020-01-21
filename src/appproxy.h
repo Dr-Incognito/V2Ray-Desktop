@@ -22,17 +22,19 @@ signals:
     void appConfigReady(QString appConfig);
     void appConfigChanged();
     void logsReady(QString logs);
+    void serversReady(QString servers);
 
 public slots:
     QString getAppVersion();
     QString getV2RayCoreVersion();
     QString getOperatingSystem();
     QString getV2RayCoreStatus();
+    bool setV2RayCoreRunning(bool expectedRunning);
     QJsonObject getAppConfig();
     void saveAppConfig(QString appConfig);
     QString getLogs();
     void clearLogs();
-    bool setV2RayCoreRunning(bool expectedRunning);
+    QJsonArray getServers();
 
 private:
     V2RayCore& v2ray;
