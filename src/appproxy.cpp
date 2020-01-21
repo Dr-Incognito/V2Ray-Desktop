@@ -11,7 +11,7 @@
 AppProxy::AppProxy() : v2ray(V2RayCore::getInstance()) {}
 
 QString AppProxy::getAppVersion() {
-  QString appVersion = QString("%1.%2.%3")
+  QString appVersion = QString("v%1.%2.%3")
                          .arg(QString::number(APP_VERSION_MAJOR),
                               QString::number(APP_VERSION_MINOR),
                               QString::number(APP_VERSION_PATCH));
@@ -19,7 +19,12 @@ QString AppProxy::getAppVersion() {
   return appVersion;
 }
 
-QString AppProxy::getV2RayCoreVersion() { return ""; }
+QString AppProxy::getV2RayCoreVersion() {
+  QJsonObject appConfig    = getAppConfig();
+  QString v2RayCoreVersion = appConfig["v2rayCoreVersion"].toString();
+  emit v2RayCoreVersionReady(v2RayCoreVersion);
+  return v2RayCoreVersion;
+}
 
 QString AppProxy::getOperatingSystem() {
   QString operatingSystem = QSysInfo::prettyProductName();
@@ -42,14 +47,20 @@ QJsonObject AppProxy::getAppConfig() {
   return appConfig;
 }
 
+void AppProxy::saveAppConfig(QString appConfig) {
+  QJsonDocument jsonDoc = QJsonDocument::fromJson(appConfig.toUtf8());
+  configurator.setConfig(jsonDoc.object());
+  emit appConfigChanged();
+}
+
 QString AppProxy::getLogs() {
   QFile appLogFile(APP_LOG_FILE_PATH);
   QStringList logs;
   if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      QList<QByteArray> _logList = appLogFile.readAll().split('\n');
-      for (QByteArray log : _logList) {
-          logs.append(log);
-      }
+    QList<QByteArray> _logList = appLogFile.readAll().split('\n');
+    for (QByteArray log : _logList) {
+      logs.append(log);
+    }
   }
   QString _logs = logs.join('\n');
   emit logsReady(_logs);

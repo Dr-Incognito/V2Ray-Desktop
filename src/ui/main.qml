@@ -407,7 +407,7 @@ ApplicationWindow {
             id: appProxy
 
             onAppVersionReady: function(appVersion) {
-                appName.text = qsTr("V2Ray Desktop") + " v" + appVersion
+                appName.text = qsTr("V2Ray Desktop") + " " + appVersion
             }
             onV2RayCoreStatusReady: function(v2RayCoreStatus) {
                 if (v2RayCoreStatus === "Not Installed") {

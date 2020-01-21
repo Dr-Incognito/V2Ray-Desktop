@@ -2,7 +2,9 @@ import QtQuick 2.9
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 
+import com.v2ray.desktop.AppProxy 1.0
 
 ColumnLayout {
     anchors.fill: parent
@@ -66,7 +68,6 @@ ColumnLayout {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             placeholderText: qsTr("Example: https://url/to/gfwlist.txt")
-            text: "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -79,9 +80,8 @@ ColumnLayout {
         }
 
         Label {
-            id: textGfwLastUpdatedTime
+            id: labelGfwLastUpdatedTime
             Layout.fillWidth: true
-            text: qsTr("Never")
             color: "white"
         }
 
@@ -111,6 +111,11 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
+                var config = {
+                    "proxyMode": comboProxyMode.currentText,
+                    "gfwListUrl": textGfwListUrl.text
+                }
+                appProxy.saveAppConfig(JSON.stringify(config))
             }
         }
     }
@@ -122,5 +127,31 @@ ColumnLayout {
             anchors.fill: parent
             color: "transparent"
         }
+    }
+
+    MessageDialog {
+        id: messageDialog
+        title: qsTr("Message from V2Ray Desktop")
+        icon: StandardIcon.Information
+        text: qsTr("Settings saved.")
+        standardButtons: StandardButton.Ok
+    }
+
+    AppProxy {
+        id: appProxy
+
+        onAppConfigReady: function(config) {
+            config = JSON.parse(config)
+            comboProxyMode.currentIndex = comboProxyMode.find(config["proxyMode"])
+            textGfwListUrl.text = config["gfwListUrl"]
+            labelGfwLastUpdatedTime.text = config["gfwListLastUpdated"]
+        }
+        onAppConfigChanged: function() {
+            messageDialog.open()
+        }
+    }
+
+    Component.onCompleted: function() {
+        appProxy.getAppConfig()
     }
 }
