@@ -43,6 +43,22 @@ QString AppProxy::getV2RayCoreStatus() {
   return v2rayStatus;
 }
 
+bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {
+  bool isSuccessful = false;
+  if (expectedRunning) {
+    isSuccessful = v2ray.start();
+    qInfo() << QString("Start V2Ray Core ... %1")
+                 .arg(isSuccessful ? "success" : "failed");
+    emit v2RayRunningStatusChanging(isSuccessful);
+  } else {
+    isSuccessful = v2ray.stop();
+    qInfo() << QString("Stop V2Ray Core ... %1")
+                 .arg(isSuccessful ? "success" : "failed");
+    emit v2RayRunningStatusChanging(isSuccessful);
+  }
+  return isSuccessful;
+}
+
 QJsonObject AppProxy::getAppConfig() {
   QJsonObject appConfig = configurator.getAppConfig();
   emit appConfigReady(QJsonDocument(appConfig).toJson());
@@ -97,18 +113,8 @@ void AppProxy::clearLogs() {
   }
 }
 
-bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {
-  bool isSuccessful = false;
-  if (expectedRunning) {
-    isSuccessful = v2ray.start();
-    qInfo() << QString("Start V2Ray Core ... %1")
-                 .arg(isSuccessful ? "success" : "failed");
-    emit v2RayRunningStatusChanging(isSuccessful);
-  } else {
-    isSuccessful = v2ray.stop();
-    qInfo() << QString("Stop V2Ray Core ... %1")
-                 .arg(isSuccessful ? "success" : "failed");
-    emit v2RayRunningStatusChanging(isSuccessful);
-  }
-  return isSuccessful;
+QJsonArray AppProxy::getServers() {
+  QJsonArray servers = configurator.getServers();
+  emit serversReady(QJsonDocument(servers).toJson());
+  return servers;
 }

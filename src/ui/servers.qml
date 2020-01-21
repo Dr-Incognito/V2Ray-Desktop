@@ -4,6 +4,8 @@ import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 
+import com.v2ray.desktop.AppProxy 1.0
+
 ColumnLayout {
     id: layoutServer
     anchors.fill: parent
@@ -62,8 +64,20 @@ ColumnLayout {
              clip: true
 
              function getColumnWidth(index) {
-                 // TODO
-                 return listViewServers.width / 6
+                 switch (index) {
+                     case 0:
+                         return listViewServers.width * 0.25
+                     case 1:
+                         return listViewServers.width * 0.3
+                     case 2:
+                         return listViewServers.width * 0.175
+                     case 3:
+                         return listViewServers.width * 0.175
+                     case 4:
+                         return listViewServers.width * 0.1
+                     default:
+                         return 0
+                 }
              }
 
              header: Row {
@@ -77,7 +91,7 @@ ColumnLayout {
                      id: listViewServersRepeater
                      model: [
                          qsTr("Name"), qsTr("Server"), qsTr("Protocol"), qsTr("Status"),
-                         qsTr("Latency"), qsTr("Last Used")
+                         qsTr("Latency")
                      ]
                      Label {
                          text: modelData
@@ -92,14 +106,14 @@ ColumnLayout {
                  }
              }
 
-             model: listViewServersModel
+             model: listModelServers
              delegate: Column {
                  Row {
                      spacing: 1
                      Repeater {
-                         model: dataValues
+                         model: values
                          ItemDelegate {
-                             text: dataValue
+                             text: value
                              width: listViewServers.getColumnWidth(index)
 
                              contentItem: Text {
@@ -121,7 +135,7 @@ ColumnLayout {
              }
 
              ListModel {
-                 id: listViewServersModel
+                 id: listModelServers
              }
 
              ScrollIndicator.horizontal: ScrollIndicator { }
@@ -976,5 +990,49 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    AppProxy {
+        id: appProxy
+
+        function getServerPrettyInformation(server) {
+            var serverAddress, serverPort, serverName, status
+            if (server["protocol"] === "vmess") {
+                serverAddress = server["settings"]["vnext"][0]["address"]
+                serverPort = server["settings"]["vnext"][0]["port"]
+                serverName = server["serverName"] || serverAddress
+                status = server["autoConnect"] ? qsTr("Connected") : qsTr("Disconnected")
+                return [
+                    {value: serverName},
+                    {value: serverAddress + ":" + serverPort},
+                    {value: "V2Ray"},
+                    {value: status},
+                    {value: "N/a"}
+                ]
+            } else if (server["protocol"] === "shadowsocks") {
+                serverAddress = server["settings"]["servers"][0]["address"]
+                serverPort = server["settings"]["servers"][0]["port"]
+                serverName = server["serverName"] || serverAddress
+                status = server["autoConnect"] ? qsTr("Connected") : qsTr("Disconnected")
+                return [
+                    {value: serverName},
+                    {value: serverAddress + ":" + serverPort},
+                    {value: "Shadowsocks"},
+                    {value: status},
+                    {value: "N/a"}
+                ]
+            }
+        }
+
+        onServersReady: function(servers) {
+            servers = JSON.parse(servers)
+            for (var i = 0; i < servers.length; ++ i) {
+                listModelServers.append({values: getServerPrettyInformation(servers[i])})
+            }
+        }
+    }
+
+    Component.onCompleted: function() {
+        appProxy.getServers()
     }
 }
