@@ -98,7 +98,13 @@ ColumnLayout {
         }
     }
 
-    Component.onCompleted: function() {
-        appProxy.getLogs()
+    Timer {
+        id: timer
+        interval: 2500
+        running: true
+        repeat: true
+        onTriggered: function() {
+            appProxy.getLogs()
+        }
     }
 }
