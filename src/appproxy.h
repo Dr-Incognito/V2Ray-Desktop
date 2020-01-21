@@ -20,6 +20,7 @@ signals:
     void v2RayCoreStatusReady(QString v2RayCoreStatus);
     void v2RayRunningStatusChanging(bool isChanged);
     void appConfigReady(QString appConfig);
+    void appConfigChanged();
     void logsReady(QString logs);
 
 public slots:
@@ -28,6 +29,7 @@ public slots:
     QString getOperatingSystem();
     QString getV2RayCoreStatus();
     QJsonObject getAppConfig();
+    void saveAppConfig(QString appConfig);
     QString getLogs();
     bool setV2RayCoreRunning(bool expectedRunning);
 

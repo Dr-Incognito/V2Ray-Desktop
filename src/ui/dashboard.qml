@@ -108,6 +108,10 @@ ColumnLayout {
             labelAppVersion.text = appVersion
         }
 
+        onV2RayCoreVersionReady: function(v2RayVersion) {
+            labelV2rayVersion.text = v2RayVersion
+        }
+
         onOperatingSystemReady: function(operatingSystem) {
             labelOperatingSystem.text = operatingSystem
         }

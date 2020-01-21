@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "configurator.h"
 #include "constants.h"
 #include "httprequest.h"
 #include "zipfile.h"
@@ -100,6 +101,10 @@ bool V2RayCore::install() {
                     QFileDevice::ExeUser);
 
   // Save current V2Ray version to config.json
+  Configurator configurator;
+  QJsonObject v2RayVersionConfig;
+  v2RayVersionConfig["v2rayCoreVersion"] = latestVersion;
+  configurator.setConfig(v2RayVersionConfig);
 
   return true;
 }

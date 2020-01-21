@@ -11,6 +11,7 @@ class Configurator: public QObject
 public:
     Configurator();
     QJsonObject getConfig();
+    void setConfig(QJsonObject config);
     QJsonArray getServers();
     QJsonArray getRules();
 

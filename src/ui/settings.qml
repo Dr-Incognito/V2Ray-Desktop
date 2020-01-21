@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 
 import com.v2ray.desktop.AppProxy 1.0
 
@@ -100,7 +101,7 @@ ColumnLayout {
         }
 
         TextField {
-            id: textIpAddr
+            id: textServerIpAddr
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 127.0.0.1")
@@ -116,7 +117,7 @@ ColumnLayout {
         }
 
         TextField {
-            id: textPort
+            id: textServerPort
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1080")
@@ -188,6 +189,19 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
+                var config = {
+                    "autoStart": checkboxAutoStart.checked,
+                    "hideWindow": checkboxHideWindow.checked,
+                    "autoUpdate": checkboxAutoUpdate.checked,
+                    "enableUdp": checkboxEnableUdp.checked,
+                    "serverProtocol": comboServerProtocol.currentText,
+                    "serverIp": textServerIpAddr.text,
+                    "serverPort": textServerPort.text,
+                    "pacPort": textPacServerPort.text,
+                    "mux": textMux.text,
+                    "dns": textDnsServer.text
+                }
+                appProxy.saveAppConfig(JSON.stringify(config))
             }
         }
     }
@@ -201,6 +215,14 @@ ColumnLayout {
         }
     }
 
+    MessageDialog {
+        id: messageDialog
+        title: qsTr("Message from V2Ray Desktop")
+        icon: StandardIcon.Information
+        text: qsTr("Settings saved.")
+        standardButtons: StandardButton.Ok
+    }
+
     AppProxy {
         id: appProxy
 
@@ -211,11 +233,14 @@ ColumnLayout {
             checkboxAutoUpdate.checked = config["autoUpdate"]
             checkboxEnableUdp.checked = config["enableUdp"]
             comboServerProtocol.currentIndex = comboServerProtocol.find(config["serverProtocol"])
-            textIpAddr.text = config["ipAddress"]
-            textPort.text = config["port"]
+            textServerIpAddr.text = config["serverIp"]
+            textServerPort.text = config["serverPort"]
             textPacServerPort.text = config["pacPort"]
             textMux.text = config["mux"]
             textDnsServer.text = config["dns"]
+        }
+        onAppConfigChanged: function() {
+            messageDialog.open()
         }
     }
 
