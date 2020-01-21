@@ -58,13 +58,20 @@ QString AppProxy::getLogs() {
   QStringList logs;
   if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> _logList = appLogFile.readAll().split('\n');
-    for (QByteArray log : _logList) {
-      logs.append(log);
+    for (auto itr = _logList.end() - 2; itr >= _logList.begin(); -- itr) {
+      logs.append(*itr);
     }
   }
   QString _logs = logs.join('\n');
   emit logsReady(_logs);
   return _logs;
+}
+
+void AppProxy::clearLogs() {
+  QFile appLogFile(APP_LOG_FILE_PATH);
+  if (appLogFile.exists()) {
+      appLogFile.remove();
+  }
 }
 
 bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {
