@@ -17,10 +17,7 @@ V2RayCore::V2RayCore() {
 #if defined(Q_OS_WIN)
   v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
   v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl.exe");
-#elif defined(Q_OS_LINUX)
-  v2RayExecFilePath       = QDir(v2RayInstallFolderPath).filePath("v2ray");
-  v2RayCtlExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ctl");
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
   v2RayExecFilePath       = QDir(v2RayInstallFolderPath).filePath("v2ray");
   v2RayCtlExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ctl");
 #endif
@@ -44,9 +41,15 @@ bool V2RayCore::start() {
       return false;
     }
   }
+  // Get latest configuration for V2Ray Core
+  Configurator configurator;
+  QJsonObject v2RayConfig = configurator.getV2RayConfig();
+  QFile configFile(V2RAY_CORE_CFG_FILE_PATH);
+  configFile.open(QFile::WriteOnly);
+  configFile.write(QJsonDocument(v2RayConfig).toJson());
+  // Start V2Ray Core
   QStringList arguments;
-  arguments << "--config"
-            << "/usr/local/etc/v2ray/config.json";
+  arguments << "--config" << V2RAY_CORE_CFG_FILE_PATH;
   v2rayProcess->start(v2RayExecFilePath, arguments);
   return true;
 }
@@ -102,9 +105,8 @@ bool V2RayCore::install() {
 
   // Save current V2Ray version to config.json
   Configurator configurator;
-  QJsonObject v2RayVersionConfig;
-  v2RayVersionConfig["v2rayCoreVersion"] = latestVersion;
-  configurator.setConfig(v2RayVersionConfig);
+  QJsonObject v2RayVersionConfig{{"v2rayCoreVersion", latestVersion}};
+  configurator.setAppConfig(v2RayVersionConfig);
 
   return true;
 }

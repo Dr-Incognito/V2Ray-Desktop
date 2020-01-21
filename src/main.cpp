@@ -31,7 +31,9 @@ void messageHandler(QtMsgType msgType,
     QFile logFile(APP_LOG_FILE_PATH);
     logFile.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream logTextStream(&logFile);
-    logTextStream << logMessage.arg(dt, msgTypeStr, msg) << endl;
+    if (dt.size()) {
+      logTextStream << logMessage.arg(dt, msgTypeStr, msg) << endl;
+    }
   } else {
     QTextStream(stdout) << logMessage.arg(dt, msgTypeStr, msg) << endl;
   }

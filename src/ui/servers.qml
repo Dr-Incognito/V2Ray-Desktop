@@ -76,8 +76,8 @@ ColumnLayout {
                  Repeater {
                      id: listViewServersRepeater
                      model: [
-                         qsTr("Name"), qsTr("Server"), qsTr("Status"), qsTr("Latency"),
-                         qsTr("Data Usage"), qsTr("Last Used")
+                         qsTr("Name"), qsTr("Server"), qsTr("Protocol"), qsTr("Status"),
+                         qsTr("Latency"), qsTr("Last Used")
                      ]
                      Label {
                          text: modelData
@@ -214,12 +214,12 @@ ColumnLayout {
                 }
 
                 Label {
-                    text: qsTr("Default Server")
+                    text: qsTr("Auto Connect")
                     color: "white"
                 }
 
                 CheckBox {
-                    id: checkboxV2RayDefaultServer
+                    id: checkboxV2RayAutoConnect
                     leftPadding: -2
                 }
 
@@ -767,12 +767,12 @@ ColumnLayout {
                 }
 
                 Label {
-                    text: qsTr("Default Server")
+                    text: qsTr("Auto Connect")
                     color: "white"
                 }
 
                 CheckBox {
-                    id: checkboxShadowsocksDefaultServer
+                    id: checkboxShadowsocksAutoConnect
                     leftPadding: -2
                 }
 

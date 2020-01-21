@@ -1,5 +1,7 @@
 #include "appproxy.h"
 
+#include <algorithm>
+
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -42,26 +44,43 @@ QString AppProxy::getV2RayCoreStatus() {
 }
 
 QJsonObject AppProxy::getAppConfig() {
-  QJsonObject appConfig = configurator.getConfig();
+  QJsonObject appConfig = configurator.getAppConfig();
   emit appConfigReady(QJsonDocument(appConfig).toJson());
   return appConfig;
 }
 
 void AppProxy::saveAppConfig(QString appConfig) {
+  // TODO: Check app config before saving
+  // Save app config
+  qInfo() << "Application config updated. Restarting V2Ray ...";
   QJsonDocument jsonDoc = QJsonDocument::fromJson(appConfig.toUtf8());
-  configurator.setConfig(jsonDoc.object());
+  configurator.setAppConfig(jsonDoc.object());
   emit appConfigChanged();
+  // Restart V2Ray Core
+  v2ray.restart();
 }
 
 QString AppProxy::getLogs() {
   QFile appLogFile(APP_LOG_FILE_PATH);
+  QFile v2RayLogFile(V2RAY_CORE_LOG_FILE_PATH);
   QStringList logs;
+  // Read the app and V2Ray logs
   if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> _logList = appLogFile.readAll().split('\n');
-    for (auto itr = _logList.end() - 2; itr >= _logList.begin(); -- itr) {
+    for (auto itr = _logList.begin(); itr < _logList.end(); ++itr) {
       logs.append(*itr);
     }
   }
+  if (v2RayLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QList<QByteArray> _logList = v2RayLogFile.readAll().split('\n');
+    for (auto itr = _logList.begin(); itr < _logList.end(); ++itr) {
+      logs.append(*itr);
+    }
+  }
+  // Sort logs by timestamp
+  logs.sort();
+  std::reverse(logs.begin(), logs.end());
+
   QString _logs = logs.join('\n');
   emit logsReady(_logs);
   return _logs;
@@ -69,8 +88,12 @@ QString AppProxy::getLogs() {
 
 void AppProxy::clearLogs() {
   QFile appLogFile(APP_LOG_FILE_PATH);
+  QFile v2RayLogFile(V2RAY_CORE_LOG_FILE_PATH);
   if (appLogFile.exists()) {
-      appLogFile.remove();
+    appLogFile.resize(0);
+  }
+  if (v2RayLogFile.exists()) {
+    v2RayLogFile.resize(0);
   }
 }
 
