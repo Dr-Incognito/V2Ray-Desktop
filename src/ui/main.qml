@@ -56,17 +56,19 @@ ApplicationWindow {
             }
 
             MenuItem {
+                id: menuItemPacMode
                 text: qsTr("PAC Mode")
                 checkable: true
-                checked: true
             }
 
             MenuItem {
+                id: menuItemGlobalMode
                 text: qsTr("Global Mode")
                 checkable: true
             }
 
             MenuItem {
+                id: menuItemManualMode
                 text: qsTr("Manual Mode")
                 checkable: true
             }
@@ -406,9 +408,29 @@ ApplicationWindow {
         AppProxy {
             id: appProxy
 
+            function updateProxyModeChecked(proxyMode) {
+                menuItemPacMode.checked = false
+                menuItemGlobalMode.checked = false
+                menuItemManualMode.checked = false
+
+                if (proxyMode === "PAC Mode") {
+                    menuItemPacMode.checked = true
+                } else if (proxyMode === "Global Mode") {
+                    menuItemGlobalMode.checked = true
+                } else if (proxyMode === "Manual Mode") {
+                    menuItemManualMode.checked = true
+                }
+            }
+
             onAppVersionReady: function(appVersion) {
                 appName.text = qsTr("V2Ray Desktop") + " " + appVersion
             }
+
+            onAppConfigReady: function(config) {
+                config = JSON.parse(config)
+                updateProxyModeChecked(config["proxyMode"])
+            }
+
             onV2RayCoreStatusReady: function(v2RayCoreStatus) {
                 if (v2RayCoreStatus === "Not Installed") {
                     triggerV2RayCore.text = qsTr("V2Ray Core Installing ...")
@@ -418,6 +440,7 @@ ApplicationWindow {
                     triggerV2RayCore.text = qsTr("Turn V2Ray Off")
                 }
             }
+
             onV2RayRunningStatusChanging: function(isChanged) {
                 if (isChanged) {
                     if (triggerV2RayCore.text === qsTr("Turn V2Ray On")) {
@@ -432,6 +455,8 @@ ApplicationWindow {
         Component.onCompleted: {
             // Get App Version
             appProxy.getAppVersion()
+            // Get App Config
+            appProxy.getAppConfig()
             // Start V2Ray Core Automatically
             appProxy.setV2RayCoreRunning(true)
         }

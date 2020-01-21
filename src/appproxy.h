@@ -31,6 +31,7 @@ public slots:
     QJsonObject getAppConfig();
     void saveAppConfig(QString appConfig);
     QString getLogs();
+    void clearLogs();
     bool setV2RayCoreRunning(bool expectedRunning);
 
 private:
