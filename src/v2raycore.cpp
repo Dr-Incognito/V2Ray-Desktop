@@ -55,7 +55,8 @@ bool V2RayCore::start() {
 }
 
 bool V2RayCore::stop() {
-  v2rayProcess->kill();
+  v2rayProcess->terminate();
+  v2rayProcess->waitForFinished();
   return v2rayProcess->state() == QProcess::NotRunning;
 }
 
