@@ -25,20 +25,24 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
 
 Configurator::Configurator() {}
 
-QJsonObject Configurator::getConfig() {
+QJsonObject Configurator::getAppConfig() {
+  QJsonObject config = DEFAULT_APP_CONFIG;
   QFile appCfgFile(APP_CFG_FILE_PATH);
-  if (!appCfgFile.exists() ||
-      !appCfgFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    return DEFAULT_APP_CONFIG;
+  if (appCfgFile.exists() &&
+      appCfgFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      QJsonDocument configDoc = QJsonDocument::fromJson(appCfgFile.readAll());
+      config = configDoc.object();
+      if (config.empty()) {
+        qWarning() << "Failed to parse the app config.";
+        config = DEFAULT_APP_CONFIG;
+      }
   }
-  QJsonDocument configDoc = QJsonDocument::fromJson(appCfgFile.readAll());
-  QJsonObject config      = configDoc.object();
   return config;
 }
 
-void Configurator::setConfig(QJsonObject config) {
+void Configurator::setAppConfig(QJsonObject config) {
   // Load current configuration
-  QJsonObject _config = getConfig();
+  QJsonObject _config = getAppConfig();
   // Overwrite new values to current configuration
   for (auto itr = config.begin(); itr != config.end(); ++itr) {
     QString configName   = itr.key();
@@ -60,6 +64,66 @@ void Configurator::setConfig(QJsonObject config) {
   configFile.write(QJsonDocument(_config).toJson());
 }
 
-QJsonArray Configurator::getServers() {}
+QJsonObject Configurator::getV2RayConfig() {
+  QJsonObject appConfig   = getAppConfig();
+  QJsonObject v2RayConfig{
+    {"log",
+     QJsonObject{{"loglevel", "info"}, {"error", V2RAY_CORE_LOG_FILE_PATH}}},
+    {"inbounds",
+     QJsonArray{QJsonObject{
+       {"listen", appConfig["serverIp"].toString()},
+       {"protocol", appConfig["serverProtocol"].toString().toLower()},
+       {"port", appConfig["serverPort"].toString()},
+       {"settings", QJsonObject{{"udp", appConfig["enableUdp"].toBool()}}},
+     }}},
+    {"outbounds", getAutoConnectServers()},
+    {"dns", QJsonObject{{"servers",
+                         getPrettyDnsServers(appConfig["dns"].toString())}}},
+    {"rules", QJsonObject{
+                {"strategy", "rules"},
+                {"settings", QJsonObject {
+                  {"domainStrategy", "IPIfNonMatch"},
+                  {"rules", getRules()}
+                }}
+              }}};
+  return v2RayConfig;
+}
 
-QJsonArray Configurator::getRules() {}
+QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
+  QJsonArray dnsServers;
+  QStringList _dnsServers = dnsString.split(',');
+  for (QString ds : _dnsServers) {
+    dnsServers.append(ds.trimmed());
+  }
+  return dnsServers;
+}
+
+QJsonArray Configurator::getServers() {
+  QJsonObject appConfig = getAppConfig();
+  QJsonArray servers = appConfig.contains("servers") ? appConfig["servers"].toArray() : QJsonArray();
+  for (auto itr = servers.begin(); itr != servers.end(); ++ itr) {
+
+  }
+  return servers;
+}
+
+QJsonArray Configurator::getAutoConnectServers() {
+  QJsonArray servers = getServers();
+  QJsonArray autoConnectServers;
+  for (auto itr = servers.begin(); itr != servers.end(); ++ itr) {
+    QJsonObject server = (*itr).toObject();
+    if (server["autoConnect"].toBool()) {
+      server.remove("autoConnect");
+      autoConnectServers.append(server);
+    }
+  }
+  autoConnectServers.append(
+    QJsonObject{{"tag", "direct"}, {"protocol", "freedom"}});
+  return autoConnectServers;
+}
+
+QJsonArray Configurator::getRules() {
+  // Ref: https://v2ray.com/chapter_02/03_routing.html
+  QJsonArray rules;
+  return rules;
+}

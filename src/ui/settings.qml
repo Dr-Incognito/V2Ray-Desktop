@@ -80,8 +80,8 @@ ColumnLayout {
             id: comboServerProtocol
             Layout.fillWidth: true
             model: ListModel{
-                ListElement { text: "SOCKS 5" }
-                ListElement { text: "HTTP/HTTPS" }
+                ListElement { text: "SOCKS" }
+                ListElement { text: "HTTP" }
             }
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
