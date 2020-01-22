@@ -11,8 +11,9 @@
 
 #include "constants.h"
 
-AppProxy::AppProxy()
-  : v2ray(V2RayCore::getInstance()),
+AppProxy::AppProxy(QObject* parent)
+  : QObject(parent),
+    v2ray(V2RayCore::getInstance()),
     configurator(Configurator::getInstance()) {}
 
 QString AppProxy::getAppVersion() {

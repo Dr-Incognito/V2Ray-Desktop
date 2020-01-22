@@ -104,8 +104,8 @@ ColumnLayout {
         }
     }
 
-    AppProxy {
-        id: appProxy
+    Connections {
+        target: AppProxy
 
         onAppVersionReady: function(appVersion) {
             labelAppVersion.text = appVersion
@@ -117,7 +117,7 @@ ColumnLayout {
     }
 
     Component.onCompleted: function() {
-        appProxy.getAppVersion()
-        appProxy.getV2RayCoreVersion()
+        AppProxy.getAppVersion()
+        AppProxy.getV2RayCoreVersion()
     }
 }

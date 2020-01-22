@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlEngine>
 #include <QTextStream>
 #include <QtGlobal>
 
@@ -42,8 +43,14 @@ void messageHandler(QtMsgType msgType,
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
-  qmlRegisterType<AppProxy>("com.v2ray.desktop.AppProxy", APP_VERSION_MAJOR,
-                            APP_VERSION_MINOR, "AppProxy");
+  qmlRegisterSingletonType<AppProxy>(
+    "com.v2ray.desktop.AppProxy", APP_VERSION_MAJOR, APP_VERSION_MINOR,
+    "AppProxy", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+      Q_UNUSED(engine)
+      Q_UNUSED(scriptEngine)
+      AppProxy *appProxy = new AppProxy();
+      return appProxy;
+    });
 
   // Set up logging
   qInstallMessageHandler(messageHandler);

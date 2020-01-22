@@ -201,7 +201,7 @@ ColumnLayout {
                     "mux": textMux.text,
                     "dns": textDnsServer.text
                 }
-                appProxy.saveAppConfig(JSON.stringify(config))
+                AppProxy.saveAppConfig(JSON.stringify(config))
             }
         }
     }
@@ -223,8 +223,8 @@ ColumnLayout {
         standardButtons: StandardButton.Ok
     }
 
-    AppProxy {
-        id: appProxy
+    Connections {
+        target: AppProxy
 
         onAppConfigReady: function(config) {
             config = JSON.parse(config)
@@ -245,6 +245,6 @@ ColumnLayout {
     }
 
     Component.onCompleted: function() {
-        appProxy.getAppConfig()
+        AppProxy.getAppConfig()
     }
 }
