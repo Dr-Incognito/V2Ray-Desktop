@@ -117,6 +117,7 @@ ColumnLayout {
     }
 
     Component.onCompleted: function() {
+        AppProxy.getAppVersion()
         AppProxy.getOperatingSystem()
         AppProxy.getV2RayCoreVersion()
     }

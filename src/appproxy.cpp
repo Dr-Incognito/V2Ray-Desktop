@@ -133,6 +133,15 @@ QJsonArray AppProxy::getServers() {
   return servers;
 }
 
+QJsonObject AppProxy::getServer(QString serverName, bool forDuplicate) {
+  QJsonObject server = configurator.getServer(serverName);
+  if (forDuplicate) {
+    server.remove("serverName");
+  }
+  emit serverDInfoReady(QJsonDocument(server).toJson());
+  return server;
+}
+
 void AppProxy::setServerConnection(QString serverName, bool connected) {
   configurator.setServerConnection(serverName, connected);
   v2ray.restart();
@@ -145,12 +154,11 @@ void AppProxy::addV2RayServer(QString configString) {
   QJsonObject serverConfig = configDoc.object();
   // TODO: Check server config before saving
   // Save server config
-  qDebug() << getPrettyV2RayConfig(serverConfig);
   configurator.addServer(getPrettyV2RayConfig(serverConfig));
-  emit serversAdded("V2Ray");
+  emit serversChanged();
   qInfo() << QString("Add new V2Ray server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
-                    serverConfig["serverIp"].toString());
+                    serverConfig["serverAddr"].toString());
 }
 
 QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
@@ -200,7 +208,7 @@ QJsonObject AppProxy::getV2RayStreamSettingsConfig(
           {"path", QJsonArray{"/"}},
           {"headers",
            QJsonObject{
-             {"Host",
+             {"host",
               QJsonArray{"www.baidu.com", "www.bing.com", "www.163.com",
                          "www.netease.com", "www.qq.com", "www.tencent.com",
                          "www.taobao.com", "www.tmall.com",
@@ -244,7 +252,7 @@ QJsonObject AppProxy::getV2RayStreamSettingsConfig(
       "wsSettings",
       QJsonObject{
         {"path", serverConfig["networkPath"].toString()},
-        {"headers", QJsonObject{{"Host", serverConfig["serverAddr"]}}}});
+        {"headers", QJsonObject{{"host", serverConfig["serverAddr"]}}}});
   } else if (network == "http") {
     streamSettings.insert(
       "httpSettings",
@@ -261,8 +269,9 @@ QJsonObject AppProxy::getV2RayStreamSettingsConfig(
       QJsonObject{
         {"security", serverConfig["quicSecurity"].toString().toLower()},
         {"key", serverConfig["quicKey"].toString()},
-        {"header", serverConfig["packetHeader"].toString().toLower()},
-      });
+        {"header",
+         QJsonObject{
+           {"type", serverConfig["packetHeader"].toString().toLower()}}}});
   }
   return streamSettings;
 }
@@ -290,11 +299,10 @@ QJsonArray AppProxy::getRandomUserAgents(int n) {
 void AppProxy::addShadowsocksServer(QString configString) {
   QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject serverConfig = configDoc.object();
-  qDebug() << serverConfig;
   // TODO: Check server config before saving
   // Save server config
   configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
-  emit serversAdded("Shadowsocks");
+  emit serversChanged();
   qInfo() << QString("Add new Shadowsocks server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
@@ -321,10 +329,28 @@ void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {}
 
 void AppProxy::addServerConfigFile(QString configFilePath) {}
 
-void AppProxy::editServer(QString serverName, QString configString) {}
+void AppProxy::editServer(QString serverName,
+                          QString protocol,
+                          QString configString) {
+  QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
+  QJsonObject serverConfig = configDoc.object();
+  if (protocol == "vmess") {
+    serverConfig = getPrettyV2RayConfig(serverConfig);
+  } else if (protocol == "shadowsocks") {
+    serverConfig = getPrettyShadowsocksConfig(serverConfig);
+  }
+  bool isEdited = configurator.editServer(serverName, serverConfig);
+  if (isEdited > 0) {
+    emit serversChanged();
+  }
+  // Restart V2Ray Core
+  v2ray.restart();
+}
 
 void AppProxy::removeServer(QString serverName) {
   configurator.removeServer(serverName);
   qInfo() << QString("Server [Name=%1] have been removed.").arg(serverName);
   emit serversChanged();
+  // Restart V2Ray Core
+  v2ray.restart();
 }
