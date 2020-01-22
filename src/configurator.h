@@ -15,8 +15,8 @@ class Configurator : public QObject {
   static QString getAppLogFilePath();
   static QString getAppConfigFilePath();
   static QString getV2RayInstallDirPath();
-  static QString getV2RayLogFilePath(bool relative = false);
-  static QString getV2RayConfigFilePath(bool relative = false);
+  static QString getV2RayLogFilePath();
+  static QString getV2RayConfigFilePath();
   QJsonObject getAppConfig();
   QJsonObject getV2RayConfig();
   void setAppConfig(QJsonObject config);
