@@ -42,7 +42,7 @@ bool V2RayCore::start() {
     }
   }
   // Get latest configuration for V2Ray Core
-  Configurator configurator;
+  Configurator& configurator(Configurator::getInstance());
   QJsonObject v2RayConfig = configurator.getV2RayConfig();
   QFile configFile(V2RAY_CORE_CFG_FILE_PATH);
   configFile.open(QFile::WriteOnly);
@@ -109,7 +109,7 @@ bool V2RayCore::install() {
                     QFileDevice::ExeUser);
 
   // Save current V2Ray version to config.json
-  Configurator configurator;
+  Configurator& configurator(Configurator::getInstance());
   QJsonObject v2RayVersionConfig{{"v2rayCoreVersion", latestVersion}};
   configurator.setAppConfig(v2RayVersionConfig);
 

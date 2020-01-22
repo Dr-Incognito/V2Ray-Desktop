@@ -167,6 +167,12 @@ ColumnLayout {
             MenuItem {
                 id: menuItemConnect
                 text: qsTr("Connect")
+                onTriggered: function() {
+                    var serverName = menuItemServerName.text,
+                        connected = menuItemConnect.text === qsTr("Connect")
+
+                    appProxy.setServerConnection(serverName, connected)
+                }
             }
 
             MenuItem {
@@ -194,6 +200,11 @@ ColumnLayout {
             MenuItem {
                 id: menuItemDelete
                 text: qsTr("Delete")
+                onTriggered: function() {
+                    if (confirm(qsTr("Are you sure to continue?"))) {
+                        appProxy.removeServer(menuItemServerName.text)
+                    }
+                }
             }
         }
     }
@@ -1109,7 +1120,7 @@ ColumnLayout {
                 serverAddress = server["settings"]["vnext"][0]["address"]
                 serverPort = server["settings"]["vnext"][0]["port"]
                 serverName = server["serverName"] || serverAddress
-                status = server["autoConnect"] ? qsTr("Connected") : qsTr("Disconnected")
+                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
                 return [
                     {value: serverName},
                     {value: serverAddress + ":" + serverPort},
@@ -1121,7 +1132,7 @@ ColumnLayout {
                 serverAddress = server["settings"]["servers"][0]["address"]
                 serverPort = server["settings"]["servers"][0]["port"]
                 serverName = server["serverName"] || serverAddress
-                status = server["autoConnect"] ? qsTr("Connected") : qsTr("Disconnected")
+                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
                 return [
                     {value: serverName},
                     {value: serverAddress + ":" + serverPort},

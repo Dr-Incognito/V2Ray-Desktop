@@ -101,7 +101,7 @@ ColumnLayout {
 
     Timer {
         id: timer
-        interval: 2500
+        interval: 1000
         running: true
         repeat: true
         onTriggered: function() {

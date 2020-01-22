@@ -23,7 +23,24 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"v2rayCoreVersion", DEFAULT_V2RAY_CORE_VERSION},
 };
 
-Configurator::Configurator() {}
+Configurator::Configurator() { connectedServerNames = getAutoConnectServers(); }
+
+QStringList Configurator::getAutoConnectServers() {
+  QStringList autoConnectedServers;
+  QJsonArray servers = getServers();
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    if (server["autoConnect"].toBool() && server.contains("serverName")) {
+      autoConnectedServers.append(server["serverName"].toString());
+    }
+  }
+  return autoConnectedServers;
+}
+
+Configurator &Configurator::getInstance() {
+  static Configurator configuratorInstance;
+  return configuratorInstance;
+}
 
 QJsonObject Configurator::getAppConfig() {
   QJsonObject config = DEFAULT_APP_CONFIG;
@@ -79,7 +96,7 @@ QJsonObject Configurator::getV2RayConfig() {
        {"port", appConfig["serverPort"].toString()},
        {"settings", QJsonObject{{"udp", appConfig["enableUdp"].toBool()}}},
      }}},
-    {"outbounds", getAutoConnectServers()},
+    {"outbounds", getConnectedServers()},
     {"dns", QJsonObject{{"servers",
                          getPrettyDnsServers(appConfig["dns"].toString())}}},
     {"routing",
@@ -106,25 +123,18 @@ QJsonArray Configurator::getServers() {
   return servers;
 }
 
-QJsonArray Configurator::getAutoConnectServers() {
-  QJsonObject appConfig = getAppConfig();
-  int muxValue          = appConfig["mux"].toString().toInt();
-
+QJsonObject Configurator::getServer(QString serverName) {
   QJsonArray servers = getServers();
-  QJsonArray autoConnectServers;
+  QJsonObject server;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
-    if (server["autoConnect"].toBool()) {
-      server.remove("autoConnect");
-      if (muxValue > 0 && server["protocol"].toString() == "vmess") {
-        server["mux"] = QJsonObject{{"enabled", true}, {"mux", muxValue}};
-      }
-      autoConnectServers.append(server);
+    if (server.contains("serverName") &&
+        server["serverName"].toString() == serverName) {
+      server = (*itr).toObject();
+      break;
     }
   }
-  autoConnectServers.append(
-    QJsonObject{{"tag", "direct"}, {"protocol", "freedom"}});
-  return autoConnectServers;
+  return server;
 }
 
 int Configurator::addServer(QJsonObject serverConfig) {
@@ -163,6 +173,43 @@ int Configurator::removeServer(QString serverName) {
   servers.removeAt(serverIndex);
   setAppConfig(QJsonObject{{"servers", servers}});
   return serverIndex != -1;
+}
+
+QJsonArray Configurator::getConnectedServers() {
+  QJsonObject appConfig = getAppConfig();
+  int muxValue          = appConfig["mux"].toString().toInt();
+
+  QJsonArray servers = getServers();
+  QJsonArray connectedServers;
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    QString serverName =
+      server.contains("serverName") ? server["serverName"].toString() : "";
+
+    if (connectedServerNames.contains(serverName)) {
+      server.remove("autoConnect");
+      if (muxValue > 0 && server["protocol"].toString() == "vmess") {
+        server["mux"] = QJsonObject{{"enabled", true}, {"mux", muxValue}};
+      }
+      connectedServers.append(server);
+    }
+  }
+  connectedServers.append(
+    QJsonObject{{"tag", "direct"}, {"protocol", "freedom"}});
+  return connectedServers;
+}
+
+QStringList Configurator::getConnectedServerNames() {
+  return connectedServerNames;
+}
+
+void Configurator::setServerConnection(QString serverName, bool connected) {
+  int serverIndex = connectedServerNames.indexOf(serverName);
+  if (connected && serverIndex == -1) {
+    connectedServerNames.append(serverName);
+  } else if (!connected && serverIndex != -1) {
+    connectedServerNames.removeAt(serverIndex);
+  }
 }
 
 QJsonArray Configurator::getRules() {
