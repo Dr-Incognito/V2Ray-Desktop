@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QJsonDocument>
+#include <QCoreApplication>
 
 #include "constants.h"
 
@@ -43,33 +44,23 @@ Configurator &Configurator::getInstance() {
 }
 
 QString Configurator::getAppLogFilePath() {
-  return QDir(QDir::currentPath()).filePath(APP_LOG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath()).filePath(APP_LOG_FILE_NAME);
 }
 
 QString Configurator::getAppConfigFilePath() {
-  return QDir(QDir::currentPath()).filePath(APP_CFG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath()).filePath(APP_CFG_FILE_NAME);
 }
 
 QString Configurator::getV2RayInstallDirPath() {
-  return QDir(QDir::currentPath()).filePath(V2RAY_CORE_INSTALL_DIR);
+  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_INSTALL_DIR);
 }
 
-QString Configurator::getV2RayLogFilePath(bool relative) {
-  QString absolutePath =
-    QDir(QDir::currentPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
-  if (!relative) {
-    return absolutePath;
-  }
-  return V2RAY_CORE_LOG_FILE_NAME;
+QString Configurator::getV2RayLogFilePath() {
+  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
 }
 
-QString Configurator::getV2RayConfigFilePath(bool relative) {
-  QString absolutePath =
-    QDir(QDir::currentPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
-  if (!relative) {
-    return absolutePath;
-  }
-  return V2RAY_CORE_CFG_FILE_NAME;
+QString Configurator::getV2RayConfigFilePath() {
+  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
 }
 
 QJsonObject Configurator::getAppConfig() {
@@ -118,7 +109,7 @@ QJsonObject Configurator::getV2RayConfig() {
   QJsonObject appConfig = getAppConfig();
   QJsonObject v2RayConfig{
     {"log",
-     QJsonObject{{"loglevel", "info"}, {"error", getV2RayLogFilePath(true)}}},
+     QJsonObject{{"loglevel", "info"}, {"error", getV2RayLogFilePath()}}},
     {"inbounds",
      QJsonArray{QJsonObject{
        {"listen", appConfig["serverIp"].toString()},
