@@ -331,7 +331,7 @@ ColumnLayout {
                         ListElement { text: "Auto" }
                         ListElement { text: "None" }
                         ListElement { text: "AES-128-GCM" }
-                        ListElement { text: "CHACHA20-PLOY1305" }
+                        ListElement { text: "CHACHA20-POLY1305" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -681,7 +681,7 @@ ColumnLayout {
                     model: ListModel{
                         ListElement { text: "None" }
                         ListElement { text: "AES-128-GCM" }
-                        ListElement { text: "CHACHA20-PLOY1305" }
+                        ListElement { text: "CHACHA20-POLY1305" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -877,7 +877,7 @@ ColumnLayout {
                         ListElement { text: "CAST5-CFB" }
                         ListElement { text: "CHACHA20" }
                         ListElement { text: "CHACHA20-IETF" }
-                        ListElement { text: "CHACHA20-IETF-PLOY1305" }
+                        ListElement { text: "CHACHA20-IETF-POLY1305" }
                         ListElement { text: "DES-CFB" }
                         ListElement { text: "IDEA-CFB" }
                         ListElement { text: "RC4-MD5" }
@@ -1086,9 +1086,23 @@ ColumnLayout {
         }
 
         onServersChanged: function() {
-            buttonV2RayAddServer.enabled = true
-            buttonShadowsocksAddServer.enabled = true
             appProxy.getServers()
+        }
+
+        onServersAdded: function(addServerMethod) {
+            if (addServerMethod === "V2Ray") {
+                buttonV2RayAddServer.enabled = true
+            } else if (addServerMethod === "Shadowsocks") {
+                textShadowsocksServerName.text = ""
+                textShadowsocksServerAddr.text = ""
+                textShadowsocksServerPort.text = ""
+                checkboxShadowsocksAutoConnect.checked = false
+                comboShadowsocksEncryptionMethod.currentIndex = 0
+                textShadowsocksPassword.text = ""
+                buttonShadowsocksAddServer.enabled = true
+            }
+            appProxy.getServers()
+            popUpServer.close()
         }
     }
 

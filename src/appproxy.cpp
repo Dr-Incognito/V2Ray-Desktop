@@ -127,8 +127,8 @@ void AppProxy::addV2RayServer(QString configString) {
   // TODO: Check server config before saving
   // Save server config
   qDebug() << getPrettyV2RayConfig(serverConfig);
-  // configurator.addServer(getPrettyV2RayConfig(serverConfig));
-  // emit serversChanged();
+  configurator.addServer(getPrettyV2RayConfig(serverConfig));
+  emit serversAdded("V2Ray");
   qInfo() << QString("Add new V2Ray server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverIp"].toString());
@@ -136,7 +136,7 @@ void AppProxy::addV2RayServer(QString configString) {
 
 QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
   QJsonObject v2RayConfig{
-    {"autoConnect", serverConfig["serverConfig"].toBool()},
+    {"autoConnect", serverConfig["autoConnect"].toBool()},
     {"serverName", serverConfig["serverName"].toString()},
     {"protocol", "vmess"},
     {"settings",
@@ -275,7 +275,7 @@ void AppProxy::addShadowsocksServer(QString configString) {
   // TODO: Check server config before saving
   // Save server config
   configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
-  emit serversChanged();
+  emit serversAdded("Shadowsocks");
   qInfo() << QString("Add new Shadowsocks server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
@@ -284,7 +284,7 @@ void AppProxy::addShadowsocksServer(QString configString) {
 QJsonObject AppProxy::getPrettyShadowsocksConfig(
   const QJsonObject& serverConfig) {
   return QJsonObject{
-    {"autoConnect", serverConfig["serverConfig"].toBool()},
+    {"autoConnect", serverConfig["autoConnect"].toBool()},
     {"serverName", serverConfig["serverName"].toString()},
     {"protocol", "shadowsocks"},
     {"settings",
