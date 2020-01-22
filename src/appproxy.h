@@ -39,6 +39,7 @@ public slots:
     QString getLogs();
     void clearLogs();
     QJsonArray getServers();
+    void setServerConnection(QString serverName, bool connected);
     void addV2RayServer(QString configString);
     void addShadowsocksServer(QString configString);
     void addSubscriptionUrl(QString subsriptionUrl);
@@ -48,7 +49,7 @@ public slots:
 
 private:
     V2RayCore& v2ray;
-    Configurator configurator;
+    Configurator& configurator;
     QJsonObject getPrettyV2RayConfig(const QJsonObject &serverConfig);
     QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
     QJsonArray getRandomUserAgents(int n);

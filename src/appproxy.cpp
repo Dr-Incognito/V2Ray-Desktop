@@ -11,7 +11,9 @@
 
 #include "constants.h"
 
-AppProxy::AppProxy() : v2ray(V2RayCore::getInstance()) {}
+AppProxy::AppProxy()
+  : v2ray(V2RayCore::getInstance()),
+    configurator(Configurator::getInstance()) {}
 
 QString AppProxy::getAppVersion() {
   QString appVersion = QString("v%1.%2.%3")
@@ -116,9 +118,25 @@ void AppProxy::clearLogs() {
 }
 
 QJsonArray AppProxy::getServers() {
-  QJsonArray servers = configurator.getServers();
+  QJsonArray servers               = configurator.getServers();
+  QStringList connectedServerNames = configurator.getConnectedServerNames();
+
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    QString serverName =
+      server.contains("serverName") ? server["serverName"].toString() : "";
+    server["connected"] = connectedServerNames.contains(serverName);
+    *itr                = server;
+  }
   emit serversReady(QJsonDocument(servers).toJson());
   return servers;
+}
+
+void AppProxy::setServerConnection(QString serverName, bool connected) {
+  configurator.setServerConnection(serverName, connected);
+  v2ray.restart();
+  qInfo() << (connected ? "Connected to " : "Disconnected from ") << serverName;
+  emit serversChanged();
 }
 
 void AppProxy::addV2RayServer(QString configString) {
@@ -306,4 +324,6 @@ void AppProxy::editServer(QString serverName, QString configString) {}
 
 void AppProxy::removeServer(QString serverName) {
   configurator.removeServer(serverName);
+  qInfo() << QString("Server [Name=%1] have been removed.").arg(serverName);
+  emit serversChanged();
 }
