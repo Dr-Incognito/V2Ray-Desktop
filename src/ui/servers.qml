@@ -43,8 +43,7 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
-                popUpServer.height = layoutServer.height
-                popUpServer.width = layoutServer.width
+                layoutServer.resetPopUpServerFields("add")
                 popUpServer.open()
             }
         }
@@ -189,20 +188,24 @@ ColumnLayout {
             MenuItem {
                 id: menuItemEdit
                 text: qsTr("Edit")
+                onTriggered: function() {
+                    AppProxy.getServer(menuItemServerName.text, false)
+                }
             }
 
             MenuItem {
                 id: menuItemDuplicate
                 text: qsTr("Duplicate")
+                onTriggered: function() {
+                    AppProxy.getServer(menuItemServerName.text, true)
+                }
             }
 
             MenuItem {
                 id: menuItemDelete
                 text: qsTr("Delete")
                 onTriggered: function() {
-                    if (confirm(qsTr("Are you sure to continue?"))) {
-                        AppProxy.removeServer(menuItemServerName.text)
-                    }
+                    AppProxy.removeServer(menuItemServerName.text)
                 }
             }
         }
@@ -210,12 +213,16 @@ ColumnLayout {
 
     Popup {
         id: popUpServer
-        modal: true
-        focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        height: parent.height
+        focus: true
+        modal: true
+        width: parent.width
         background: Rectangle {
             color: "#2e3e4e"
         }
+        // The variable is used for saving the old name of server before editing
+        property var editServerName
 
         ColumnLayout {
             anchors.fill: parent
@@ -224,6 +231,14 @@ ColumnLayout {
 
             RowLayout {
                 Label {
+                    id: labelServerInformation
+                    text: qsTr("Server Information")
+                    color: "white"
+                    font.pixelSize: 20
+                }
+
+                Label {
+                    id: labelAddServerMethod
                     text: qsTr("Add new servers by ")
                     color: "white"
                 }
@@ -392,11 +407,13 @@ ColumnLayout {
                     id: comboV2RaySecurity
                     Layout.minimumWidth: 180
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: "Auto" }
-                        ListElement { text: "None" }
-                        ListElement { text: "AES-128-GCM" }
-                        ListElement { text: "CHACHA20-POLY1305" }
+                        ListElement { text: "Auto"; value: "auto" }
+                        ListElement { text: "None"; value: "none" }
+                        ListElement { text: "AES-128-GCM"; value: "aes-128-gcm" }
+                        ListElement { text: "CHACHA20-POLY1305"; value: "chacha20-poly1305" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -517,9 +534,11 @@ ColumnLayout {
                 ComboBox {
                     id: comboV2RayNetworkSecurity
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: "None" }
-                        ListElement { text: "TLS" }
+                        ListElement { text: "None"; value: "none" }
+                        ListElement { text: "TLS"; value: "tls" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -553,9 +572,11 @@ ColumnLayout {
                     id: comboV2RayTcpHeaderType
                     Layout.columnSpan: 3
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: qsTr("None") }
-                        ListElement { text: qsTr("HTTP") }
+                        ListElement { text: "None"; value: "none" }
+                        ListElement { text: "HTTP"; value: "http" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -743,10 +764,12 @@ ColumnLayout {
                 ComboBox {
                     id: comboV2RayQuicSecurity
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: "None" }
-                        ListElement { text: "AES-128-GCM" }
-                        ListElement { text: "CHACHA20-POLY1305" }
+                        ListElement { text: "None"; value: "none" }
+                        ListElement { text: "AES-128-GCM"; value: "aes-128-gcm" }
+                        ListElement { text: "CHACHA20-POLY1305"; value: "chacha20-poly1305" }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -819,7 +842,7 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonV2RayAddServer.enabled = false
-                        AppProxy.addV2RayServer(JSON.stringify({
+                        var server = {
                             "serverName": textV2RayServerName.text,
                             "serverAddr": textV2RayServerAddr.text,
                             "serverPort": textV2RayServerPort.text,
@@ -845,7 +868,12 @@ ColumnLayout {
                             "quicSecurity": comboV2RayQuicSecurity.currentText,
                             "packetHeader": comboV2RayPacketHeader.currentText,
                             "quicKey": textV2RayQuicKey.text
-                        }))
+                        }
+                        if (buttonV2RayAddServer.text === qsTr("Add Server")) {
+                            AppProxy.addV2RayServer(JSON.stringify(server))
+                        } else {
+                            AppProxy.editServer(popUpServer.editServerName, "vmess", JSON.stringify(server))
+                        }
                     }
                 }
             }
@@ -990,14 +1018,19 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonShadowsocksAddServer.enabled = false
-                        AppProxy.addShadowsocksServer(JSON.stringify({
+                        var server = {
                             "serverName": textShadowsocksServerName.text,
                             "serverAddr": textShadowsocksServerAddr.text,
                             "serverPort": textShadowsocksServerPort.text,
                             "autoConnect": checkboxShadowsocksAutoConnect.checked,
                             "encryption": comboShadowsocksEncryptionMethod.currentText,
                             "password": textShadowsocksPassword.text
-                        }))
+                        }
+                        if (buttonShadowsocksAddServer.text === qsTr("Add Server")) {
+                            AppProxy.addShadowsocksServer(JSON.stringify(server))
+                        } else {
+                            AppProxy.editServer(popUpServer.editServerName, "shadowsocks", JSON.stringify(server))
+                        }
                     }
                 }
             }
@@ -1152,26 +1185,145 @@ ColumnLayout {
 
         onServersChanged: function() {
             AppProxy.getServers()
+            popUpServer.close()
         }
 
-        onServersAdded: function(addServerMethod) {
-            if (addServerMethod === "V2Ray") {
-                buttonV2RayAddServer.enabled = true
-            } else if (addServerMethod === "Shadowsocks") {
-                textShadowsocksServerName.text = ""
-                textShadowsocksServerAddr.text = ""
-                textShadowsocksServerPort.text = ""
-                checkboxShadowsocksAutoConnect.checked = false
-                comboShadowsocksEncryptionMethod.currentIndex = 0
-                textShadowsocksPassword.text = ""
-                buttonShadowsocksAddServer.enabled = true
+        onServerDInfoReady: function(server) {
+            server = JSON.parse(server)
+            layoutServer.resetPopUpServerFields("serverName" in server ? "edit" : "add")
+
+            // Set correct form in pop up window
+            var protocol = server["protocol"]
+            if (protocol === "vmess") {
+                comboAddServerMethod.currentIndex = 0
+                textV2RayServerName.text = server["serverName"] || ""
+                textV2RayServerAddr.text = server["settings"]["vnext"][0]["address"]
+                textV2RayServerPort.text = server["settings"]["vnext"][0]["port"]
+                checkboxV2RayAutoConnect.checked = server["autoConnect"]
+                textV2RayId.text = server["settings"]["vnext"][0]["users"][0]["id"]
+                textV2RayAlterId.text = server["settings"]["vnext"][0]["users"][0]["alterId"]
+                textV2RayLevel.text = server["settings"]["vnext"][0]["users"][0]["level"]
+                comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(
+                        server["settings"]["vnext"][0]["users"][0]["security"])
+                comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(
+                        server["streamSettings"]["network"])
+                comboV2RayNetworkSecurity.currentIndex =
+                    comboV2RayNetworkSecurity.indexOfValue(
+                        server["streamSettings"]["security"])
+                checkboxV2RayAllowInsecure.checked = server["streamSettings"]["tlsSettings"]["allowInsecure"]
+
+                if (server["streamSettings"]["network"] === "tcp") {
+                    comboV2RayTcpHeaderType.currentIndex =
+                        comboV2RayTcpHeaderType.indexOfValue(
+                            server["streamSettings"]["tcpSettings"]["type"])
+                } else if (server["streamSettings"]["network"] === "kcp") {
+                    textV2RayKcpMtu.text = server["streamSettings"]["kcpSettings"]["mtu"]
+                    textV2RayKcpTti.text = server["streamSettings"]["kcpSettings"]["tti"]
+                    textV2RayKcpUplinkCapcity.text = server["streamSettings"]["kcpSettings"]["uplinkCapacity"]
+                    textV2RayKcpDownlinkCapcity.text = server["streamSettings"]["kcpSettings"]["downlinkCapacity"]
+                    textV2RayKcpReadBufferSize.text = server["streamSettings"]["kcpSettings"]["readBufferSize"]
+                    textV2RayKcpWriteBufferSize.text = server["streamSettings"]["kcpSettings"]["writeBufferSize"]
+                    checkboxV2RayKcpCongestion.checked = server["streamSettings"]["kcpSettings"]["congestion"]
+                    comboV2RayPacketHeader.currentIndex = comboV2RayPacketHeader.indexOfValue(
+                        server["streamSettings"]["kcpSettings"]["header"]["type"])
+                } else if (server["streamSettings"]["network"] === "ws") {
+                    textV2RayNetworktHost.text =
+                        server["streamSettings"]["wsSettings"]["headers"]["host"]
+                    textV2RayNetworkPath.text = server["streamSettings"]["wsSettings"]["path"]
+                } else if (server["streamSettings"]["network"] === "http") {
+                    textV2RayNetworktHost.text =
+                        server["streamSettings"]["wsSettings"]["headers"]["host"][0]
+                    textV2RayNetworkPath.text = server["streamSettings"]["wsSettings"]["path"]
+                } else if (server["streamSettings"]["network"] === "domainsocket") {
+                    textV2RayQuicKey.text = server["streamSettings"]["dsSettings"]["path"]
+                } else if (server["streamSettings"]["network"] === "quic") {
+                    comboV2RayQuicSecurity.currentIndex = comboV2RayQuicSecurity.indexOfValue(
+                        server["streamSettings"]["quicSettings"]["security"])
+                    comboV2RayPacketHeader.currentIndex = comboV2RayPacketHeader.indexOfValue(
+                        server["streamSettings"]["quicSettings"]["header"])
+                    textV2RayQuicKey.text = server["streamSettings"]["quicSettings"]["key"]
+                }
+            } else if (protocol === "shadowsocks") {
+                comboAddServerMethod.currentIndex = 1
+                textShadowsocksServerName.text = server["serverName"] || ""
+                textShadowsocksServerAddr.text = server["settings"]["servers"][0]["address"]
+                textShadowsocksServerPort.text = server["settings"]["servers"][0]["port"]
+                checkboxShadowsocksAutoConnect.checked = server["autoConnect"]
+                comboShadowsocksEncryptionMethod.currentIndex =
+                    comboShadowsocksEncryptionMethod.find(
+                        server["settings"]["servers"][0]["method"].toUpperCase())
+                textShadowsocksPassword.text = server["settings"]["servers"][0]["password"]
             }
-            AppProxy.getServers()
-            popUpServer.close()
+            popUpServer.editServerName = server["serverName"] || ""
+            popUpServer.open()
         }
     }
 
     Component.onCompleted: function() {
         AppProxy.getServers()
+    }
+
+    function resetPopUpServerFields(propose) {
+        // Clear text fields for V2Ray
+        textV2RayServerName.text = ""
+        textV2RayServerAddr.text = ""
+        textV2RayServerPort.text = ""
+        checkboxV2RayAutoConnect.checked = false
+        textV2RayId.text = ""
+        textV2RayAlterId.text = ""
+        textV2RayLevel.text = ""
+        comboV2RaySecurity.currentIndex = 0
+        comboV2RayNetwork.currentIndex = 0
+        comboV2RayNetworkSecurity.currentIndex = 0
+        checkboxV2RayAllowInsecure.checked = false
+        comboV2RayTcpHeaderType.currentIndex = 0
+        textV2RayKcpMtu.text = ""
+        textV2RayKcpTti.text = ""
+        textV2RayKcpUplinkCapcity.text = ""
+        textV2RayKcpDownlinkCapcity.text = ""
+        textV2RayKcpReadBufferSize.text = ""
+        textV2RayKcpWriteBufferSize.text = ""
+        checkboxV2RayKcpCongestion.checked = false
+        textV2RayNetworktHost.text = ""
+        textV2RayNetworkPath.text = ""
+        textV2RayDomainSocketFilePath.text = ""
+        comboV2RayQuicSecurity.currentIndex = 0
+        comboV2RayPacketHeader.currentIndex = 0
+        textV2RayQuicKey.text = ""
+        // Clear text fields for Shadowsocks
+        textShadowsocksServerName.text = ""
+        textShadowsocksServerAddr.text = ""
+        textShadowsocksServerPort.text = ""
+        checkboxShadowsocksAutoConnect.checked = false
+        comboShadowsocksEncryptionMethod.currentIndex = 0
+        textShadowsocksPassword.text = ""
+        // Clear text fields for subscrption
+        textSubsriptionUrl.text = ""
+        // Clear text fields for config files
+        textConfigFilePath.text = ""
+        // Initialize controls for editing or creating
+        var i = 0,
+            popUpButtons = [
+                buttonV2RayAddServer, buttonShadowsocksAddServer,
+                buttonSubscriptionAddServer, buttonConfigAddServer
+            ]
+        for (i = 0; i < popUpButtons.length; ++ i) {
+            popUpButtons[i].enabled = true
+        }
+        if (propose === "edit") {
+            labelServerInformation.visible = true
+            labelAddServerMethod.visible = false
+            comboAddServerMethod.visible = false
+            for (i = 0; i < popUpButtons.length; ++ i) {
+                popUpButtons[i].text = "Edit Server"
+            }
+        } else {
+            labelServerInformation.visible = false
+            labelAddServerMethod.visible = true
+            comboAddServerMethod.visible = true
+            for (i = 0; i < popUpButtons.length; ++ i) {
+                popUpButtons[i].text = "Add Server"
+            }
+        }
     }
 }

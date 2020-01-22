@@ -27,8 +27,8 @@ class AppProxy : public QObject {
   void appConfigChanged();
   void logsReady(QString logs);
   void serversReady(QString servers);
+  void serverDInfoReady(QString server);
   void addServerError(QString errorMessage);
-  void serversAdded(QString addServerMethod);
   void serversChanged();
 
  public slots:
@@ -42,12 +42,13 @@ class AppProxy : public QObject {
   QString getLogs();
   void clearLogs();
   QJsonArray getServers();
+  QJsonObject getServer(QString serverName, bool forDuplicate = false);
   void setServerConnection(QString serverName, bool connected);
   void addV2RayServer(QString configString);
   void addShadowsocksServer(QString configString);
   void addSubscriptionUrl(QString subsriptionUrl);
   void addServerConfigFile(QString configFilePath);
-  void editServer(QString serverName, QString configString);
+  void editServer(QString serverName, QString protocol, QString configString);
   void removeServer(QString serverName);
 
  private:

@@ -55,7 +55,8 @@ QString Configurator::getV2RayInstallDirPath() {
 }
 
 QString Configurator::getV2RayLogFilePath(bool relative) {
-  QString absolutePath = QDir(QDir::currentPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
+  QString absolutePath =
+    QDir(QDir::currentPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
   if (!relative) {
     return absolutePath;
   }
@@ -63,7 +64,8 @@ QString Configurator::getV2RayLogFilePath(bool relative) {
 }
 
 QString Configurator::getV2RayConfigFilePath(bool relative) {
-  QString absolutePath = QDir(QDir::currentPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
+  QString absolutePath =
+    QDir(QDir::currentPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
   if (!relative) {
     return absolutePath;
   }
@@ -155,9 +157,9 @@ QJsonObject Configurator::getServer(QString serverName) {
   QJsonArray servers = getServers();
   QJsonObject server;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
-    QJsonObject server = (*itr).toObject();
-    if (server.contains("serverName") &&
-        server["serverName"].toString() == serverName) {
+    QJsonObject _server = (*itr).toObject();
+    if (_server.contains("serverName") &&
+        _server["serverName"].toString() == serverName) {
       server = (*itr).toObject();
       break;
     }
@@ -179,10 +181,12 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
     QJsonObject server = (*itr).toObject();
     if (server.contains("serverName") &&
         server["serverName"].toString() == serverName) {
+      qDebug() << serverName << server;
       *itr     = serverConfig;
       isEdited = true;
     }
   }
+  qDebug() << servers;
   setAppConfig(QJsonObject{{"servers", servers}});
   return isEdited;
 }
