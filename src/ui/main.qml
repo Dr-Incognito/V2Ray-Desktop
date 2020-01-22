@@ -42,18 +42,16 @@ ApplicationWindow {
                 text: qsTr("Turn V2Ray On")
                 onTriggered: function() {
                     if (triggerV2RayCore.text === qsTr("V2Ray Core Installing ...")) {
-                        appProxy.getV2RayCoreStatus()
+                        AppProxy.getV2RayCoreStatus()
                     } else if (triggerV2RayCore.text === qsTr("Turn V2Ray On")) {
-                        appProxy.setV2RayCoreRunning(true)
+                        AppProxy.setV2RayCoreRunning(true)
                     } else if (triggerV2RayCore.text === qsTr("Turn V2Ray Off")) {
-                        appProxy.setV2RayCoreRunning(false)
+                        AppProxy.setV2RayCoreRunning(false)
                     }
                 }
             }
 
-            MenuItem {
-                separator: true
-            }
+            MenuSeparator {}
 
             MenuItem {
                 id: menuItemPacMode
@@ -73,9 +71,7 @@ ApplicationWindow {
                 checkable: true
             }
 
-            MenuItem {
-                separator: true
-            }
+            MenuSeparator {}
 
             MenuItem {
                 text: qsTr("Preferences")
@@ -85,18 +81,26 @@ ApplicationWindow {
                 }
             }
 
-            MenuItem {
-                id: serversMenuItem
-                text: qsTr("Servers")
+            Menu {
+                id: menuItemServers
+                title: qsTr("Servers")
+
+                MenuItem {
+                    text: qsTr("Manage Servers")
+                    onTriggered: function() {
+                        mouseAreaServers.clicked(null)
+                        appWindow.show()
+                    }
+                }
+
+                MenuSeparator {}
             }
 
             MenuItem {
                 text: qsTr("Scan QR Code on the Screen")
             }
 
-            MenuItem {
-                separator: true
-            }
+            MenuSeparator {}
 
             MenuItem {
                 text: qsTr("Logs")
@@ -197,6 +201,7 @@ ApplicationWindow {
                     y: 40
 
                     MouseArea {
+                        id: mouseAreaServers
                         width: parent.width
                         height: parent.height
 
@@ -405,8 +410,8 @@ ApplicationWindow {
             }
         }
 
-        AppProxy {
-            id: appProxy
+        Connections {
+            target: AppProxy
 
             function updateProxyModeChecked(proxyMode) {
                 menuItemPacMode.checked = false
@@ -422,6 +427,9 @@ ApplicationWindow {
                 }
             }
 
+            function updateServerList(servers) {
+            }
+
             onAppVersionReady: function(appVersion) {
                 appName.text = qsTr("V2Ray Desktop") + " " + appVersion
             }
@@ -429,6 +437,7 @@ ApplicationWindow {
             onAppConfigReady: function(config) {
                 config = JSON.parse(config)
                 updateProxyModeChecked(config["proxyMode"])
+                updateServerList(config["servers"])
             }
 
             onV2RayCoreStatusReady: function(v2RayCoreStatus) {
@@ -454,10 +463,10 @@ ApplicationWindow {
 
         Component.onCompleted: {
             // Get App Version
-            appProxy.getAppVersion()
+            AppProxy.getAppVersion()
             // Get App Config
-            appProxy.getAppConfig()
+            AppProxy.getAppConfig()
             // Start V2Ray Core Automatically
-            appProxy.setV2RayCoreRunning(true)
+            AppProxy.setV2RayCoreRunning(true)
         }
 }

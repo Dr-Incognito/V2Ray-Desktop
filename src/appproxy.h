@@ -3,6 +3,7 @@
 
 #include <QJsonObject>
 #include <QObject>
+#include <QQmlEngine>
 #include <QString>
 
 #include "configurator.h"
@@ -10,8 +11,10 @@
 
 class AppProxy: public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY(AppProxy)
+
 public:
-    AppProxy();
+    AppProxy(QObject* parent = 0);
 
 signals:
     void appVersionReady(QString appVersion);

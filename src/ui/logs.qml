@@ -91,8 +91,8 @@ ColumnLayout {
         }
     }
 
-    AppProxy {
-        id: appProxy
+    Connections {
+        target: AppProxy
 
         onLogsReady: function(logs) {
             textLogs.text = logs
@@ -105,11 +105,11 @@ ColumnLayout {
         running: true
         repeat: true
         onTriggered: function() {
-            appProxy.getLogs()
+            AppProxy.getLogs()
         }
     }
 
     Component.onCompleted: function() {
-        appProxy.getLogs()
+        AppProxy.getLogs()
     }
 }

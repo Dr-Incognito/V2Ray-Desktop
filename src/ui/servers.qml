@@ -171,7 +171,7 @@ ColumnLayout {
                     var serverName = menuItemServerName.text,
                         connected = menuItemConnect.text === qsTr("Connect")
 
-                    appProxy.setServerConnection(serverName, connected)
+                    AppProxy.setServerConnection(serverName, connected)
                 }
             }
 
@@ -202,7 +202,7 @@ ColumnLayout {
                 text: qsTr("Delete")
                 onTriggered: function() {
                     if (confirm(qsTr("Are you sure to continue?"))) {
-                        appProxy.removeServer(menuItemServerName.text)
+                        AppProxy.removeServer(menuItemServerName.text)
                     }
                 }
             }
@@ -820,7 +820,7 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonV2RayAddServer.enabled = false
-                        appProxy.addV2RayServer(JSON.stringify({
+                        AppProxy.addV2RayServer(JSON.stringify({
                             "serverName": textV2RayServerName.text,
                             "serverAddr": textV2RayServerAddr.text,
                             "serverPort": textV2RayServerPort.text,
@@ -991,7 +991,7 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonShadowsocksAddServer.enabled = false
-                        appProxy.addShadowsocksServer(JSON.stringify({
+                        AppProxy.addShadowsocksServer(JSON.stringify({
                             "serverName": textShadowsocksServerName.text,
                             "serverAddr": textShadowsocksServerAddr.text,
                             "serverPort": textShadowsocksServerPort.text,
@@ -1111,8 +1111,8 @@ ColumnLayout {
         }
     }
 
-    AppProxy {
-        id: appProxy
+    Connections {
+        target: AppProxy
 
         function getServerPrettyInformation(server) {
             var serverAddress, serverPort, serverName, status
@@ -1152,7 +1152,7 @@ ColumnLayout {
         }
 
         onServersChanged: function() {
-            appProxy.getServers()
+            AppProxy.getServers()
         }
 
         onServersAdded: function(addServerMethod) {
@@ -1167,12 +1167,12 @@ ColumnLayout {
                 textShadowsocksPassword.text = ""
                 buttonShadowsocksAddServer.enabled = true
             }
-            appProxy.getServers()
+            AppProxy.getServers()
             popUpServer.close()
         }
     }
 
     Component.onCompleted: function() {
-        appProxy.getServers()
+        AppProxy.getServers()
     }
 }
