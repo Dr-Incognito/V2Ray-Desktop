@@ -25,6 +25,7 @@ signals:
     void logsReady(QString logs);
     void serversReady(QString servers);
     void addServerError(QString errorMessage);
+    void serversAdded(QString addServerMethod);
     void serversChanged();
 
 public slots:
