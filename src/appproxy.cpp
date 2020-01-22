@@ -82,8 +82,8 @@ void AppProxy::saveAppConfig(QString configString) {
 }
 
 QString AppProxy::getLogs() {
-  QFile appLogFile(APP_LOG_FILE_PATH);
-  QFile v2RayLogFile(V2RAY_CORE_LOG_FILE_PATH);
+  QFile appLogFile(Configurator::getAppLogFilePath());
+  QFile v2RayLogFile(Configurator::getV2RayLogFilePath());
   QStringList logs;
   // Read the app and V2Ray logs
   if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -108,8 +108,8 @@ QString AppProxy::getLogs() {
 }
 
 void AppProxy::clearLogs() {
-  QFile appLogFile(APP_LOG_FILE_PATH);
-  QFile v2RayLogFile(V2RAY_CORE_LOG_FILE_PATH);
+  QFile appLogFile(Configurator::getAppLogFilePath());
+  QFile v2RayLogFile(Configurator::getV2RayLogFilePath());
   if (appLogFile.exists()) {
     appLogFile.resize(0);
   }

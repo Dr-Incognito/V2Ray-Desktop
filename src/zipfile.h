@@ -3,10 +3,9 @@
 
 #include <QString>
 
-class ZipFile
-{
-public:
-    static bool unzipFile(QString zipFilePath, QString destFolder);
+class ZipFile {
+ public:
+  static bool unzipFile(QString zipFilePath, QString destFolder);
 };
 
-#endif // ZIPFILE_H
+#endif  // ZIPFILE_H
