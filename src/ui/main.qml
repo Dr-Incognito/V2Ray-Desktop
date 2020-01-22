@@ -433,7 +433,9 @@ ApplicationWindow {
             onAppConfigReady: function(config) {
                 config = JSON.parse(config)
                 updateProxyModeChecked(config["proxyMode"])
-                updateServerList(config["servers"])
+                if ("servers" in config) {
+                    updateServerList(config["servers"])
+                }
             }
 
             onV2RayCoreStatusReady: function(v2RayCoreStatus) {
