@@ -121,8 +121,19 @@ ColumnLayout {
                                  color: "white"
                                  text: parent.text
                              }
-                             background: Rectangle {
-                                 color: "transparent"
+                             background: MouseArea {
+                                 anchors.fill: parent
+                                 acceptedButtons: Qt.RightButton
+                                 onClicked: function() {
+                                     var serverName = parent.parent.data[0].text,
+                                         isConnected = parent.parent.data[3].text === qsTr("Connected")
+
+                                     menuServer.x = parent.x + mouseX
+                                     menuServer.y = parent.y + mouseY
+                                     menuItemServerName.text = serverName
+                                     menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
+                                     menuServer.open()
+                                 }
                              }
                          }
                      }
@@ -141,6 +152,50 @@ ColumnLayout {
              ScrollIndicator.horizontal: ScrollIndicator { }
              ScrollIndicator.vertical: ScrollIndicator { }
          }
+
+         Menu {
+            id: menuServer
+            padding: 5
+
+            MenuItem {
+                id: menuItemServerName
+                enabled: false
+            }
+
+            MenuSeparator { }
+
+            MenuItem {
+                id: menuItemConnect
+                text: qsTr("Connect")
+            }
+
+            MenuItem {
+                id: menuItemTestLatency
+                text: qsTr("Test Latency")
+            }
+
+            MenuItem {
+                id: menuItemTestAllLatency
+                text: qsTr("Test All Latency")
+            }
+
+            MenuSeparator { }
+
+            MenuItem {
+                id: menuItemEdit
+                text: qsTr("Edit")
+            }
+
+            MenuItem {
+                id: menuItemDuplicate
+                text: qsTr("Duplicate")
+            }
+
+            MenuItem {
+                id: menuItemDelete
+                text: qsTr("Delete")
+            }
+        }
     }
 
     Popup {

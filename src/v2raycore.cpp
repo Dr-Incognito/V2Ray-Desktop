@@ -51,6 +51,10 @@ bool V2RayCore::start() {
   QStringList arguments;
   arguments << "--config" << V2RAY_CORE_CFG_FILE_PATH;
   v2rayProcess->start(v2RayExecFilePath, arguments);
+  // qDebug() << v2rayProcess->waitForFinished();
+  qDebug() << "After wait for started";
+  qDebug() << v2rayProcess->state();
+  qDebug() << v2rayProcess->exitStatus();
   return true;
 }
 
