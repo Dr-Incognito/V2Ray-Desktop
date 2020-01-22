@@ -1,5 +1,5 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.9
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import Qt.labs.platform 1.1
 
 import com.v2ray.desktop.AppProxy 1.0
@@ -81,19 +81,13 @@ ApplicationWindow {
                 }
             }
 
-            Menu {
+            MenuItem {
                 id: menuItemServers
-                title: qsTr("Servers")
-
-                MenuItem {
-                    text: qsTr("Manage Servers")
-                    onTriggered: function() {
-                        mouseAreaServers.clicked(null)
-                        appWindow.show()
-                    }
+                text: qsTr("Servers")
+                onTriggered: function() {
+                    mouseAreaServers.clicked(null)
+                    appWindow.show()
                 }
-
-                MenuSeparator {}
             }
 
             MenuItem {
@@ -428,6 +422,8 @@ ApplicationWindow {
             }
 
             function updateServerList(servers) {
+                for (var i = 0; i < servers.length; ++ i) {
+                }
             }
 
             onAppVersionReady: function(appVersion) {
@@ -458,6 +454,14 @@ ApplicationWindow {
                         triggerV2RayCore.text = qsTr("Turn V2Ray On")
                     }
                 }
+            }
+
+            onServersChanged: function() {
+                AppProxy.getServers()
+            }
+
+            onServersReady: function(servers) {
+                updateServerList(servers)
             }
         }
 

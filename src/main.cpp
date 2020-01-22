@@ -29,12 +29,10 @@ void messageHandler(QtMsgType msgType,
     default: break;
   }
   if (msgType != QtDebugMsg) {
-    QFile logFile(APP_LOG_FILE_PATH);
+    QFile logFile(Configurator::getAppLogFilePath());
     logFile.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream logTextStream(&logFile);
-    if (dt.size()) {
-      logTextStream << logMessage.arg(dt, msgTypeStr, msg) << endl;
-    }
+    logTextStream << logMessage.arg(dt, msgTypeStr, msg) << endl;
   } else {
     QTextStream(stdout) << logMessage.arg(dt, msgTypeStr, msg) << endl;
   }

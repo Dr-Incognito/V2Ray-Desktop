@@ -42,9 +42,37 @@ Configurator &Configurator::getInstance() {
   return configuratorInstance;
 }
 
+QString Configurator::getAppLogFilePath() {
+  return QDir(QDir::currentPath()).filePath(APP_LOG_FILE_NAME);
+}
+
+QString Configurator::getAppConfigFilePath() {
+  return QDir(QDir::currentPath()).filePath(APP_CFG_FILE_NAME);
+}
+
+QString Configurator::getV2RayInstallDirPath() {
+  return QDir(QDir::currentPath()).filePath(V2RAY_CORE_INSTALL_DIR);
+}
+
+QString Configurator::getV2RayLogFilePath(bool relative) {
+  QString absolutePath = QDir(QDir::currentPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
+  if (!relative) {
+    return absolutePath;
+  }
+  return V2RAY_CORE_LOG_FILE_NAME;
+}
+
+QString Configurator::getV2RayConfigFilePath(bool relative) {
+  QString absolutePath = QDir(QDir::currentPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
+  if (!relative) {
+    return absolutePath;
+  }
+  return V2RAY_CORE_CFG_FILE_NAME;
+}
+
 QJsonObject Configurator::getAppConfig() {
   QJsonObject config = DEFAULT_APP_CONFIG;
-  QFile appCfgFile(APP_CFG_FILE_PATH);
+  QFile appCfgFile(getAppConfigFilePath());
   if (appCfgFile.exists() &&
       appCfgFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QJsonDocument configDoc = QJsonDocument::fromJson(appCfgFile.readAll());
@@ -79,7 +107,7 @@ void Configurator::setAppConfig(QJsonObject config) {
     }
   }
   // Save config to file
-  QFile configFile(APP_CFG_FILE_PATH);
+  QFile configFile(getAppConfigFilePath());
   configFile.open(QFile::WriteOnly);
   configFile.write(QJsonDocument(_config).toJson());
 }
@@ -88,12 +116,12 @@ QJsonObject Configurator::getV2RayConfig() {
   QJsonObject appConfig = getAppConfig();
   QJsonObject v2RayConfig{
     {"log",
-     QJsonObject{{"loglevel", "info"}, {"error", V2RAY_CORE_LOG_FILE_PATH}}},
+     QJsonObject{{"loglevel", "info"}, {"error", getV2RayLogFilePath(true)}}},
     {"inbounds",
      QJsonArray{QJsonObject{
        {"listen", appConfig["serverIp"].toString()},
        {"protocol", appConfig["serverProtocol"].toString().toLower()},
-       {"port", appConfig["serverPort"].toString()},
+       {"port", appConfig["serverPort"].toString().toInt()},
        {"settings", QJsonObject{{"udp", appConfig["enableUdp"].toBool()}}},
      }}},
     {"outbounds", getConnectedServers()},

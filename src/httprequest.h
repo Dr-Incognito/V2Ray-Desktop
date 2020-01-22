@@ -5,10 +5,10 @@
 #include <QString>
 
 class HttpRequest : public QObject {
-    Q_OBJECT
-public:
-    HttpRequest();
-    static QByteArray get(QString url);
+  Q_OBJECT
+ public:
+  HttpRequest();
+  static QByteArray get(QString url);
 };
 
-#endif // HTTPREQUEST_H
+#endif  // HTTPREQUEST_H

@@ -13,7 +13,7 @@
 #include "zipfile.h"
 
 V2RayCore::V2RayCore() {
-  v2RayInstallFolderPath = QDir(QDir::currentPath()).filePath("v2ray-core");
+  QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
 #if defined(Q_OS_WIN)
   v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
   v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl.exe");
@@ -27,12 +27,17 @@ V2RayCore::V2RayCore() {
     v2RayInstallFolder.mkpath(".");
   }
   // Initialize QProcess
-  v2rayProcess = new QProcess(this);
+  v2rayProcess = new QProcess();
 }
 
 V2RayCore& V2RayCore::getInstance() {
   static V2RayCore v2RayCoreInstance;
   return v2RayCoreInstance;
+}
+
+V2RayCore::~V2RayCore() {
+  v2rayProcess->close();
+  delete v2rayProcess;
 }
 
 bool V2RayCore::start() {
@@ -44,18 +49,23 @@ bool V2RayCore::start() {
   // Get latest configuration for V2Ray Core
   Configurator& configurator(Configurator::getInstance());
   QJsonObject v2RayConfig = configurator.getV2RayConfig();
-  QFile configFile(V2RAY_CORE_CFG_FILE_PATH);
+  QString configFilePath  = Configurator::getV2RayConfigFilePath();
+  QFile configFile(Configurator::getV2RayConfigFilePath());
   configFile.open(QFile::WriteOnly);
   configFile.write(QJsonDocument(v2RayConfig).toJson());
+  configFile.flush();
+
   // Start V2Ray Core
   QStringList arguments;
-  arguments << "--config" << V2RAY_CORE_CFG_FILE_PATH;
+  arguments << "-config" << configFilePath;
   v2rayProcess->start(v2RayExecFilePath, arguments);
-  // qDebug() << v2rayProcess->waitForFinished();
-  qDebug() << "After wait for started";
-  qDebug() << v2rayProcess->state();
-  qDebug() << v2rayProcess->exitStatus();
-  return true;
+  v2rayProcess->waitForFinished(500);
+  int exitCode = v2rayProcess->exitCode();
+  if (exitCode != 0) {
+    qCritical() << "Failed to start V2Ray Core.";
+    qCritical() << v2rayProcess->readAllStandardOutput();
+  }
+  return exitCode == 0;
 }
 
 bool V2RayCore::stop() {
@@ -100,6 +110,7 @@ bool V2RayCore::install() {
   v2RayZipFile.close();
 
   // Unzip the file and make v2ray executable
+  QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
   ZipFile::unzipFile(v2rayZipFilePath, v2RayInstallFolderPath);
   QFile(v2RayExecFilePath)
     .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
@@ -133,7 +144,6 @@ QString V2RayCore::getLatestVersion() {
   QJsonObject latestRelease;
 
   if (!releaseJsonStr.size()) {
-    qDebug() << "releaseJsonStr.size()" << releaseJsonStr.size();
     return DEFAULT_V2RAY_CORE_VERSION;
   }
 
