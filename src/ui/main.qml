@@ -57,18 +57,27 @@ ApplicationWindow {
                 id: menuItemPacMode
                 text: qsTr("PAC Mode")
                 checkable: true
+                onTriggered: function() {
+                  AppProxy.setSystemProxyMode("pac")
+                }
             }
 
             MenuItem {
                 id: menuItemGlobalMode
                 text: qsTr("Global Mode")
                 checkable: true
+                onTriggered: function() {
+                  AppProxy.setSystemProxyMode("global")
+                }
             }
 
             MenuItem {
                 id: menuItemManualMode
                 text: qsTr("Manual Mode")
                 checkable: true
+                onTriggered: function() {
+                  AppProxy.setSystemProxyMode("manual")
+                }
             }
 
             MenuSeparator {}
@@ -412,11 +421,11 @@ ApplicationWindow {
                 menuItemGlobalMode.checked = false
                 menuItemManualMode.checked = false
 
-                if (proxyMode === "PAC Mode") {
+                if (proxyMode === "pac") {
                     menuItemPacMode.checked = true
-                } else if (proxyMode === "Global Mode") {
+                } else if (proxyMode === "global") {
                     menuItemGlobalMode.checked = true
-                } else if (proxyMode === "Manual Mode") {
+                } else if (proxyMode === "manual") {
                     menuItemManualMode.checked = true
                 }
             }
@@ -464,6 +473,10 @@ ApplicationWindow {
 
             onServersReady: function(servers) {
                 updateServerList(servers)
+            }
+
+            onProxyModeChanged: function(proxyMode) {
+                updateProxyModeChecked(proxyMode)
             }
         }
 
