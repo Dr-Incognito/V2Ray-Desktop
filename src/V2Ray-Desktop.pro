@@ -18,6 +18,7 @@ HEADERS += \
     appproxyworker.h \
     configurator.h \
     constants.h \
+    networkproxy.h \
     networkrequest.h \
     v2raycore.h \
     zipfile.h
@@ -27,6 +28,7 @@ SOURCES += \
     appproxyworker.cpp \
     configurator.cpp \
     main.cpp \
+    networkproxy.cpp \
     networkrequest.cpp \
     v2raycore.cpp \
     zipfile.cpp

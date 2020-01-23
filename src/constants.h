@@ -14,8 +14,9 @@
 #define V2RAY_CORE_CFG_FILE_NAME "v2ray-config.json"
 #define APP_LOG_FILE_NAME "v2ray-desktop.log"
 #define APP_CFG_FILE_NAME "v2ray-desktop-config.json"
+#define PAC_FILE_NAME "proxy.pac"
 
-#define TCP_PING_TIMEOUT 7500
+#define TCP_PING_TIMEOUT 2500
 
 #define DEFAULT_AUTO_START true
 #define DEFAULT_HIDE_WINDOW false

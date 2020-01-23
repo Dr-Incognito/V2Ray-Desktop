@@ -10,6 +10,7 @@
 #include <QSysInfo>
 
 #include "constants.h"
+#include "networkproxy.h"
 #include "networkrequest.h"
 
 AppProxy::AppProxy(QObject* parent)
@@ -30,6 +31,8 @@ AppProxy::AppProxy(QObject* parent)
 }
 
 AppProxy::~AppProxy() {
+  NetworkProxyHelper::resetSystemProxy();
+
   workerThread.quit();
   workerThread.wait();
 }
@@ -127,6 +130,32 @@ void AppProxy::clearLogs() {
   if (v2RayLogFile.exists()) {
     v2RayLogFile.resize(0);
   }
+}
+
+void AppProxy::getSystemProxyMode() {}
+
+void AppProxy::setSystemProxyMode(QString proxyMode) {
+  QJsonObject appConfig = configurator.getAppConfig();
+
+  // Set system proxy
+  NetworkProxy proxy;
+  proxy.host = "127.0.0.1";
+  NetworkProxyHelper::resetSystemProxy();
+  if (proxyMode == "global") {
+    QString protocol = appConfig["serverProtocol"].toString();
+    proxy.port       = appConfig["serverPort"].toString().toInt();
+    proxy.type       = protocol == "SOCKS" ? NetworkProxyType::SOCK_PROXY
+                                     : NetworkProxyType::HTTP_PROXY;
+  } else if (proxyMode == "pac") {
+    proxy.port = appConfig["pacPort"].toString().toInt();
+    proxy.url  = QString("http://%1:%2/%3")
+                  .arg(proxy.host, QString::number(proxy.port), PAC_FILE_NAME);
+  }
+  NetworkProxyHelper::setSystemProxy(proxy);
+  emit proxyModeChanged(proxyMode);
+
+  // Update app config
+  configurator.setAppConfig({{"proxyMode", proxyMode}});
 }
 
 void AppProxy::getServers() {

@@ -39,10 +39,12 @@ ColumnLayout {
             id: comboProxyMode
             Layout.columnSpan: 2
             Layout.fillWidth: true
+            textRole: "text"
+            valueRole: "value"
             model: ListModel{
-                ListElement { text: "PAC Mode" }
-                ListElement { text: "Global Mode" }
-                ListElement { text: "Manual Mode" }
+                ListElement { text: "PAC Mode"; value: "pac" }
+                ListElement { text: "Global Mode"; value: "global" }
+                ListElement { text: "Manual Mode"; value: "manual" }
             }
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
@@ -111,10 +113,11 @@ ColumnLayout {
             }
             onClicked: function() {
                 var config = {
-                    "proxyMode": comboProxyMode.currentText,
+                    "proxyMode": comboProxyMode.currentValue,
                     "gfwListUrl": textGfwListUrl.text
                 }
                 AppProxy.saveAppConfig(JSON.stringify(config))
+                AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
             }
         }
     }
@@ -141,12 +144,17 @@ ColumnLayout {
 
         onAppConfigReady: function(config) {
             config = JSON.parse(config)
-            comboProxyMode.currentIndex = comboProxyMode.find(config["proxyMode"])
+            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(config["proxyMode"])
             textGfwListUrl.text = config["gfwListUrl"]
             labelGfwLastUpdatedTime.text = config["gfwListLastUpdated"]
         }
+
         onAppConfigChanged: function() {
             messageDialog.open()
+        }
+
+        onProxyModeChanged: function(proxyMode) {
+            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(proxyMode)
         }
     }
 
