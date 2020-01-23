@@ -15,6 +15,8 @@
 #define APP_LOG_FILE_NAME "v2ray-desktop.log"
 #define APP_CFG_FILE_NAME "v2ray-desktop-config.json"
 
+#define TCP_PING_TIMEOUT 10000
+
 #define DEFAULT_AUTO_START true
 #define DEFAULT_HIDE_WINDOW false
 #define DEFAULT_AUTO_UPDATE true

@@ -66,13 +66,13 @@ ColumnLayout {
                      case 0:
                          return listViewServers.width * 0.25
                      case 1:
-                         return listViewServers.width * 0.3
+                         return listViewServers.width * 0.275
                      case 2:
                          return listViewServers.width * 0.175
                      case 3:
                          return listViewServers.width * 0.175
                      case 4:
-                         return listViewServers.width * 0.1
+                         return listViewServers.width * 0.125
                      default:
                          return 0
                  }
@@ -176,11 +176,21 @@ ColumnLayout {
             MenuItem {
                 id: menuItemTestLatency
                 text: qsTr("Test Latency")
+                onTriggered: function() {
+                    menuItemTestLatency.enabled = false
+                    menuItemTestAllLatency.enabled = false
+                    AppProxy.getServerLatency(menuItemServerName.text)
+                }
             }
 
             MenuItem {
                 id: menuItemTestAllLatency
                 text: qsTr("Test All Latency")
+                onTriggered: function() {
+                    menuItemTestLatency.enabled = false
+                    menuItemTestAllLatency.enabled = false
+                    AppProxy.getServerLatency()
+                }
             }
 
             MenuSeparator { }
@@ -1147,30 +1157,37 @@ ColumnLayout {
         target: AppProxy
 
         function getServerPrettyInformation(server) {
-            var serverAddress, serverPort, serverName, status
+            var serverAddress, serverPort, serverName, status, latency
             if (server["protocol"] === "vmess") {
                 serverAddress = server["settings"]["vnext"][0]["address"]
                 serverPort = server["settings"]["vnext"][0]["port"]
                 serverName = server["serverName"] || serverAddress
                 status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
+                latency = "latency" in server ?
+                            (server["latency"] === -1 ?
+                                 qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
+
                 return [
                     {value: serverName},
                     {value: serverAddress + ":" + serverPort},
                     {value: "V2Ray"},
                     {value: status},
-                    {value: "N/a"}
+                    {value: latency}
                 ]
             } else if (server["protocol"] === "shadowsocks") {
                 serverAddress = server["settings"]["servers"][0]["address"]
                 serverPort = server["settings"]["servers"][0]["port"]
                 serverName = server["serverName"] || serverAddress
                 status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
+                latency = "latency" in server ?
+                            (server["latency"] === -1 ?
+                                 qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
                 return [
                     {value: serverName},
                     {value: serverAddress + ":" + serverPort},
                     {value: "Shadowsocks"},
                     {value: status},
-                    {value: "N/a"}
+                    {value: latency}
                 ]
             }
         }
@@ -1181,6 +1198,22 @@ ColumnLayout {
             for (var i = 0; i < servers.length; ++ i) {
                 listModelServers.append({values: getServerPrettyInformation(servers[i])})
             }
+        }
+
+        onServerLatencyReady: function(serverLatency) {
+            serverLatency = JSON.parse(serverLatency)
+            // Refresh latency in server list
+            for (var i = 0; i < listModelServers.count; ++ i) {
+                var server = listModelServers.get(i),
+                    serverName = server.values.get(0).value
+
+                if (serverName in serverLatency) {
+                    var latency = serverLatency[serverName]
+                    server.values.set(4, {value: latency.toString() + " ms"})
+                }
+            }
+            menuItemTestLatency.enabled = true
+            menuItemTestAllLatency.enabled = true
         }
 
         onServersChanged: function() {

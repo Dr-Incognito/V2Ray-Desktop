@@ -1,14 +1,19 @@
-#include "httprequest.h"
+#include "networkrequest.h"
 
+#include <QDateTime>
 #include <QDebug>
 #include <QEventLoop>
+#include <QHostAddress>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSctpSocket>
 
-HttpRequest::HttpRequest() {}
+#include "constants.h"
 
-QByteArray HttpRequest::get(QString url) {
+NetworkRequest::NetworkRequest() {}
+
+QByteArray NetworkRequest::getUrl(QString url) {
   QNetworkAccessManager accessManager;
   QNetworkRequest request;
 
@@ -28,4 +33,12 @@ QByteArray HttpRequest::get(QString url) {
   networkReply->deleteLater();
   networkReply->manager()->deleteLater();
   return responseBytes;
+}
+
+int NetworkRequest::getLatency(QString host, int port) {
+  QTcpSocket socket;
+  QDateTime time = QDateTime::currentDateTime();
+  socket.connectToHost(host, port);
+  socket.waitForConnected(TCP_PING_TIMEOUT);
+  return time.msecsTo(QDateTime::currentDateTime());
 }

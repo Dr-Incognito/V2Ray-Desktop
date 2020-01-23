@@ -10,44 +10,41 @@
 #include <QSysInfo>
 
 #include "constants.h"
+#include "networkrequest.h"
 
 AppProxy::AppProxy(QObject* parent)
   : QObject(parent),
     v2ray(V2RayCore::getInstance()),
     configurator(Configurator::getInstance()) {}
 
-QString AppProxy::getAppVersion() {
+void AppProxy::getAppVersion() {
   QString appVersion = QString("v%1.%2.%3")
                          .arg(QString::number(APP_VERSION_MAJOR),
                               QString::number(APP_VERSION_MINOR),
                               QString::number(APP_VERSION_PATCH));
   emit appVersionReady(appVersion);
-  return appVersion;
 }
 
-QString AppProxy::getV2RayCoreVersion() {
-  QJsonObject appConfig    = getAppConfig();
+void AppProxy::getV2RayCoreVersion() {
+  QJsonObject appConfig    = configurator.getAppConfig();
   QString v2RayCoreVersion = appConfig["v2rayCoreVersion"].toString();
   emit v2RayCoreVersionReady(v2RayCoreVersion);
-  return v2RayCoreVersion;
 }
 
-QString AppProxy::getOperatingSystem() {
+void AppProxy::getOperatingSystem() {
   QString operatingSystem = QSysInfo::prettyProductName();
   emit operatingSystemReady(operatingSystem);
-  return operatingSystem;
 }
 
-QString AppProxy::getV2RayCoreStatus() {
+void AppProxy::getV2RayCoreStatus() {
   bool isInstalled = v2ray.isInstalled();
   bool isRunning   = v2ray.isRunning();
   QString v2rayStatus =
     isInstalled ? (isRunning ? "Running" : "Stopped") : "Not Installed";
   emit v2RayCoreStatusReady(v2rayStatus);
-  return v2rayStatus;
 }
 
-bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {
+void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
   bool isSuccessful = false;
   if (expectedRunning) {
     isSuccessful = v2ray.start();
@@ -60,13 +57,11 @@ bool AppProxy::setV2RayCoreRunning(bool expectedRunning) {
                  .arg(isSuccessful ? "success" : "failed");
     emit v2RayRunningStatusChanging(isSuccessful);
   }
-  return isSuccessful;
 }
 
-QJsonObject AppProxy::getAppConfig() {
+void AppProxy::getAppConfig() {
   QJsonObject appConfig = configurator.getAppConfig();
   emit appConfigReady(QJsonDocument(appConfig).toJson());
-  return appConfig;
 }
 
 void AppProxy::saveAppConfig(QString configString) {
@@ -81,7 +76,7 @@ void AppProxy::saveAppConfig(QString configString) {
   v2ray.restart();
 }
 
-QString AppProxy::getLogs() {
+void AppProxy::getLogs() {
   QFile appLogFile(Configurator::getAppLogFilePath());
   QFile v2RayLogFile(Configurator::getV2RayLogFilePath());
   QStringList logs;
@@ -104,7 +99,6 @@ QString AppProxy::getLogs() {
 
   QString _logs = logs.join('\n');
   emit logsReady(_logs);
-  return _logs;
 }
 
 void AppProxy::clearLogs() {
@@ -118,7 +112,7 @@ void AppProxy::clearLogs() {
   }
 }
 
-QJsonArray AppProxy::getServers() {
+void AppProxy::getServers() {
   QJsonArray servers               = configurator.getServers();
   QStringList connectedServerNames = configurator.getConnectedServerNames();
 
@@ -127,19 +121,57 @@ QJsonArray AppProxy::getServers() {
     QString serverName =
       server.contains("serverName") ? server["serverName"].toString() : "";
     server["connected"] = connectedServerNames.contains(serverName);
-    *itr                = server;
+    if (serverLatency.contains(serverName)) {
+      server["latency"] = serverLatency[serverName].toInt();
+    }
+    *itr = server;
   }
   emit serversReady(QJsonDocument(servers).toJson());
-  return servers;
 }
 
-QJsonObject AppProxy::getServer(QString serverName, bool forDuplicate) {
+void AppProxy::getServer(QString serverName, bool forDuplicate) {
   QJsonObject server = configurator.getServer(serverName);
   if (forDuplicate) {
     server.remove("serverName");
   }
   emit serverDInfoReady(QJsonDocument(server).toJson());
-  return server;
+}
+
+void AppProxy::getServerLatency(QString serverName) {
+  QJsonObject _serverLatency;
+  QJsonArray servers;
+  if (serverName.size()) {
+    servers.append(configurator.getServer(serverName));
+  } else {
+    servers = configurator.getServers();
+  }
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    QString serverName = server["serverName"].toString();
+    int latency =
+      NetworkRequest::getLatency(getServerAddr(server), getServerPort(server));
+    _serverLatency[serverName] = latency;
+    serverLatency[serverName]  = latency;
+  }
+  emit serverLatencyReady(QJsonDocument(_serverLatency).toJson());
+}
+
+QString AppProxy::getServerAddr(QJsonObject server) {
+  QString protocol     = server["protocol"].toString();
+  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
+  QJsonObject settings = server["settings"].toObject();
+  QJsonArray servers   = settings[keyName].toArray();
+  QJsonObject _server  = servers.at(0).toObject();
+  return _server["address"].toString();
+}
+
+int AppProxy::getServerPort(QJsonObject server) {
+  QString protocol     = server["protocol"].toString();
+  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
+  QJsonObject settings = server["settings"].toObject();
+  QJsonArray servers   = settings[keyName].toArray();
+  QJsonObject _server  = servers.at(0).toObject();
+  return _server["port"].toInt();
 }
 
 void AppProxy::setServerConnection(QString serverName, bool connected) {
