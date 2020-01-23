@@ -51,7 +51,7 @@ class AppProxy : public QObject {
   void getLogs();
   void clearLogs();
   void getSystemProxyMode();
-  void setSystemProxyMode(QString proxyMode);
+  void setSystemProxyMode(QString proxyMode = "");
   void getServers();
   void getServer(QString serverName, bool forDuplicate = false);
   void getServerLatency(QString serverName = "");

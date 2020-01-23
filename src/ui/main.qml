@@ -485,7 +485,9 @@ ApplicationWindow {
             AppProxy.getAppVersion()
             // Get App Config
             AppProxy.getAppConfig()
-            // Start V2Ray Core Automatically
+            // Start V2Ray Core automatically
             AppProxy.setV2RayCoreRunning(true)
+            // Set system proxy automatically
+            AppProxy.setSystemProxyMode()
         }
 }
