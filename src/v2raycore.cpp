@@ -9,7 +9,7 @@
 
 #include "configurator.h"
 #include "constants.h"
-#include "httprequest.h"
+#include "networkrequest.h"
 #include "zipfile.h"
 
 V2RayCore::V2RayCore() {
@@ -36,7 +36,7 @@ V2RayCore& V2RayCore::getInstance() {
 }
 
 V2RayCore::~V2RayCore() {
-  v2rayProcess->close();
+  v2rayProcess->kill();
   delete v2rayProcess;
 }
 
@@ -98,7 +98,7 @@ bool V2RayCore::install() {
   // Download the zip file from GitHub
   QString assetsUrl =
     QString(V2RAY_ASSETS_URL).arg(latestVersion, operatingSystem);
-  QByteArray assetsBytes = HttpRequest::get(assetsUrl);
+  QByteArray assetsBytes = NetworkRequest::getUrl(assetsUrl);
   QString v2rayZipFilePath =
     QDir(QDir::currentPath())
       .filePath(QString("v2ray-core-%1.zip").arg(latestVersion));
@@ -140,7 +140,7 @@ bool V2RayCore::upgrade() {
 }
 
 QString V2RayCore::getLatestVersion() {
-  QByteArray releaseJsonStr = HttpRequest::get(V2RAY_RELEASES_URL);
+  QByteArray releaseJsonStr = NetworkRequest::getUrl(V2RAY_RELEASES_URL);
   QJsonObject latestRelease;
 
   if (!releaseJsonStr.size()) {

@@ -28,21 +28,23 @@ class AppProxy : public QObject {
   void logsReady(QString logs);
   void serversReady(QString servers);
   void serverDInfoReady(QString server);
+  void serverLatencyReady(QString latency);
   void addServerError(QString errorMessage);
   void serversChanged();
 
  public slots:
-  QString getAppVersion();
-  QString getV2RayCoreVersion();
-  QString getOperatingSystem();
-  QString getV2RayCoreStatus();
-  bool setV2RayCoreRunning(bool expectedRunning);
-  QJsonObject getAppConfig();
+  void getAppVersion();
+  void getV2RayCoreVersion();
+  void getOperatingSystem();
+  void getV2RayCoreStatus();
+  void setV2RayCoreRunning(bool expectedRunning);
+  void getAppConfig();
   void saveAppConfig(QString configString);
-  QString getLogs();
+  void getLogs();
   void clearLogs();
-  QJsonArray getServers();
-  QJsonObject getServer(QString serverName, bool forDuplicate = false);
+  void getServers();
+  void getServer(QString serverName, bool forDuplicate = false);
+  void getServerLatency(QString serverName = "");
   void setServerConnection(QString serverName, bool connected);
   void addV2RayServer(QString configString);
   void addShadowsocksServer(QString configString);
@@ -54,6 +56,10 @@ class AppProxy : public QObject {
  private:
   V2RayCore& v2ray;
   Configurator& configurator;
+  QJsonObject serverLatency;
+
+  QString getServerAddr(QJsonObject server);
+  int getServerPort(QJsonObject server);
   QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);

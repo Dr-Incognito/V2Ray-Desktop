@@ -17,15 +17,15 @@ HEADERS += \
     appproxy.h \
     configurator.h \
     constants.h \
-    httprequest.h \
+    networkrequest.h \
     v2raycore.h \
     zipfile.h
 
 SOURCES += \
     appproxy.cpp \
     configurator.cpp \
-    httprequest.cpp \
     main.cpp \
+    networkrequest.cpp \
     v2raycore.cpp \
     zipfile.cpp
 

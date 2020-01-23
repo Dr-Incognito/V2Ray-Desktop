@@ -1,9 +1,9 @@
 #include "configurator.h"
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QJsonDocument>
-#include <QCoreApplication>
 
 #include "constants.h"
 
@@ -44,23 +44,28 @@ Configurator &Configurator::getInstance() {
 }
 
 QString Configurator::getAppLogFilePath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(APP_LOG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(APP_LOG_FILE_NAME);
 }
 
 QString Configurator::getAppConfigFilePath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(APP_CFG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(APP_CFG_FILE_NAME);
 }
 
 QString Configurator::getV2RayInstallDirPath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_INSTALL_DIR);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(V2RAY_CORE_INSTALL_DIR);
 }
 
 QString Configurator::getV2RayLogFilePath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_LOG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(V2RAY_CORE_LOG_FILE_NAME);
 }
 
 QString Configurator::getV2RayConfigFilePath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(V2RAY_CORE_CFG_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(V2RAY_CORE_CFG_FILE_NAME);
 }
 
 QJsonObject Configurator::getAppConfig() {
