@@ -143,6 +143,9 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   NetworkProxy proxy;
   proxy.host = "127.0.0.1";
   NetworkProxyHelper::resetSystemProxy();
+  if (pacServer.isRunning()) {
+    pacServer.stop();
+  }
   if (proxyMode == "global") {
     QString protocol = appConfig["serverProtocol"].toString();
     proxy.port       = appConfig["serverPort"].toString().toInt();
@@ -153,6 +156,9 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
     proxy.type = NetworkProxyType::PAC_PROXY;
     proxy.url  = QString("http://%1:%2/%3")
                   .arg(proxy.host, QString::number(proxy.port), PAC_FILE_NAME);
+    // Restart PAC Server
+    QString pacServerHost = appConfig["serverIp"].toString();
+    pacServer.start(pacServerHost, proxy.port);
   }
   NetworkProxyHelper::setSystemProxy(proxy);
   emit proxyModeChanged(proxyMode);

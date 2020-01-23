@@ -11,6 +11,7 @@
 
 #include "appproxy.h"
 #include "constants.h"
+#include "pacserver.h"
 
 void messageHandler(QtMsgType msgType,
                     const QMessageLogContext &context,

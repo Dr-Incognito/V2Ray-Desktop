@@ -68,6 +68,10 @@ QString Configurator::getV2RayConfigFilePath() {
     .filePath(V2RAY_CORE_CFG_FILE_NAME);
 }
 
+QString Configurator::getPacFilePath() {
+  return QDir(QCoreApplication::applicationDirPath()).filePath(PAC_FILE_NAME);
+}
+
 QJsonObject Configurator::getAppConfig() {
   QJsonObject config = DEFAULT_APP_CONFIG;
   QFile appCfgFile(getAppConfigFilePath());
