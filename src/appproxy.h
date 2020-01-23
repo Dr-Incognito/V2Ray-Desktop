@@ -2,10 +2,13 @@
 #define APPPROXY_H
 
 #include <QJsonObject>
+#include <QMap>
 #include <QObject>
 #include <QQmlEngine>
 #include <QString>
+#include <QThread>
 
+#include "appproxyworker.h"
 #include "configurator.h"
 #include "v2raycore.h"
 
@@ -15,8 +18,11 @@ class AppProxy : public QObject {
 
  public:
   AppProxy(QObject* parent = 0);
+  ~AppProxy();
 
  signals:
+  void getServerLatencyStarted(QJsonArray servers);
+
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
   void operatingSystemReady(QString operatingSystem);
@@ -53,13 +59,16 @@ class AppProxy : public QObject {
   void editServer(QString serverName, QString protocol, QString configString);
   void removeServer(QString serverName);
 
+ private slots:
+  void returnServerLatency(QMap<QString, QVariant> latency);
+
  private:
   V2RayCore& v2ray;
   Configurator& configurator;
   QJsonObject serverLatency;
+  AppProxyWorker* worker = new AppProxyWorker();
+  QThread workerThread;
 
-  QString getServerAddr(QJsonObject server);
-  int getServerPort(QJsonObject server);
   QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);

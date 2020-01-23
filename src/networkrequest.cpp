@@ -40,5 +40,6 @@ int NetworkRequest::getLatency(QString host, int port) {
   QDateTime time = QDateTime::currentDateTime();
   socket.connectToHost(host, port);
   socket.waitForConnected(TCP_PING_TIMEOUT);
-  return time.msecsTo(QDateTime::currentDateTime());
+  int timeEclipsed = time.msecsTo(QDateTime::currentDateTime());
+  return timeEclipsed >= TCP_PING_TIMEOUT ? -1 : timeEclipsed;
 }
