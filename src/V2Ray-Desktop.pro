@@ -20,6 +20,7 @@ HEADERS += \
     constants.h \
     networkproxy.h \
     networkrequest.h \
+    pacserver.h \
     v2raycore.h \
     zipfile.h
 
@@ -30,6 +31,7 @@ SOURCES += \
     main.cpp \
     networkproxy.cpp \
     networkrequest.cpp \
+    pacserver.cpp \
     v2raycore.cpp \
     zipfile.cpp
 
