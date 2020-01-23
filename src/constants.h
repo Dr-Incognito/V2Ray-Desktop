@@ -28,7 +28,7 @@
 #define DEFAULT_PAC_PORT 1085
 #define DEFAULT_MUX 8
 #define DEFAULT_DNS_SERVER "8.8.8.8,8.8.4.4"
-#define DEFAULT_PROXY_MODE "PAC Mode"
+#define DEFAULT_PROXY_MODE "pac"
 #define DEFAULT_GFW_LIST_URL \
   "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt"
 

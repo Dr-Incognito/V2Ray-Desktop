@@ -87,8 +87,10 @@ ColumnLayout {
         }
 
         Button {
+            id: buttonUpdateGfwList
             text: qsTr("Update GFW List Now")
             contentItem: Text {
+                id: buttonUpdateGfwListContentItem
                 text: parent.text
                 color: "#3498db"
             }
@@ -97,6 +99,10 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
+              buttonUpdateGfwList.enabled = false
+              buttonUpdateGfwListContentItem.color = "white"
+              buttonUpdateGfwList.text = qsTr("Updating ...")
+              AppProxy.updateGfwList(textGfwListUrl.text)
             }
         }
 
@@ -155,6 +161,13 @@ ColumnLayout {
 
         onProxyModeChanged: function(proxyMode) {
             comboProxyMode.currentIndex = comboProxyMode.indexOfValue(proxyMode)
+        }
+
+        onGfwListUpdated: function(updatedTime) {
+            buttonUpdateGfwList.text = qsTr("Update GFW List Now")
+            buttonUpdateGfwListContentItem.color = "#3498db"
+            buttonUpdateGfwList.enabled = true
+            labelGfwLastUpdatedTime.text = updatedTime
         }
     }
 

@@ -35,6 +35,7 @@ class AppProxy : public QObject {
   void logsReady(QString logs);
   void proxyModeReady(QString proxyMode);
   void proxyModeChanged(QString proxyMode);
+  void gfwListUpdated(QString gfwListUpdateTime);
   void serversReady(QString servers);
   void serverDInfoReady(QString server);
   void serverLatencyReady(QString latency);
@@ -51,8 +52,8 @@ class AppProxy : public QObject {
   void saveAppConfig(QString configString);
   void getLogs();
   void clearLogs();
-  void getSystemProxyMode();
   void setSystemProxyMode(QString proxyMode = "");
+  void updateGfwList(QString gfwListUrl);
   void getServers();
   void getServer(QString serverName, bool forDuplicate = false);
   void getServerLatency(QString serverName = "");
