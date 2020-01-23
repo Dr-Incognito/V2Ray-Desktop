@@ -20,9 +20,7 @@ struct NetworkProxy {
     }
   }
 
-  bool operator!=(const NetworkProxy& other) {
-    return !(*this == other);
-  }
+  bool operator!=(const NetworkProxy& other) { return !(*this == other); }
 };
 
 class NetworkProxyHelper : public QObject {

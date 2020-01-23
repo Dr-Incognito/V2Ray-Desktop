@@ -31,8 +31,6 @@ AppProxy::AppProxy(QObject* parent)
 }
 
 AppProxy::~AppProxy() {
-  NetworkProxyHelper::resetSystemProxy();
-
   workerThread.quit();
   workerThread.wait();
 }
@@ -136,6 +134,10 @@ void AppProxy::getSystemProxyMode() {}
 
 void AppProxy::setSystemProxyMode(QString proxyMode) {
   QJsonObject appConfig = configurator.getAppConfig();
+  // Automatically set system proxy according to app config
+  if (!proxyMode.size()) {
+    proxyMode = appConfig["proxyMode"].toString();
+  }
 
   // Set system proxy
   NetworkProxy proxy;
@@ -148,6 +150,7 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
                                      : NetworkProxyType::HTTP_PROXY;
   } else if (proxyMode == "pac") {
     proxy.port = appConfig["pacPort"].toString().toInt();
+    proxy.type = NetworkProxyType::PAC_PROXY;
     proxy.url  = QString("http://%1:%2/%3")
                   .arg(proxy.host, QString::number(proxy.port), PAC_FILE_NAME);
   }
