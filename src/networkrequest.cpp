@@ -20,15 +20,16 @@ QByteArray NetworkRequest::getUrl(QString url) {
   request.setUrl(QUrl(url));
   request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
   request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+  qInfo() << "Start to get url: " << url;
   QNetworkReply* networkReply = accessManager.get(request);
   QEventLoop eventLoop;
   connect(networkReply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
   eventLoop.exec();
 
   if (networkReply->error() != QNetworkReply::NoError) {
+    qCritical() << "Error occurred during requsting: " << networkReply->error();
     return QByteArray();
   }
-
   QByteArray responseBytes = networkReply->readAll();
   networkReply->deleteLater();
   networkReply->manager()->deleteLater();

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -130,8 +131,6 @@ void AppProxy::clearLogs() {
   }
 }
 
-void AppProxy::getSystemProxyMode() {}
-
 void AppProxy::setSystemProxyMode(QString proxyMode) {
   QJsonObject appConfig = configurator.getAppConfig();
   // Automatically set system proxy according to app config
@@ -165,6 +164,19 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 
   // Update app config
   configurator.setAppConfig({{"proxyMode", proxyMode}});
+}
+
+void AppProxy::updateGfwList(QString gfwListUrl) {
+  QByteArray gfwList =
+    QByteArray::fromBase64(NetworkRequest::getUrl(gfwListUrl));
+  QFile pacFile(Configurator::getPacFilePath());
+  pacFile.open(QFile::WriteOnly);
+  pacFile.write(gfwList);
+  pacFile.flush();
+  // Update app config
+  configurator.setAppConfig(QJsonObject{
+    {"gfwListUrl", gfwListUrl},
+    {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
 }
 
 void AppProxy::getServers() {
