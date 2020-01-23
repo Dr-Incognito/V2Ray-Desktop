@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     appproxy.h \
+    appproxyworker.h \
     configurator.h \
     constants.h \
     networkrequest.h \
@@ -23,6 +24,7 @@ HEADERS += \
 
 SOURCES += \
     appproxy.cpp \
+    appproxyworker.cpp \
     configurator.cpp \
     main.cpp \
     networkrequest.cpp \

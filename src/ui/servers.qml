@@ -1209,7 +1209,8 @@ ColumnLayout {
 
                 if (serverName in serverLatency) {
                     var latency = serverLatency[serverName]
-                    server.values.set(4, {value: latency.toString() + " ms"})
+                    latency = latency === -1 ? qsTr("Timeout") : latency.toString() + " ms"
+                    server.values.set(4, {value: latency})
                 }
             }
             menuItemTestLatency.enabled = true

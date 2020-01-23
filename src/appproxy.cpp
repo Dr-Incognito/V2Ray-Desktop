@@ -15,7 +15,24 @@
 AppProxy::AppProxy(QObject* parent)
   : QObject(parent),
     v2ray(V2RayCore::getInstance()),
-    configurator(Configurator::getInstance()) {}
+    configurator(Configurator::getInstance()) {
+  // Setup Worker
+  worker->moveToThread(&workerThread);
+  connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+
+  // Setup Worker -> getServerLatency
+  connect(this, &AppProxy::getServerLatencyStarted, worker,
+          &AppProxyWorker::getServerLatency);
+  connect(worker, &AppProxyWorker::serverLatencyReady, this,
+          &AppProxy::returnServerLatency);
+
+  workerThread.start();
+}
+
+AppProxy::~AppProxy() {
+  workerThread.quit();
+  workerThread.wait();
+}
 
 void AppProxy::getAppVersion() {
   QString appVersion = QString("v%1.%2.%3")
@@ -145,33 +162,18 @@ void AppProxy::getServerLatency(QString serverName) {
   } else {
     servers = configurator.getServers();
   }
-  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
-    QJsonObject server = (*itr).toObject();
-    QString serverName = server["serverName"].toString();
-    int latency =
-      NetworkRequest::getLatency(getServerAddr(server), getServerPort(server));
-    _serverLatency[serverName] = latency;
-    serverLatency[serverName]  = latency;
+  qRegisterMetaType<QJsonArray>("QJsonArray");
+  emit getServerLatencyStarted(servers);
+}
+
+void AppProxy::returnServerLatency(QMap<QString, QVariant> latency) {
+  // Ref:
+  // https://stackoverflow.com/questions/8517853/iterating-over-a-qmap-with-for
+  // Note: Convert to StdMap for better performance
+  for (auto l : latency.toStdMap()) {
+    serverLatency[l.first] = l.second.toInt();
   }
-  emit serverLatencyReady(QJsonDocument(_serverLatency).toJson());
-}
-
-QString AppProxy::getServerAddr(QJsonObject server) {
-  QString protocol     = server["protocol"].toString();
-  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
-  QJsonObject settings = server["settings"].toObject();
-  QJsonArray servers   = settings[keyName].toArray();
-  QJsonObject _server  = servers.at(0).toObject();
-  return _server["address"].toString();
-}
-
-int AppProxy::getServerPort(QJsonObject server) {
-  QString protocol     = server["protocol"].toString();
-  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
-  QJsonObject settings = server["settings"].toObject();
-  QJsonArray servers   = settings[keyName].toArray();
-  QJsonObject _server  = servers.at(0).toObject();
-  return _server["port"].toInt();
+  emit serverLatencyReady(QJsonDocument::fromVariant(latency).toJson());
 }
 
 void AppProxy::setServerConnection(QString serverName, bool connected) {
