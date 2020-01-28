@@ -53,9 +53,10 @@ void PacServer::onNewConnection() {
   QFile pacFile(Configurator::getPacFilePath());
   QTextStream outputStream(clientSocket);
   outputStream.setAutoDetectUnicode(true);
-  outputStream << "HTTP/1.1 200 Ok\r\n"
-                  "Content-Type: text/javascript; charset=\"utf-8\"\r\n"
-                  "Connection: keep-alive\r\n\r\n";
+  outputStream
+    << "HTTP/1.1 200 Ok\r\n"
+       "Content-Type: text/x-ns-proxy-autoconfig; charset=\"utf-8\"\r\n"
+       "Connection: keep-alive\r\n\r\n";
   if (pacFile.exists() && pacFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     outputStream << pacFile.readAll();
   } else {

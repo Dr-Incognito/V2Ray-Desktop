@@ -179,6 +179,21 @@ void AppProxy::updateGfwList(QString gfwListUrl) {
     {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
 }
 
+void AppProxy::getProxySettings() {
+  bool isV2RayRunning     = v2ray.isRunning();
+  bool isPacServerRunning = pacServer.isRunning();
+
+  QString proxyMode = NetworkProxyHelper::getSystemProxy().toString();
+  QStringList connectedServers = configurator.getConnectedServerNames();
+  emit proxySettingsReady(
+    QJsonDocument(
+      QJsonObject{{"isV2RayRunning", isV2RayRunning},
+                  {"isPacServerRunning", isPacServerRunning},
+                  {"proxyMode", proxyMode},
+                  {"connectedServers", connectedServers.join("\n")}})
+      .toJson());
+}
+
 void AppProxy::getServers() {
   QJsonArray servers               = configurator.getServers();
   QStringList connectedServerNames = configurator.getConnectedServerNames();
