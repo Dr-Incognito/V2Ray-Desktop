@@ -11,6 +11,16 @@ struct NetworkProxy {
   int port;
   QString url;
 
+  inline QString toString() {
+    if (type == NetworkProxyType::PAC_PROXY) {
+      return url;
+    } else if (type == NetworkProxyType::HTTP_PROXY) {
+      return QString("http://%1:%2").arg(host, port);
+    } else if (type == NetworkProxyType::SOCK_PROXY) {
+      return QString("socks://%1:%2").arg(host, port);
+    }
+  }
+
   bool operator==(const NetworkProxy& other) {
     return this->type == other.type;
     if (type == NetworkProxyType::PAC_PROXY) {
