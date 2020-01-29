@@ -18,6 +18,7 @@
 #define PAC_FILE_NAME "proxy.pac"
 
 #define TCP_PING_TIMEOUT 2500
+#define HTTP_GET_TIMEOUT 2500
 #define MAX_N_LOGS 2500
 
 #define DEFAULT_AUTO_START true
