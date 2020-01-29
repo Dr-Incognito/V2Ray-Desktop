@@ -1,7 +1,6 @@
 #ifndef NETWORKPROXY_H
 #define NETWORKPROXY_H
 
-#include <QDebug>
 #include <QObject>
 
 enum class NetworkProxyType { PAC_PROXY, HTTP_PROXY, SOCKS_PROXY, DISABLED };
@@ -14,15 +13,13 @@ struct NetworkProxy {
 
   inline QString toString() {
     if (type == NetworkProxyType::PAC_PROXY) {
-      return QString("[PAC Proxy] %1").arg(url);
+      return url;
     } else if (type == NetworkProxyType::HTTP_PROXY) {
-      return QString("[HTTP Proxy] http://%1:%2")
-        .arg(host, QString::number(port));
+      return QString("http://%1:%2").arg(host, QString::number(port));
     } else if (type == NetworkProxyType::SOCKS_PROXY) {
-      return QString("[SOCKS Proxy] socks://%1:%2")
-        .arg(host, QString::number(port));
+      return QString("socks://%1:%2").arg(host, QString::number(port));
     } else {
-      return "[Disabled]";
+      return "Disabled";
     }
   }
 

@@ -190,7 +190,7 @@ void AppProxy::getProxySettings() {
       QJsonObject{{"isV2RayRunning", isV2RayRunning},
                   {"isPacServerRunning", isPacServerRunning},
                   {"proxyMode", proxyMode},
-                  {"connectedServers", connectedServers.join("\n")}})
+                  {"connectedServers", connectedServers.join(", ")}})
       .toJson());
 }
 
