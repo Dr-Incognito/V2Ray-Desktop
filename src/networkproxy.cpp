@@ -69,7 +69,6 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
   p.waitForFinished();
   qDebug() << p.readAllStandardOutput();
 #endif
-  qDebug() << proxy.toString();
   return proxy;
 }
 

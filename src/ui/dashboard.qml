@@ -34,6 +34,7 @@ ColumnLayout {
             text: qsTr("Current Status")
             color: "white"
             font.bold: true
+            Layout.alignment: Qt.AlignTop
         }
 
         Label {
@@ -46,6 +47,7 @@ ColumnLayout {
             text: qsTr("Proxy Settings")
             color: "white"
             font.bold: true
+            Layout.alignment: Qt.AlignTop
         }
 
         Label {
@@ -126,7 +128,15 @@ ColumnLayout {
         }
 
         onProxySettingsReady: function(proxySettings) {
-          console.log(proxySettings)
+          proxySettings = JSON.parse(proxySettings)
+          var pSettings = "";
+          pSettings += qsTr("System Proxy: ") + proxySettings["proxyMode"] + "\n"
+          pSettings += qsTr("PAC Server: ") + (proxySettings["isPacServerRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
+          pSettings += qsTr("V2Ray Core: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
+          if (proxySettings["isV2RayRunning"]) {
+            pSettings += qsTr("Connected Servers: ") + proxySettings["connectedServers"] + "\n"
+          }
+          labelProxySettings.text = pSettings
         }
     }
 
@@ -134,5 +144,6 @@ ColumnLayout {
         AppProxy.getAppVersion()
         AppProxy.getOperatingSystem()
         AppProxy.getV2RayCoreVersion()
+        AppProxy.getProxySettings()
     }
 }

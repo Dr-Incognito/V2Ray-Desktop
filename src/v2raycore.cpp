@@ -36,7 +36,7 @@ V2RayCore& V2RayCore::getInstance() {
 }
 
 V2RayCore::~V2RayCore() {
-  v2rayProcess->kill();
+  this->stop();
   delete v2rayProcess;
 }
 
@@ -69,7 +69,7 @@ bool V2RayCore::start() {
 }
 
 bool V2RayCore::stop() {
-  v2rayProcess->terminate();
+  v2rayProcess->kill();
   v2rayProcess->waitForFinished();
   return v2rayProcess->state() == QProcess::NotRunning;
 }
