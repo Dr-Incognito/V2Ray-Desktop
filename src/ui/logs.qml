@@ -100,7 +100,6 @@ ColumnLayout {
     }
 
     Timer {
-        id: timer
         interval: 1000
         running: true
         repeat: true

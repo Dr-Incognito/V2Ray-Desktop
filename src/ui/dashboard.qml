@@ -31,13 +31,14 @@ ColumnLayout {
         columnSpacing: 20
 
         Label {
-            text: qsTr("Current Status")
+            text: qsTr("Network Status")
             color: "white"
             font.bold: true
+            Layout.alignment: Qt.AlignTop
         }
 
         Label {
-            id: labelCurrentStatus
+            id: labelNetworkStatus
             text: qsTr("N/a")
             color: "white"
         }
@@ -46,6 +47,7 @@ ColumnLayout {
             text: qsTr("Proxy Settings")
             color: "white"
             font.bold: true
+            Layout.alignment: Qt.AlignTop
         }
 
         Label {
@@ -100,6 +102,24 @@ ColumnLayout {
         }
     }
 
+    Timer {
+        interval: 3000
+        running: true
+        repeat: true
+        onTriggered: function() {
+            AppProxy.getNetworkStatus()
+        }
+    }
+
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: function() {
+            AppProxy.getProxySettings()
+        }
+    }
+
     Connections {
         target: AppProxy
 
@@ -114,11 +134,36 @@ ColumnLayout {
         onOperatingSystemReady: function(operatingSystem) {
             labelOperatingSystem.text = operatingSystem
         }
+
+        onNetworkStatusReady: function(networkStatus) {
+            networkStatus = JSON.parse(networkStatus)
+            if (networkStatus["isGoogleAccessible"]) {
+                labelNetworkStatus.text = qsTr("Everything works fine.\nYou can access the free Internet.")
+            } else if (networkStatus["isBaiduAccessible"]) {
+                labelNetworkStatus.text = qsTr("Please check your proxy settings.")
+            } else {
+                labelNetworkStatus.text = qsTr("You're offline.\nPlease check the network connection.")
+            }
+        }
+
+        onProxySettingsReady: function(proxySettings) {
+            proxySettings = JSON.parse(proxySettings)
+            var pSettings = "";
+            pSettings += qsTr("System Proxy: ") + proxySettings["proxyMode"] + "\n"
+            pSettings += qsTr("PAC Server: ") + (proxySettings["isPacServerRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
+            pSettings += qsTr("V2Ray Core: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
+            if (proxySettings["isV2RayRunning"]) {
+                pSettings += qsTr("Connected Servers: ") + proxySettings["connectedServers"] + "\n"
+            }
+            labelProxySettings.text = pSettings
+        }
     }
 
     Component.onCompleted: function() {
         AppProxy.getAppVersion()
         AppProxy.getOperatingSystem()
         AppProxy.getV2RayCoreVersion()
+        AppProxy.getNetworkStatus()
+        AppProxy.getProxySettings()
     }
 }

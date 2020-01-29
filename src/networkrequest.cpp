@@ -8,13 +8,23 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSctpSocket>
+#include <QTimer>
 
 #include "constants.h"
 
 NetworkRequest::NetworkRequest() {}
 
-QByteArray NetworkRequest::getNetworkResponse(QString url) {
+
+QByteArray NetworkRequest::getNetworkResponse(QString url,
+                                  QNetworkProxy* proxy,
+                                  int timeout) {
+  QTimer timer;
+  timer.setSingleShot(true);
+
   QNetworkAccessManager accessManager;
+  if (proxy != nullptr) {
+    accessManager.setProxy(*proxy);
+  }
   QNetworkRequest request;
 
   request.setUrl(QUrl(url));
@@ -23,9 +33,22 @@ QByteArray NetworkRequest::getNetworkResponse(QString url) {
   qInfo() << "Start to get url: " << url;
   QNetworkReply* networkReply = accessManager.get(request);
   QEventLoop eventLoop;
-  connect(networkReply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+  connect(&timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
+  connect(networkReply, &QNetworkReply::finished, &eventLoop,
+          &QEventLoop::quit);
+  if (timeout > 0) {
+    timer.start(timeout);
+  }
   eventLoop.exec();
 
+  // Timeout handler
+  if (!timer.isActive()) {
+    disconnect(networkReply, &QNetworkReply::finished, &eventLoop,
+               &QEventLoop::quit);
+    networkReply->abort();
+    qWarning() << "Timed out when requesting " << url;
+  }
+  // Network error Handler
   if (networkReply->error() != QNetworkReply::NoError) {
     qCritical() << "Error occurred during requsting " << url
                 << "; Error: " << networkReply->error();

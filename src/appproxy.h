@@ -24,12 +24,15 @@ class AppProxy : public QObject {
  signals:
   void getServerLatencyStarted(QJsonArray servers);
   void getGfwListStarted(QString gfwListUrl);
+  void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
   void operatingSystemReady(QString operatingSystem);
   void v2RayCoreStatusReady(QString v2RayCoreStatus);
   void v2RayRunningStatusChanging(bool isChanged);
+  void networkStatusReady(QString networkStatus);
+  void proxySettingsReady(QString proxySettings);
   void appConfigReady(QString appConfig);
   void appConfigError(QString errorMessage);
   void appConfigChanged();
@@ -49,10 +52,12 @@ class AppProxy : public QObject {
   void getOperatingSystem();
   void getV2RayCoreStatus();
   void setV2RayCoreRunning(bool expectedRunning);
+  void getNetworkStatus();
   void getAppConfig();
   void saveAppConfig(QString configString);
   void getLogs();
   void clearLogs();
+  void getProxySettings();
   void setSystemProxyMode(QString proxyMode = "");
   void updateGfwList(QString gfwListUrl);
   void getServers();
@@ -68,7 +73,8 @@ class AppProxy : public QObject {
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
-  void gfwListReady(QByteArray gfwList);
+  void returnGfwList(QByteArray gfwList);
+  void returnNetworkAccessiblity(QMap<QString, bool> accessible);
 
  private:
   V2RayCore& v2ray;
@@ -82,6 +88,7 @@ class AppProxy : public QObject {
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);
   QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
+  QNetworkProxy getProxy();
 };
 
 #endif  // APPPROXY_H
