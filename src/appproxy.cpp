@@ -28,6 +28,11 @@ AppProxy::AppProxy(QObject* parent)
   connect(worker, &AppProxyWorker::serverLatencyReady, this,
           &AppProxy::returnServerLatency);
 
+  // Setup Worker -> getGfwList
+  connect(this, &AppProxy::getGfwListStarted, worker,
+          &AppProxyWorker::getGfwList);
+  connect(worker, &AppProxyWorker::gfwListReady, this, &AppProxy::gfwListReady);
+
   workerThread.start();
 }
 
@@ -102,13 +107,17 @@ void AppProxy::getLogs() {
   // Read the app and V2Ray logs
   if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> _logList = appLogFile.readAll().split('\n');
-    for (auto itr = _logList.begin(); itr < _logList.end(); ++itr) {
+    int cnt                    = 0;
+    for (auto itr = _logList.end() - 1;
+         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
       logs.append(*itr);
     }
   }
   if (v2RayLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> _logList = v2RayLogFile.readAll().split('\n');
-    for (auto itr = _logList.begin(); itr < _logList.end(); ++itr) {
+    int cnt                    = 0;
+    for (auto itr = _logList.end() - 1;
+         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
       logs.append(*itr);
     }
   }
@@ -167,16 +176,24 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 }
 
 void AppProxy::updateGfwList(QString gfwListUrl) {
-  QByteArray gfwList =
-    QByteArray::fromBase64(NetworkRequest::getUrl(gfwListUrl));
-  QFile pacFile(Configurator::getPacFilePath());
-  pacFile.open(QFile::WriteOnly);
-  pacFile.write(gfwList);
-  pacFile.flush();
-  // Update app config
-  configurator.setAppConfig(QJsonObject{
-    {"gfwListUrl", gfwListUrl},
-    {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
+  emit getGfwListStarted(gfwListUrl);
+}
+
+void AppProxy::gfwListReady(QByteArray gfwList) {
+  if (gfwList.size()) {
+    QFile pacFile(Configurator::getPacFilePath());
+    pacFile.open(QFile::WriteOnly);
+    pacFile.write(gfwList);
+    pacFile.flush();
+    // Update app config
+    QString updatedTime = QDateTime::currentDateTime().toString();
+    configurator.setAppConfig(QJsonObject{
+      {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
+    qInfo() << "GFW List updated successfully.";
+    emit gfwListUpdated(updatedTime);
+  } else {
+    emit gfwListUpdated("Failed to update GFW List.");
+  }
 }
 
 void AppProxy::getServers() {

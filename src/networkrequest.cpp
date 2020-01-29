@@ -13,7 +13,7 @@
 
 NetworkRequest::NetworkRequest() {}
 
-QByteArray NetworkRequest::getUrl(QString url) {
+QByteArray NetworkRequest::getNetworkResponse(QString url) {
   QNetworkAccessManager accessManager;
   QNetworkRequest request;
 
@@ -27,7 +27,8 @@ QByteArray NetworkRequest::getUrl(QString url) {
   eventLoop.exec();
 
   if (networkReply->error() != QNetworkReply::NoError) {
-    qCritical() << "Error occurred during requsting: " << networkReply->error();
+    qCritical() << "Error occurred during requsting " << url
+                << "; Error: " << networkReply->error();
     return QByteArray();
   }
   QByteArray responseBytes = networkReply->readAll();

@@ -8,7 +8,7 @@ class NetworkRequest : public QObject {
   Q_OBJECT
  public:
   NetworkRequest();
-  static QByteArray getUrl(QString url);
+  static QByteArray getNetworkResponse(QString url);
   static int getLatency(QString host, int port);
 };
 
