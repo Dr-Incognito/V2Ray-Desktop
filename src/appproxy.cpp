@@ -148,7 +148,7 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   if (proxyMode == "global") {
     QString protocol = appConfig["serverProtocol"].toString();
     proxy.port       = appConfig["serverPort"].toString().toInt();
-    proxy.type       = protocol == "SOCKS" ? NetworkProxyType::SOCK_PROXY
+    proxy.type       = protocol == "SOCKS" ? NetworkProxyType::SOCKS_PROXY
                                      : NetworkProxyType::HTTP_PROXY;
   } else if (proxyMode == "pac") {
     proxy.port = appConfig["pacPort"].toString().toInt();
