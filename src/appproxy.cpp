@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
+#include <QNetworkProxy>
 #include <QSysInfo>
 
 #include "constants.h"
@@ -27,6 +28,12 @@ AppProxy::AppProxy(QObject* parent)
           &AppProxyWorker::getServerLatency);
   connect(worker, &AppProxyWorker::serverLatencyReady, this,
           &AppProxy::returnServerLatency);
+
+  // Setup Worker -> getNetworkStatus
+  connect(this, &AppProxy::getNetworkStatusStarted, worker,
+          &AppProxyWorker::getUrlAccessibility);
+  connect(worker, &AppProxyWorker::urlAccessibilityReady, this,
+          &AppProxy::returnNetworkAccessiblity);
 
   workerThread.start();
 }
@@ -76,6 +83,41 @@ void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
                  .arg(isSuccessful ? "success" : "failed");
     emit v2RayRunningStatusChanging(isSuccessful);
   }
+}
+
+void AppProxy::getNetworkStatus() {
+  qRegisterMetaType<QMap<QString, bool>>("QMap");
+  qRegisterMetaType<QNetworkProxy>("QNetworkProxy");
+  emit getNetworkStatusStarted({{"google.com", true}, {"baidu.com", false}},
+                               getProxy());
+}
+
+QNetworkProxy AppProxy::getProxy() {
+  QJsonObject appConfig = configurator.getAppConfig();
+  QNetworkProxy::ProxyType proxyType =
+    appConfig["serverProtocol"].toString() == "SOCKS"
+      ? QNetworkProxy::Socks5Proxy
+      : QNetworkProxy::HttpProxy;
+  int serverPort = appConfig["serverPort"].toString().toInt();
+  QNetworkProxy proxy;
+  proxy.setType(proxyType);
+  proxy.setHostName("127.0.0.1");
+  proxy.setPort(serverPort);
+  return proxy;
+}
+
+void AppProxy::returnNetworkAccessiblity(QMap<QString, bool> accessible) {
+  bool isGoogleAccessible =
+         accessible.contains("google.com") ? accessible["google.com"] : false,
+       isBaiduAccessible =
+         accessible.contains("baidu.com") ? accessible["baidu.com"] : false;
+
+  emit networkStatusReady(
+    QJsonDocument(QJsonObject{
+                    {"isGoogleAccessible", isGoogleAccessible},
+                    {"isBaiduAccessible", isBaiduAccessible},
+                  })
+      .toJson());
 }
 
 void AppProxy::getAppConfig() {
@@ -131,6 +173,21 @@ void AppProxy::clearLogs() {
   }
 }
 
+void AppProxy::getProxySettings() {
+  bool isV2RayRunning     = v2ray.isRunning();
+  bool isPacServerRunning = pacServer.isRunning();
+
+  QString proxyMode = NetworkProxyHelper::getSystemProxy().toString();
+  QStringList connectedServers = configurator.getConnectedServerNames();
+  emit proxySettingsReady(
+    QJsonDocument(
+      QJsonObject{{"isV2RayRunning", isV2RayRunning},
+                  {"isPacServerRunning", isPacServerRunning},
+                  {"proxyMode", proxyMode},
+                  {"connectedServers", connectedServers.join(", ")}})
+      .toJson());
+}
+
 void AppProxy::setSystemProxyMode(QString proxyMode) {
   QJsonObject appConfig = configurator.getAppConfig();
   // Automatically set system proxy according to app config
@@ -177,21 +234,6 @@ void AppProxy::updateGfwList(QString gfwListUrl) {
   configurator.setAppConfig(QJsonObject{
     {"gfwListUrl", gfwListUrl},
     {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
-}
-
-void AppProxy::getProxySettings() {
-  bool isV2RayRunning     = v2ray.isRunning();
-  bool isPacServerRunning = pacServer.isRunning();
-
-  QString proxyMode = NetworkProxyHelper::getSystemProxy().toString();
-  QStringList connectedServers = configurator.getConnectedServerNames();
-  emit proxySettingsReady(
-    QJsonDocument(
-      QJsonObject{{"isV2RayRunning", isV2RayRunning},
-                  {"isPacServerRunning", isPacServerRunning},
-                  {"proxyMode", proxyMode},
-                  {"connectedServers", connectedServers.join(", ")}})
-      .toJson());
 }
 
 void AppProxy::getServers() {

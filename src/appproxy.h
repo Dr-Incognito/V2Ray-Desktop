@@ -23,12 +23,15 @@ class AppProxy : public QObject {
 
  signals:
   void getServerLatencyStarted(QJsonArray servers);
+  void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
   void operatingSystemReady(QString operatingSystem);
   void v2RayCoreStatusReady(QString v2RayCoreStatus);
   void v2RayRunningStatusChanging(bool isChanged);
+  void networkStatusReady(QString networkStatus);
+  void proxySettingsReady(QString proxySettings);
   void appConfigReady(QString appConfig);
   void appConfigError(QString errorMessage);
   void appConfigChanged();
@@ -36,7 +39,6 @@ class AppProxy : public QObject {
   void proxyModeReady(QString proxyMode);
   void proxyModeChanged(QString proxyMode);
   void gfwListUpdated(QString gfwListUpdateTime);
-  void proxySettingsReady(QString proxySettings);
   void serversReady(QString servers);
   void serverDInfoReady(QString server);
   void serverLatencyReady(QString latency);
@@ -49,13 +51,14 @@ class AppProxy : public QObject {
   void getOperatingSystem();
   void getV2RayCoreStatus();
   void setV2RayCoreRunning(bool expectedRunning);
+  void getNetworkStatus();
   void getAppConfig();
   void saveAppConfig(QString configString);
   void getLogs();
   void clearLogs();
+  void getProxySettings();
   void setSystemProxyMode(QString proxyMode = "");
   void updateGfwList(QString gfwListUrl);
-  void getProxySettings();
   void getServers();
   void getServer(QString serverName, bool forDuplicate = false);
   void getServerLatency(QString serverName = "");
@@ -69,6 +72,7 @@ class AppProxy : public QObject {
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
+  void returnNetworkAccessiblity(QMap<QString, bool> accessible);
 
  private:
   V2RayCore& v2ray;
@@ -82,6 +86,7 @@ class AppProxy : public QObject {
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);
   QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
+  QNetworkProxy getProxy();
 };
 
 #endif  // APPPROXY_H

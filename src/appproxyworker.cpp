@@ -3,7 +3,26 @@
 
 #include <QDebug>
 
-AppProxyWorker::AppProxyWorker(QObject *parent) : QObject(parent) {}
+#include "constants.h"
+
+AppProxyWorker::AppProxyWorker(QObject* parent) : QObject(parent) {}
+
+void AppProxyWorker::getUrlAccessibility(QMap<QString, bool> urls,
+                                         QNetworkProxy proxy) {
+  // Ref:
+  // https://stackoverflow.com/questions/8517853/iterating-over-a-qmap-with-for
+  // Note: Convert to StdMap for better performance
+  QMap<QString, bool> accessible;
+  for (auto l : urls.toStdMap()) {
+    QString url         = l.first;
+    bool useProxy       = l.second;
+    QNetworkProxy* p    = useProxy ? &proxy : nullptr;
+    QByteArray response = NetworkRequest::getUrl(
+      QString("https://www.%1").arg(url), p, HTTP_GET_TIMEOUT);
+    accessible[url] = response.size() > 0;
+  }
+  emit urlAccessibilityReady(accessible);
+}
 
 void AppProxyWorker::getServerLatency(QJsonArray servers) {
   QMap<QString, QVariant> serverLatency;
