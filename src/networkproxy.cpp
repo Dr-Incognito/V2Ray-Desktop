@@ -162,7 +162,6 @@ void NetworkProxyHelper::setSystemProxy(NetworkProxy proxy) {
       c.insert(1, ni);
       p.start("networksetup", c);
       p.waitForFinished();
-      qDebug() << p.readAllStandardOutput();
     }
   }
 #endif

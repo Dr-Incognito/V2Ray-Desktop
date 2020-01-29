@@ -95,10 +95,10 @@ void AppProxy::getNetworkStatus() {
   qRegisterMetaType<QMap<QString, bool>>("QMap");
   qRegisterMetaType<QNetworkProxy>("QNetworkProxy");
   emit getNetworkStatusStarted({{"google.com", true}, {"baidu.com", false}},
-                               getProxy());
+                               getQProxy());
 }
 
-QNetworkProxy AppProxy::getProxy() {
+QNetworkProxy AppProxy::getQProxy() {
   QJsonObject appConfig = configurator.getAppConfig();
   QNetworkProxy::ProxyType proxyType =
     appConfig["serverProtocol"].toString() == "SOCKS"
@@ -220,8 +220,8 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   } else if (proxyMode == "pac") {
     proxy.port = appConfig["pacPort"].toInt();
     proxy.type = NetworkProxyType::PAC_PROXY;
-    proxy.url  = QString("http://%1:%2/%3")
-                  .arg(proxy.host, QString::number(proxy.port), PAC_FILE_NAME);
+    proxy.url  = QString("http://%1:%2/proxy.pac")
+                  .arg(proxy.host, QString::number(proxy.port));
     // Restart PAC Server
     QString pacServerHost = appConfig["serverIp"].toString();
     pacServer.start(pacServerHost, proxy.port);
@@ -239,10 +239,10 @@ void AppProxy::updateGfwList(QString gfwListUrl) {
 
 void AppProxy::returnGfwList(QByteArray gfwList) {
   if (gfwList.size()) {
-    QFile pacFile(Configurator::getPacFilePath());
-    pacFile.open(QFile::WriteOnly);
-    pacFile.write(gfwList);
-    pacFile.flush();
+    QFile gfwListFile(Configurator::getGfwListFilePath());
+    gfwListFile.open(QFile::WriteOnly);
+    gfwListFile.write(gfwList);
+    gfwListFile.flush();
     // Update app config
     QString updatedTime = QDateTime::currentDateTime().toString();
     configurator.setAppConfig(QJsonObject{

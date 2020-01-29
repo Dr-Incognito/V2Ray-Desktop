@@ -5,6 +5,9 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include "configurator.h"
+#include "networkproxy.h"
+
 class PacServer : public QObject {
   Q_OBJECT
  public:
@@ -18,7 +21,10 @@ class PacServer : public QObject {
   void onNewConnection();
 
  private:
+  Configurator& configurator;
   QTcpServer* server;
+  QString getLocalProxy();
+  QString getPacRules();
 };
 
 #endif  // PACSERVER_H

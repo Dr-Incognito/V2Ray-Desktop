@@ -88,7 +88,7 @@ class AppProxy : public QObject {
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);
   QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
-  QNetworkProxy getProxy();
+  QNetworkProxy getQProxy();
 };
 
 #endif  // APPPROXY_H

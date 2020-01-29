@@ -11,6 +11,19 @@ struct NetworkProxy {
   int port;
   QString url;
 
+  NetworkProxy() { this->type = NetworkProxyType::DISABLED; }
+
+  NetworkProxy(QString host, int port, NetworkProxyType type) {
+    this->host = host;
+    this->port = port;
+    this->type = type;
+  }
+
+  NetworkProxy(QString url) {
+    this->url  = url;
+    this->type = NetworkProxyType::PAC_PROXY;
+  }
+
   inline QString toString() {
     if (type == NetworkProxyType::PAC_PROXY) {
       return url;
