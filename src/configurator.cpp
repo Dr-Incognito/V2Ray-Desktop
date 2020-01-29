@@ -96,6 +96,7 @@ void Configurator::setAppConfig(QJsonObject config) {
     QVariant configValue = itr.value().toVariant();
     switch (configValue.type()) {
       case QVariant::Bool: _config[configName] = configValue.toBool(); break;
+      case QVariant::Int: _config[configName] = configValue.toInt(); break;
       case QVariant::String:
         _config[configName] = configValue.toString();
         break;
@@ -123,7 +124,7 @@ QJsonObject Configurator::getV2RayConfig() {
      QJsonArray{QJsonObject{
        {"listen", appConfig["serverIp"].toString()},
        {"protocol", appConfig["serverProtocol"].toString().toLower()},
-       {"port", appConfig["serverPort"].toString().toInt()},
+       {"port", appConfig["serverPort"].toInt()},
        {"settings", QJsonObject{{"udp", appConfig["enableUdp"].toBool()}}},
      }}},
     {"outbounds", getConnectedServers()},
@@ -209,7 +210,7 @@ int Configurator::removeServer(QString serverName) {
 
 QJsonArray Configurator::getConnectedServers() {
   QJsonObject appConfig = getAppConfig();
-  int muxValue          = appConfig["mux"].toString().toInt();
+  int muxValue          = appConfig["mux"].toInt();
 
   QJsonArray servers = getServers();
   QJsonArray connectedServers;

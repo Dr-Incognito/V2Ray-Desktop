@@ -60,14 +60,61 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
     }
   }
 #elif defined(Q_OS_MAC)
-  QStringList checkpoints = {"-getautoproxyurl", "-getwebproxy",
-                             "-getsocksfirewallproxy"};
-
-  QProcess p;
-  p.start("networksetup", QStringList() << "-getautoproxyurl"
-                                        << "Wi-Fi");
-  p.waitForFinished();
-  qDebug() << p.readAllStandardOutput();
+  QString stdOutput, httpProxyHost, socksProxyHost;
+  int httpProxyPort, socksProxyPort;
+  for (QString ni : NETWORK_INTERFACES) {
+    QProcess p;
+    p.start("networksetup", QStringList() << "-getautoproxyurl" << ni);
+    p.waitForFinished();
+    stdOutput = p.readAllStandardOutput();
+    if (!stdOutput.startsWith("** Error:")) {
+      QStringList sl = stdOutput.split('\n');
+      for (QString s : sl) {
+        if (s.startsWith("Enabled: Yes")) {
+          proxy.type = NetworkProxyType::PAC_PROXY;
+        } else if (s.startsWith("URL: ")) {
+          proxy.url = s.mid(5);
+        }
+      }
+    }
+    p.start("networksetup", QStringList() << "-getwebproxy" << ni);
+    p.waitForFinished();
+    stdOutput = p.readAllStandardOutput();
+    if (!stdOutput.startsWith("** Error:")) {
+      QStringList sl = stdOutput.split('\n');
+      for (QString s : sl) {
+        if (s.startsWith("Enabled: Yes")) {
+          proxy.type = NetworkProxyType::HTTP_PROXY;
+        } else if (s.startsWith("Server: ")) {
+          httpProxyHost = s.mid(8);
+        } else if (s.startsWith("Port: ")) {
+          httpProxyPort = s.mid(6).toInt();
+        }
+      }
+    }
+    p.start("networksetup", QStringList() << "-getsocksfirewallproxy" << ni);
+    p.waitForFinished();
+    stdOutput = p.readAllStandardOutput();
+    if (!stdOutput.startsWith("** Error:")) {
+      QStringList sl = stdOutput.split('\n');
+      for (QString s : sl) {
+        if (s.startsWith("Enabled: Yes")) {
+          proxy.type = NetworkProxyType::SOCKS_PROXY;
+        } else if (s.startsWith("Server: ")) {
+          socksProxyHost = s.mid(8);
+        } else if (s.startsWith("Port: ")) {
+          socksProxyPort = s.mid(6).toInt();
+        }
+      }
+    }
+    if (proxy.type == NetworkProxyType::HTTP_PROXY) {
+      proxy.host = httpProxyHost;
+      proxy.port = httpProxyPort;
+    } else if (proxy.type == NetworkProxyType::SOCKS_PROXY) {
+      proxy.host = socksProxyHost;
+      proxy.port = socksProxyPort;
+    }
+  }
 #endif
   return proxy;
 }
