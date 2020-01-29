@@ -100,6 +100,16 @@ ColumnLayout {
         }
     }
 
+    Timer {
+        id: timer
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: function() {
+            AppProxy.getProxySettings()
+        }
+    }
+
     Connections {
         target: AppProxy
 
@@ -113,6 +123,10 @@ ColumnLayout {
 
         onOperatingSystemReady: function(operatingSystem) {
             labelOperatingSystem.text = operatingSystem
+        }
+
+        onProxySettingsReady: function(proxySettings) {
+          console.log(proxySettings)
         }
     }
 
