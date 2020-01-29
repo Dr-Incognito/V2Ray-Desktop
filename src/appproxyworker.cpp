@@ -34,3 +34,10 @@ int AppProxyWorker::getServerPort(QJsonObject server) {
   QJsonObject _server  = servers.at(0).toObject();
   return _server["port"].toInt();
 }
+
+void AppProxyWorker::getGfwList(QString gfwListUrl) {
+  QByteArray gfwList =
+    QByteArray::fromBase64(NetworkRequest::getNetworkResponse(gfwListUrl));
+  qRegisterMetaType<QByteArray>("QByteArray");
+  emit gfwListReady(gfwList);
+}

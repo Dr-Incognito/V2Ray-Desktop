@@ -98,7 +98,7 @@ bool V2RayCore::install() {
   // Download the zip file from GitHub
   QString assetsUrl =
     QString(V2RAY_ASSETS_URL).arg(latestVersion, operatingSystem);
-  QByteArray assetsBytes = NetworkRequest::getUrl(assetsUrl);
+  QByteArray assetsBytes = NetworkRequest::getNetworkResponse(assetsUrl);
   QString v2rayZipFilePath =
     QDir(QDir::currentPath())
       .filePath(QString("v2ray-core-%1.zip").arg(latestVersion));
@@ -140,7 +140,8 @@ bool V2RayCore::upgrade() {
 }
 
 QString V2RayCore::getLatestVersion() {
-  QByteArray releaseJsonStr = NetworkRequest::getUrl(V2RAY_RELEASES_URL);
+  QByteArray releaseJsonStr =
+    NetworkRequest::getNetworkResponse(V2RAY_RELEASES_URL);
   QJsonObject latestRelease;
 
   if (!releaseJsonStr.size()) {

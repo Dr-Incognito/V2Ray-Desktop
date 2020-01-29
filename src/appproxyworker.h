@@ -15,9 +15,11 @@ class AppProxyWorker : public QObject {
 
  public slots:
   void getServerLatency(QJsonArray servers);
+  void getGfwList(QString gfwListUrl);
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
+  void gfwListReady(QByteArray gfwList);
 
  private:
   QString getServerAddr(QJsonObject server);

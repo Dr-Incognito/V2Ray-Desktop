@@ -23,6 +23,7 @@ class AppProxy : public QObject {
 
  signals:
   void getServerLatencyStarted(QJsonArray servers);
+  void getGfwListStarted(QString gfwListUrl);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
@@ -67,6 +68,7 @@ class AppProxy : public QObject {
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
+  void gfwListReady(QByteArray gfwList);
 
  private:
   V2RayCore& v2ray;
