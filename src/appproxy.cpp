@@ -32,7 +32,8 @@ AppProxy::AppProxy(QObject* parent)
   // Setup Worker -> getGfwList
   connect(this, &AppProxy::getGfwListStarted, worker,
           &AppProxyWorker::getGfwList);
-  connect(worker, &AppProxyWorker::gfwListReady, this, &AppProxy::returnGfwList);
+  connect(worker, &AppProxyWorker::gfwListReady, this,
+          &AppProxy::returnGfwList);
 
   // Setup Worker -> getNetworkStatus
   connect(this, &AppProxy::getNetworkStatusStarted, worker,
@@ -103,7 +104,7 @@ QNetworkProxy AppProxy::getProxy() {
     appConfig["serverProtocol"].toString() == "SOCKS"
       ? QNetworkProxy::Socks5Proxy
       : QNetworkProxy::HttpProxy;
-  int serverPort = appConfig["serverPort"].toString().toInt();
+  int serverPort = appConfig["serverPort"].toInt();
   QNetworkProxy proxy;
   proxy.setType(proxyType);
   proxy.setHostName("127.0.0.1");
@@ -213,11 +214,11 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   }
   if (proxyMode == "global") {
     QString protocol = appConfig["serverProtocol"].toString();
-    proxy.port       = appConfig["serverPort"].toString().toInt();
+    proxy.port       = appConfig["serverPort"].toInt();
     proxy.type       = protocol == "SOCKS" ? NetworkProxyType::SOCKS_PROXY
                                      : NetworkProxyType::HTTP_PROXY;
   } else if (proxyMode == "pac") {
-    proxy.port = appConfig["pacPort"].toString().toInt();
+    proxy.port = appConfig["pacPort"].toInt();
     proxy.type = NetworkProxyType::PAC_PROXY;
     proxy.url  = QString("http://%1:%2/%3")
                   .arg(proxy.host, QString::number(proxy.port), PAC_FILE_NAME);
@@ -326,17 +327,16 @@ QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
     {"protocol", "vmess"},
     {"settings",
      QJsonObject{
-       {"vnext",
-        QJsonArray{QJsonObject{
-          {"address", serverConfig["serverAddr"].toString()},
-          {"port", serverConfig["serverPort"].toString().toInt()},
-          {"users",
-           QJsonArray{QJsonObject{
-             {"id", serverConfig["id"].toString()},
-             {"alterId", serverConfig["alterId"].toString().toInt()},
-             {"level", serverConfig["level"].toString().toInt()},
-             {"security", serverConfig["security"].toString().toLower()},
-           }}}}}}}},
+       {"vnext", QJsonArray{QJsonObject{
+                   {"address", serverConfig["serverAddr"].toString()},
+                   {"port", serverConfig["serverPort"].toInt()},
+                   {"users", QJsonArray{QJsonObject{
+                               {"id", serverConfig["id"].toString()},
+                               {"alterId", serverConfig["alterId"].toInt()},
+                               {"level", serverConfig["level"].toInt()},
+                               {"security",
+                                serverConfig["security"].toString().toLower()},
+                             }}}}}}}},
     {"tag", "proxy-vmess"}};
 
   QJsonObject streamSettings = getV2RayStreamSettingsConfig(serverConfig);
@@ -395,13 +395,13 @@ QJsonObject AppProxy::getV2RayStreamSettingsConfig(
     streamSettings.insert(
       "kcpSettings",
       QJsonObject{
-        {"mtu", serverConfig["kcpMtu"].toString().toInt()},
-        {"tti", serverConfig["kcpTti"].toString().toInt()},
-        {"uplinkCapacity", serverConfig["kcpUpLink"].toString().toInt()},
-        {"downlinkCapacity", serverConfig["kcpDownLink"].toString().toInt()},
+        {"mtu", serverConfig["kcpMtu"].toInt()},
+        {"tti", serverConfig["kcpTti"].toInt()},
+        {"uplinkCapacity", serverConfig["kcpUpLink"].toInt()},
+        {"downlinkCapacity", serverConfig["kcpDownLink"].toInt()},
         {"congestion", serverConfig["kcpCongestion"].toBool()},
-        {"readBufferSize", serverConfig["kcpReadBuffer"].toString().toInt()},
-        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toString().toInt()},
+        {"readBufferSize", serverConfig["kcpReadBuffer"].toInt()},
+        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toInt()},
         {"header",
          QJsonObject{
            {"type", serverConfig["packetHeader"].toString().toLower()}}}});
@@ -476,7 +476,7 @@ QJsonObject AppProxy::getPrettyShadowsocksConfig(
      QJsonObject{{"servers",
                   QJsonArray{QJsonObject{
                     {"address", serverConfig["serverAddr"].toString()},
-                    {"port", serverConfig["serverPort"].toString().toInt()},
+                    {"port", serverConfig["serverPort"].toInt()},
                     {"method", serverConfig["encryption"].toString().toLower()},
                     {"password", serverConfig["password"].toString()}}}}}},
     {"streamSettings", QJsonObject{{"network", "tcp"}}},

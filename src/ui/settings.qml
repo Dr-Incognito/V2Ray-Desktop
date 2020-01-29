@@ -195,9 +195,9 @@ ColumnLayout {
                     "enableUdp": checkboxEnableUdp.checked,
                     "serverProtocol": comboServerProtocol.currentText,
                     "serverIp": textServerIpAddr.text,
-                    "serverPort": textServerPort.text,
-                    "pacPort": textPacServerPort.text,
-                    "mux": textMux.text,
+                    "serverPort": parseInt(textServerPort.text),
+                    "pacPort": parseInt(textPacServerPort.text),
+                    "mux": parseInt(textMux.text),
                     "dns": textDnsServer.text
                 }
                 AppProxy.saveAppConfig(JSON.stringify(config))

@@ -14,10 +14,9 @@
 
 NetworkRequest::NetworkRequest() {}
 
-
 QByteArray NetworkRequest::getNetworkResponse(QString url,
-                                  QNetworkProxy* proxy,
-                                  int timeout) {
+                                              QNetworkProxy* proxy,
+                                              int timeout) {
   QTimer timer;
   timer.setSingleShot(true);
 
