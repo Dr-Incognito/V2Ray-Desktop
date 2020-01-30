@@ -855,22 +855,22 @@ ColumnLayout {
                         var server = {
                             "serverName": textV2RayServerName.text,
                             "serverAddr": textV2RayServerAddr.text,
-                            "serverPort": textV2RayServerPort.text,
+                            "serverPort": parseInt(textV2RayServerPort.text),
                             "autoConnect": checkboxV2RayAutoConnect.checked,
                             "id": textV2RayId.text,
                             "alterId": textV2RayAlterId.text,
-                            "level": textV2RayLevel.text,
+                            "level": parseInt(textV2RayLevel.text),
                             "security": comboV2RaySecurity.currentText,
                             "network": comboV2RayNetwork.currentValue,
                             "networkSecurity": comboV2RayNetworkSecurity.currentText,
                             "allowInsecure": checkboxV2RayAllowInsecure.checked,
                             "tcpHeaderType": comboV2RayTcpHeaderType.currentText,
-                            "kcpMtu": textV2RayKcpMtu.text,
-                            "kcpTti": textV2RayKcpTti.text,
-                            "kcpUpLink": textV2RayKcpUplinkCapcity.text,
-                            "kcpDownLink": textV2RayKcpDownlinkCapcity.text,
-                            "kcpReadBuffer": textV2RayKcpReadBufferSize.text,
-                            "kcpWriteBuffer": textV2RayKcpWriteBufferSize.text,
+                            "kcpMtu": parseInt(textV2RayKcpMtu.text),
+                            "kcpTti": parseInt(textV2RayKcpTti.text),
+                            "kcpUpLink": parseInt(textV2RayKcpUplinkCapcity.text),
+                            "kcpDownLink": parseInt(textV2RayKcpDownlinkCapcity.text),
+                            "kcpReadBuffer": parseInt(textV2RayKcpReadBufferSize.text),
+                            "kcpWriteBuffer": parseInt(textV2RayKcpWriteBufferSize.text),
                             "kcpCongestion": checkboxV2RayKcpCongestion.checked,
                             "networkHost": textV2RayNetworktHost.text,
                             "networkPath": textV2RayNetworkPath.text,
@@ -1031,7 +1031,7 @@ ColumnLayout {
                         var server = {
                             "serverName": textShadowsocksServerName.text,
                             "serverAddr": textShadowsocksServerAddr.text,
-                            "serverPort": textShadowsocksServerPort.text,
+                            "serverPort": parseInt(textShadowsocksServerPort.text),
                             "autoConnect": checkboxShadowsocksAutoConnect.checked,
                             "encryption": comboShadowsocksEncryptionMethod.currentText,
                             "password": textShadowsocksPassword.text
@@ -1232,11 +1232,11 @@ ColumnLayout {
                 comboAddServerMethod.currentIndex = 0
                 textV2RayServerName.text = server["serverName"] || ""
                 textV2RayServerAddr.text = server["settings"]["vnext"][0]["address"]
-                textV2RayServerPort.text = parseInt(server["settings"]["vnext"][0]["port"])
+                textV2RayServerPort.text = server["settings"]["vnext"][0]["port"]
                 checkboxV2RayAutoConnect.checked = server["autoConnect"]
                 textV2RayId.text = server["settings"]["vnext"][0]["users"][0]["id"]
-                textV2RayAlterId.text = parseInt(server["settings"]["vnext"][0]["users"][0]["alterId"])
-                textV2RayLevel.text = parseInt(server["settings"]["vnext"][0]["users"][0]["level"])
+                textV2RayAlterId.text = server["settings"]["vnext"][0]["users"][0]["alterId"]
+                textV2RayLevel.text = server["settings"]["vnext"][0]["users"][0]["level"]
                 comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(
                         server["settings"]["vnext"][0]["users"][0]["security"])
                 comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(
@@ -1251,12 +1251,12 @@ ColumnLayout {
                         comboV2RayTcpHeaderType.indexOfValue(
                             server["streamSettings"]["tcpSettings"]["type"])
                 } else if (server["streamSettings"]["network"] === "kcp") {
-                    textV2RayKcpMtu.text = parseInt(server["streamSettings"]["kcpSettings"]["mtu"])
-                    textV2RayKcpTti.text = parseInt(server["streamSettings"]["kcpSettings"]["tti"])
-                    textV2RayKcpUplinkCapcity.text = parseInt(server["streamSettings"]["kcpSettings"]["uplinkCapacity"])
-                    textV2RayKcpDownlinkCapcity.text = parseInt(server["streamSettings"]["kcpSettings"]["downlinkCapacity"])
-                    textV2RayKcpReadBufferSize.text = parseInt(server["streamSettings"]["kcpSettings"]["readBufferSize"])
-                    textV2RayKcpWriteBufferSize.text = parseInt(server["streamSettings"]["kcpSettings"]["writeBufferSize"])
+                    textV2RayKcpMtu.text = server["streamSettings"]["kcpSettings"]["mtu"]
+                    textV2RayKcpTti.text = server["streamSettings"]["kcpSettings"]["tti"]
+                    textV2RayKcpUplinkCapcity.text = server["streamSettings"]["kcpSettings"]["uplinkCapacity"]
+                    textV2RayKcpDownlinkCapcity.text = server["streamSettings"]["kcpSettings"]["downlinkCapacity"]
+                    textV2RayKcpReadBufferSize.text = server["streamSettings"]["kcpSettings"]["readBufferSize"]
+                    textV2RayKcpWriteBufferSize.text = server["streamSettings"]["kcpSettings"]["writeBufferSize"]
                     checkboxV2RayKcpCongestion.checked = server["streamSettings"]["kcpSettings"]["congestion"]
                     comboV2RayPacketHeader.currentIndex = comboV2RayPacketHeader.indexOfValue(
                         server["streamSettings"]["kcpSettings"]["header"]["type"])
@@ -1281,7 +1281,7 @@ ColumnLayout {
                 comboAddServerMethod.currentIndex = 1
                 textShadowsocksServerName.text = server["serverName"] || ""
                 textShadowsocksServerAddr.text = server["settings"]["servers"][0]["address"]
-                textShadowsocksServerPort.text = parseInt(server["settings"]["servers"][0]["port"])
+                textShadowsocksServerPort.text = server["settings"]["servers"][0]["port"]
                 checkboxShadowsocksAutoConnect.checked = server["autoConnect"]
                 comboShadowsocksEncryptionMethod.currentIndex =
                     comboShadowsocksEncryptionMethod.find(
