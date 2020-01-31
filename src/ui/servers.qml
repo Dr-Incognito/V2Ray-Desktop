@@ -438,13 +438,28 @@ ColumnLayout {
                 }
 
                 Label {
+                    text: qsTr("MUX")
+                    color: "white"
+                }
+
+                TextField {
+                    id: textMux
+                    color: "white"
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Example: 8 (-1 for disabled)")
+                    background: Rectangle {
+                        color: Qt.rgba(255, 255, 255, .1)
+                        border.color: Qt.rgba(120, 130, 140, .2)
+                    }
+                }
+
+                Label {
                     text: qsTr("Network")
                     color: "white"
                 }
 
                 ComboBox {
                     id: comboV2RayNetwork
-                    Layout.columnSpan: 3
                     Layout.fillWidth: true
                     textRole: "text"
                     valueRole: "value"
@@ -861,6 +876,7 @@ ColumnLayout {
                             "alterId": textV2RayAlterId.text,
                             "level": parseInt(textV2RayLevel.text),
                             "security": comboV2RaySecurity.currentText,
+                            "mux": parseInt(textMux.text),
                             "network": comboV2RayNetwork.currentValue,
                             "networkSecurity": comboV2RayNetworkSecurity.currentText,
                             "allowInsecure": checkboxV2RayAllowInsecure.checked,
@@ -1082,6 +1098,8 @@ ColumnLayout {
                         radius: 4
                     }
                     onClicked: function() {
+                        buttonSubscriptionAddServer.enabled = false
+                        AppProxy.addSubscriptionUrl(textSubsriptionUrl.text)
                     }
                 }
             }
@@ -1239,6 +1257,7 @@ ColumnLayout {
                 textV2RayLevel.text = server["settings"]["vnext"][0]["users"][0]["level"]
                 comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(
                         server["settings"]["vnext"][0]["users"][0]["security"])
+                textMux.text = server["mux"]["enabled"] ? server["mux"]["concurrency"] : -1
                 comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(
                         server["streamSettings"]["network"])
                 comboV2RayNetworkSecurity.currentIndex =

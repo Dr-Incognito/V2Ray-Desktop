@@ -3,13 +3,17 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include <QByteArray>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
 #include <QNetworkProxy>
+#include <QPair>
 #include <QSysInfo>
+#include <QUrl>
+#include <QUrlQuery>
 
 #include "constants.h"
 #include "networkproxy.h"
@@ -40,6 +44,12 @@ AppProxy::AppProxy(QObject* parent)
           &AppProxyWorker::getUrlAccessibility);
   connect(worker, &AppProxyWorker::urlAccessibilityReady, this,
           &AppProxy::returnNetworkAccessiblity);
+
+  // Setup Worker -> getSubscriptionServers
+  connect(this, &AppProxy::getSubscriptionServersStarted, worker,
+          &AppProxyWorker::getSubscriptionServers);
+  connect(worker, &AppProxyWorker::subscriptionServersReady, this,
+          &AppProxy::addSubsriptionServers);
 
   workerThread.start();
 }
@@ -324,7 +334,15 @@ QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
   QJsonObject v2RayConfig{
     {"autoConnect", serverConfig["autoConnect"].toBool()},
     {"serverName", serverConfig["serverName"].toString()},
+    {"subscription", serverConfig.contains("subscription")
+                       ? serverConfig["subscription"].toString()
+                       : ""},
     {"protocol", "vmess"},
+    {"mux",
+     QJsonObject{
+       {"enabled", serverConfig["mux"].toInt() != 1},
+       {"concurrency", serverConfig["mux"].toInt()},
+     }},
     {"settings",
      QJsonObject{
        {"vnext", QJsonArray{QJsonObject{
@@ -471,6 +489,9 @@ QJsonObject AppProxy::getPrettyShadowsocksConfig(
   return QJsonObject{
     {"autoConnect", serverConfig["autoConnect"].toBool()},
     {"serverName", serverConfig["serverName"].toString()},
+    {"subscription", serverConfig.contains("subscription")
+                       ? serverConfig["subscription"].toString()
+                       : ""},
     {"protocol", "shadowsocks"},
     {"settings",
      QJsonObject{{"servers",
@@ -483,7 +504,94 @@ QJsonObject AppProxy::getPrettyShadowsocksConfig(
     {"tag", "proxy-shadowsocks"}};
 }
 
-void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {}
+void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
+  emit getSubscriptionServersStarted(subsriptionUrl);
+}
+
+void AppProxy::addSubsriptionServers(QString subsriptionUrl,
+                                     QString subsriptionServers) {
+  if (!subsriptionServers.size()) {
+    emit addServerError("Failed to get subscription servers from URL.");
+    return;
+  }
+  // Remove servers from the subscription if exists
+  configurator.removeSubscriptionServers(subsriptionUrl);
+  // Add new servers
+  QStringList servers = subsriptionServers.split('\n');
+  for (QString server : servers) {
+    if (server.startsWith("ss://")) {
+      QJsonObject serverConfig =
+        getShadowsocksServerFromUrl(server, subsriptionUrl);
+      if (serverConfig.contains("obfs")) {
+        qWarning() << "Ignore Shadowsocks server with obfs: " << serverConfig;
+        continue;
+      }
+      configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
+    } else if (server.startsWith("vmess://")) {
+      QJsonObject serverConfig =
+        QJsonDocument::fromJson(QByteArray::fromBase64(server.mid(8).toUtf8()))
+          .object();
+      // serverConfig["subscription"] = subsriptionUrl;
+      // configurator.addServer(getPrettyV2RayConfig(serverConfig));
+    } else {
+      qWarning() << QString("Ignore subscription server: %1").arg(server);
+    }
+  }
+  emit serversChanged();
+}
+
+QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
+                                            QString subscriptionUrl) {}
+
+QJsonObject AppProxy::getShadowsocksServerFromUrl(QString serverUrl,
+                                                  QString subscriptionUrl) {
+  serverUrl             = serverUrl.mid(5);
+  int atIndex           = serverUrl.indexOf('@');
+  int colonIndex        = serverUrl.indexOf(':');
+  int splashIndex       = serverUrl.indexOf('/');
+  int sharpIndex        = serverUrl.indexOf('#');
+  int questionMarkIndex = serverUrl.indexOf('?');
+
+  QString confidential =
+    QByteArray::fromBase64(serverUrl.left(atIndex).toUtf8());
+  QString serverAddr = serverUrl.mid(atIndex + 1, colonIndex - atIndex - 1);
+  int serverPort =
+    serverUrl.mid(colonIndex + 1, splashIndex - colonIndex - 1).toInt();
+  QString options =
+    serverUrl.mid(questionMarkIndex + 1, sharpIndex - questionMarkIndex - 1);
+  QString serverName =
+    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8());
+
+  colonIndex         = confidential.indexOf(':');
+  QString encryption = confidential.left(colonIndex);
+  QString password   = confidential.mid(colonIndex + 1);
+
+  QJsonObject serverConfig{{"serverName", serverName},
+                           {"autoConnect", false},
+                           {"subscription", subscriptionUrl},
+                           {"serverAddr", serverAddr},
+                           {"serverPort", serverPort},
+                           {"encryption", encryption},
+                           {"password", password}};
+
+  QJsonObject obfsOptions;
+  for (QPair<QString, QString> p : QUrlQuery(options).queryItems()) {
+    if (p.first == "plugin") {
+      QStringList obfs =
+        QUrl::fromPercentEncoding(p.second.toUtf8()).split(';');
+      for (QString o : obfs) {
+        QStringList t = o.split('=');
+        if (t.size() == 2) {
+          obfsOptions[t[0]] = t[1];
+        }
+      }
+    }
+  }
+  if (obfsOptions.size()) {
+    serverConfig["obfs"] = obfsOptions;
+  }
+  return serverConfig;
+}
 
 void AppProxy::addServerConfigFile(QString configFilePath) {}
 

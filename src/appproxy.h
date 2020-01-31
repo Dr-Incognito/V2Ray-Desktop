@@ -25,6 +25,7 @@ class AppProxy : public QObject {
   void getServerLatencyStarted(QJsonArray servers);
   void getGfwListStarted(QString gfwListUrl);
   void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
+  void getSubscriptionServersStarted(QString url);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
@@ -75,6 +76,8 @@ class AppProxy : public QObject {
   void returnServerLatency(QMap<QString, QVariant> latency);
   void returnGfwList(QByteArray gfwList);
   void returnNetworkAccessiblity(QMap<QString, bool> accessible);
+  void addSubsriptionServers(QString subsriptionUrl,
+                             QString subsriptionServers);
 
  private:
   V2RayCore& v2ray;
@@ -85,9 +88,13 @@ class AppProxy : public QObject {
   QThread workerThread;
 
   QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
+  QJsonObject getV2RayServerFromUrl(QString serverUrl,
+                                    QString subscriptionUrl = "");
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);
   QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
+  QJsonObject getShadowsocksServerFromUrl(QString serverUrl,
+                                          QString subscriptionUrl = "");
   QNetworkProxy getQProxy();
 };
 
