@@ -16,7 +16,7 @@ class AppProxyWorker : public QObject {
 
  public slots:
   void getServerLatency(QJsonArray servers);
-  void getGfwList(QString gfwListUrl);
+  void getGfwList(QString gfwListUrl, QNetworkProxy proxy);
   void getUrlAccessibility(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServers(QString url, QNetworkProxy proxy);
 

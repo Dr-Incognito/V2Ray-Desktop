@@ -23,7 +23,7 @@ class AppProxy : public QObject {
 
  signals:
   void getServerLatencyStarted(QJsonArray servers);
-  void getGfwListStarted(QString gfwListUrl);
+  void getGfwListStarted(QString gfwListUrl, QNetworkProxy proxy);
   void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServersStarted(QString url, QNetworkProxy proxy);
 

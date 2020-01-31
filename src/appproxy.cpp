@@ -249,7 +249,7 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 }
 
 void AppProxy::updateGfwList(QString gfwListUrl) {
-  emit getGfwListStarted(gfwListUrl);
+  emit getGfwListStarted(gfwListUrl, getQProxy());
 }
 
 void AppProxy::returnGfwList(QByteArray gfwList) {
