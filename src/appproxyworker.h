@@ -18,11 +18,14 @@ class AppProxyWorker : public QObject {
   void getServerLatency(QJsonArray servers);
   void getGfwList(QString gfwListUrl);
   void getUrlAccessibility(QMap<QString, bool> urls, QNetworkProxy proxy);
+  void getSubscriptionServers(QString url);
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
   void gfwListReady(QByteArray gfwList);
   void urlAccessibilityReady(QMap<QString, bool> accessible);
+  void subscriptionServersReady(QString subscriptionUrl,
+                                QString subscriptionServers);
 
  private:
   QString getServerAddr(QJsonObject server);

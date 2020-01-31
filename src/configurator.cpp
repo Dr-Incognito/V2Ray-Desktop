@@ -16,7 +16,6 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"serverIp", DEFAULT_SERVER_IP},
   {"serverPort", DEFAULT_SERVER_PORT},
   {"pacPort", DEFAULT_PAC_PORT},
-  {"mux", DEFAULT_MUX},
   {"dns", DEFAULT_DNS_SERVER},
   {"proxyMode", DEFAULT_PROXY_MODE},
   {"gfwListUrl", DEFAULT_GFW_LIST_URL},
@@ -69,7 +68,8 @@ QString Configurator::getV2RayConfigFilePath() {
 }
 
 QString Configurator::getGfwListFilePath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(GFW_LIST_FILE_NAME);
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(GFW_LIST_FILE_NAME);
 }
 
 QJsonObject Configurator::getAppConfig() {
@@ -182,12 +182,13 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
     QJsonObject server = (*itr).toObject();
     if (server.contains("serverName") &&
         server["serverName"].toString() == serverName) {
-      qDebug() << serverName << server;
+      serverConfig["subscription"] = server.contains("subscription")
+                                       ? server["subscription"].toString()
+                                       : "";
       *itr     = serverConfig;
       isEdited = true;
     }
   }
-  qDebug() << servers;
   setAppConfig(QJsonObject{{"servers", servers}});
   return isEdited;
 }
@@ -208,9 +209,23 @@ int Configurator::removeServer(QString serverName) {
   return serverIndex != -1;
 }
 
+int Configurator::removeSubscriptionServers(QString subscriptionUrl) {
+  QJsonArray servers = getServers();
+  QJsonArray newServers;
+  for (int i = 0; i < servers.size(); ++i) {
+    QJsonObject server = servers[i].toObject();
+    if (server.contains("subscription") &&
+        server["subscription"].toString() == subscriptionUrl) {
+      continue;
+    }
+    newServers.append(server);
+  }
+  setAppConfig(QJsonObject{{"servers", newServers}});
+  return servers.size() - newServers.size();
+}
+
 QJsonArray Configurator::getConnectedServers() {
   QJsonObject appConfig = getAppConfig();
-  int muxValue          = appConfig["mux"].toInt();
 
   QJsonArray servers = getServers();
   QJsonArray connectedServers;
@@ -221,9 +236,6 @@ QJsonArray Configurator::getConnectedServers() {
 
     if (connectedServerNames.contains(serverName)) {
       server.remove("autoConnect");
-      if (muxValue > 0 && server["protocol"].toString() == "vmess") {
-        server["mux"] = QJsonObject{{"enabled", true}, {"mux", muxValue}};
-      }
       connectedServers.append(server);
     }
   }

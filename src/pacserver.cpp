@@ -73,20 +73,21 @@ void PacServer::onNewConnection() {
 QString PacServer::getLocalProxy() {
   QJsonObject appConfig = configurator.getAppConfig();
   return QString("%1 %2:%3")
-    .arg(
-      appConfig["serverProtocol"].toString() == "SOCKS" ? "SOCKS5" : "PROXY",
-      appConfig["serverIp"].toString(),
-      QString::number(appConfig["serverPort"].toInt()));
+    .arg(appConfig["serverProtocol"].toString() == "SOCKS" ? "SOCKS5" : "PROXY",
+         appConfig["serverIp"].toString(),
+         QString::number(appConfig["serverPort"].toInt()));
 }
 
 QString PacServer::getPacRules() {
   QJsonObject appConfig = configurator.getAppConfig();
   QStringList rules;
   QFile gfwListFile(Configurator::getGfwListFilePath());
-  if (gfwListFile.exists() && gfwListFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+  if (gfwListFile.exists() &&
+      gfwListFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> gfwList = gfwListFile.readAll().split('\n');
     for (QString gfwRule : gfwList) {
-      if (gfwRule.startsWith("!") || gfwRule.startsWith("[AutoProxy") || gfwRule.size() == 0) {
+      if (gfwRule.startsWith("!") || gfwRule.startsWith("[AutoProxy") ||
+          gfwRule.size() == 0) {
         continue;
       }
       rules.append(QString("\"%1\"").arg(gfwRule));

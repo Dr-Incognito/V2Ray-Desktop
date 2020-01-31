@@ -95,6 +95,22 @@ ColumnLayout {
         }
 
         Label {
+            text: qsTr("PAC Server Port")
+            color: "white"
+        }
+
+        TextField {
+            id: textPacServerPort
+            color: "white"
+            Layout.fillWidth: true
+            placeholderText: qsTr("Example: 1085")
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+        }
+
+        Label {
             text: qsTr("Listening IP Address")
             color: "white"
         }
@@ -128,38 +144,6 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("PAC Server Port")
-            color: "white"
-        }
-
-        TextField {
-            id: textPacServerPort
-            color: "white"
-            Layout.fillWidth: true
-            placeholderText: qsTr("Example: 1085")
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-        }
-
-        Label {
-            text: qsTr("MUX")
-            color: "white"
-        }
-
-        TextField {
-            id: textMux
-            color: "white"
-            Layout.fillWidth: true
-            placeholderText: qsTr("Example: 8 (-1 for disabled)")
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-        }
-
-        Label {
             text: qsTr("DNS Server")
             color: "white"
         }
@@ -167,7 +151,7 @@ ColumnLayout {
         TextField {
             id: textDnsServer
             color: "white"
-            Layout.minimumWidth: 180
+            Layout.columnSpan: 3
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             background: Rectangle {
@@ -197,7 +181,6 @@ ColumnLayout {
                     "serverIp": textServerIpAddr.text,
                     "serverPort": parseInt(textServerPort.text),
                     "pacPort": parseInt(textPacServerPort.text),
-                    "mux": parseInt(textMux.text),
                     "dns": textDnsServer.text
                 }
                 AppProxy.saveAppConfig(JSON.stringify(config))
@@ -235,7 +218,6 @@ ColumnLayout {
             textServerIpAddr.text = config["serverIp"]
             textServerPort.text = config["serverPort"]
             textPacServerPort.text = config["pacPort"]
-            textMux.text = config["mux"]
             textDnsServer.text = config["dns"]
         }
         onAppConfigChanged: function() {
