@@ -61,8 +61,11 @@ void AppProxyWorker::getUrlAccessibility(QMap<QString, bool> urls,
   emit urlAccessibilityReady(accessible);
 }
 
-void AppProxyWorker::getSubscriptionServers(QString subscriptionUrl) {
-  QByteArray subscriptionServers =
-    QByteArray::fromBase64(NetworkRequest::getNetworkResponse(subscriptionUrl));
+void AppProxyWorker::getSubscriptionServers(QString subscriptionUrl,
+                                            QNetworkProxy proxy) {
+  QNetworkProxy* p =
+    proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
+  QByteArray subscriptionServers = QByteArray::fromBase64(
+    NetworkRequest::getNetworkResponse(subscriptionUrl, p));
   emit subscriptionServersReady(subscriptionUrl, subscriptionServers);
 }

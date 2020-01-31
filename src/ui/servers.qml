@@ -1,4 +1,4 @@
-import QtQuick 2.14
+﻿import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
@@ -393,22 +393,6 @@ ColumnLayout {
                 }
 
                 Label {
-                    text: qsTr("Level")
-                    color: "white"
-                }
-
-                TextField {
-                    id: textV2RayLevel
-                    color: "white"
-                    Layout.fillWidth: true
-                    placeholderText: qsTr("Example: 1")
-                    background: Rectangle {
-                        color: Qt.rgba(255, 255, 255, .1)
-                        border.color: Qt.rgba(120, 130, 140, .2)
-                    }
-                }
-
-                Label {
                     text: qsTr("Security")
                     color: "white"
                 }
@@ -460,6 +444,7 @@ ColumnLayout {
 
                 ComboBox {
                     id: comboV2RayNetwork
+                    Layout.columnSpan: 3
                     Layout.fillWidth: true
                     textRole: "text"
                     valueRole: "value"
@@ -874,7 +859,6 @@ ColumnLayout {
                             "autoConnect": checkboxV2RayAutoConnect.checked,
                             "id": textV2RayId.text,
                             "alterId": textV2RayAlterId.text,
-                            "level": parseInt(textV2RayLevel.text),
                             "security": comboV2RaySecurity.currentText,
                             "mux": parseInt(textMux.text),
                             "network": comboV2RayNetwork.currentValue,
@@ -1235,6 +1219,10 @@ ColumnLayout {
             menuItemTestAllLatency.enabled = true
         }
 
+        onAddServerError: function(errorMessage) {
+            console.log(errorMessage)
+        }
+
         onServersChanged: function() {
             AppProxy.getServers()
             popUpServer.close()
@@ -1254,7 +1242,6 @@ ColumnLayout {
                 checkboxV2RayAutoConnect.checked = server["autoConnect"]
                 textV2RayId.text = server["settings"]["vnext"][0]["users"][0]["id"]
                 textV2RayAlterId.text = server["settings"]["vnext"][0]["users"][0]["alterId"]
-                textV2RayLevel.text = server["settings"]["vnext"][0]["users"][0]["level"]
                 comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(
                         server["settings"]["vnext"][0]["users"][0]["security"])
                 textMux.text = server["mux"]["enabled"] ? server["mux"]["concurrency"] : -1
@@ -1324,7 +1311,6 @@ ColumnLayout {
         checkboxV2RayAutoConnect.checked = false
         textV2RayId.text = ""
         textV2RayAlterId.text = ""
-        textV2RayLevel.text = ""
         comboV2RaySecurity.currentIndex = 0
         comboV2RayNetwork.currentIndex = 0
         comboV2RayNetworkSecurity.currentIndex = 0

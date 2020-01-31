@@ -209,19 +209,26 @@ int Configurator::removeServer(QString serverName) {
   return serverIndex != -1;
 }
 
-int Configurator::removeSubscriptionServers(QString subscriptionUrl) {
+QMap<QString, QJsonObject> Configurator::removeSubscriptionServers(
+  QString subscriptionUrl) {
   QJsonArray servers = getServers();
-  QJsonArray newServers;
+  QMap<QString, QJsonObject> removedServers;
+  QJsonArray remainingServers;
+
   for (int i = 0; i < servers.size(); ++i) {
     QJsonObject server = servers[i].toObject();
+    QString serverName =
+      server.contains("serverName") ? server["serverName"].toString() : "";
+
     if (server.contains("subscription") &&
         server["subscription"].toString() == subscriptionUrl) {
+      removedServers[serverName] = server;
       continue;
     }
-    newServers.append(server);
+    remainingServers.append(server);
   }
-  setAppConfig(QJsonObject{{"servers", newServers}});
-  return servers.size() - newServers.size();
+  setAppConfig(QJsonObject{{"servers", remainingServers}});
+  return removedServers;
 }
 
 QJsonArray Configurator::getConnectedServers() {

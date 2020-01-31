@@ -109,6 +109,11 @@ void AppProxy::getNetworkStatus() {
 }
 
 QNetworkProxy AppProxy::getQProxy() {
+  QJsonArray connectedServers = configurator.getConnectedServers();
+  if (connectedServers.size() == 0) {
+    return QNetworkProxy::NoProxy;
+  }
+
   QJsonObject appConfig = configurator.getAppConfig();
   QNetworkProxy::ProxyType proxyType =
     appConfig["serverProtocol"].toString() == "SOCKS"
@@ -351,7 +356,6 @@ QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
                    {"users", QJsonArray{QJsonObject{
                                {"id", serverConfig["id"].toString()},
                                {"alterId", serverConfig["alterId"].toInt()},
-                               {"level", serverConfig["level"].toInt()},
                                {"security",
                                 serverConfig["security"].toString().toLower()},
                              }}}}}}}},
@@ -428,12 +432,12 @@ QJsonObject AppProxy::getV2RayStreamSettingsConfig(
       "wsSettings",
       QJsonObject{
         {"path", serverConfig["networkPath"].toString()},
-        {"headers", QJsonObject{{"host", serverConfig["serverAddr"]}}}});
+        {"headers", QJsonObject{{"host", serverConfig["networkHost"]}}}});
   } else if (network == "http") {
     streamSettings.insert(
       "httpSettings",
       QJsonObject{
-        {"host", QJsonArray{serverConfig["serverAddr"].toString()}},
+        {"host", QJsonArray{serverConfig["networkHost"].toString()}},
         {"path", QJsonArray{serverConfig["networkPath"].toString()}}});
   } else if (network == "domainsocket") {
     streamSettings.insert(
@@ -505,7 +509,7 @@ QJsonObject AppProxy::getPrettyShadowsocksConfig(
 }
 
 void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
-  emit getSubscriptionServersStarted(subsriptionUrl);
+  emit getSubscriptionServersStarted(subsriptionUrl, getQProxy());
 }
 
 void AppProxy::addSubsriptionServers(QString subsriptionUrl,
@@ -515,9 +519,11 @@ void AppProxy::addSubsriptionServers(QString subsriptionUrl,
     return;
   }
   // Remove servers from the subscription if exists
-  configurator.removeSubscriptionServers(subsriptionUrl);
+  QMap<QString, QJsonObject> removedServers =
+    configurator.removeSubscriptionServers(subsriptionUrl);
   // Add new servers
   QStringList servers = subsriptionServers.split('\n');
+  QJsonObject serverConfig;
   for (QString server : servers) {
     if (server.startsWith("ss://")) {
       QJsonObject serverConfig =
@@ -526,22 +532,71 @@ void AppProxy::addSubsriptionServers(QString subsriptionUrl,
         qWarning() << "Ignore Shadowsocks server with obfs: " << serverConfig;
         continue;
       }
-      configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
+      serverConfig = getPrettyShadowsocksConfig(serverConfig);
     } else if (server.startsWith("vmess://")) {
-      QJsonObject serverConfig =
-        QJsonDocument::fromJson(QByteArray::fromBase64(server.mid(8).toUtf8()))
-          .object();
-      // serverConfig["subscription"] = subsriptionUrl;
-      // configurator.addServer(getPrettyV2RayConfig(serverConfig));
+      serverConfig =
+        getPrettyV2RayConfig(getV2RayServerFromUrl(server, subsriptionUrl));
     } else {
       qWarning() << QString("Ignore subscription server: %1").arg(server);
+      continue;
     }
+    // Recover auto connect option for the server
+    QString serverName = serverConfig.contains("serverName")
+                           ? serverConfig["serverName"].toString()
+                           : "";
+    serverConfig["autoConnect"] =
+      removedServers.contains(serverName)
+        ? removedServers[serverName]["autoConnect"].toBool()
+        : false;
+    configurator.addServer(serverConfig);
   }
   emit serversChanged();
 }
 
 QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
-                                            QString subscriptionUrl) {}
+                                            QString subscriptionUrl) {
+  // Ref:
+  // https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
+  const QMap<QString, QString> NETWORK_MAPPER = {
+    {"tcp", "tcp"}, {"kcp", "kcp"},   {"ws", "ws"},
+    {"h2", "http"}, {"quic", "quic"},
+  };
+  QJsonObject rawServerConfig =
+    QJsonDocument::fromJson(QByteArray::fromBase64(server.mid(8).toUtf8()))
+      .object();
+  QString network =
+    rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
+  QJsonObject serverConfig{
+    {"autoConnect", false},
+    {"serverName",
+     rawServerConfig.contains("ps") ? rawServerConfig["ps"].toString() : ""},
+    {"serverAddr",
+     rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : ""},
+    {"serverPort",
+     rawServerConfig.contains("port") ? rawServerConfig["port"].toInt() : 0},
+    {"subscription", subscriptionUrl},
+    {"id",
+     rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
+    {"alterId", rawServerConfig.contains("aid")
+                  ? rawServerConfig["aid"].toString().toInt()
+                  : 0},
+    {"mux", -1},
+    {"security", "auto"},
+    {"network",
+     NETWORK_MAPPER.contains(network) ? NETWORK_MAPPER[network] : "tcp"},
+    {"networkHost", rawServerConfig.contains("host")
+                      ? rawServerConfig["host"].toString()
+                      : ""},
+    {"networkPath", rawServerConfig.contains("path")
+                      ? rawServerConfig["path"].toString()
+                      : ""},
+    {"tcpHeaderType", rawServerConfig.contains("type")
+                        ? rawServerConfig["type"].toString()
+                        : ""},
+    {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
+  qDebug() << rawServerConfig << serverConfig;
+  return serverConfig;
+}
 
 QJsonObject AppProxy::getShadowsocksServerFromUrl(QString serverUrl,
                                                   QString subscriptionUrl) {
