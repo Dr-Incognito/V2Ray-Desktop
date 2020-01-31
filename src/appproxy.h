@@ -25,7 +25,7 @@ class AppProxy : public QObject {
   void getServerLatencyStarted(QJsonArray servers);
   void getGfwListStarted(QString gfwListUrl);
   void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
-  void getSubscriptionServersStarted(QString url);
+  void getSubscriptionServersStarted(QString url, QNetworkProxy proxy);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
