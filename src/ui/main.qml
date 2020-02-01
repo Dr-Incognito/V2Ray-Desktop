@@ -14,6 +14,7 @@ ApplicationWindow {
     title: qsTr("V2Ray Desktop")
     x: (screen.width - appWindow.width) / 2
     y: (screen.height - appWindow.height) / 2
+    property var initStart: true
 
     onClosing: function() {
         appWindow.hide()
@@ -442,6 +443,10 @@ ApplicationWindow {
             onAppConfigReady: function(config) {
                 config = JSON.parse(config)
                 updateProxyModeChecked(config["proxyMode"])
+                if (appWindow.initStart && config["hideWindow"]) {
+                  appWindow.hide()
+                  appWindow.initStart = false
+                }
                 if ("servers" in config) {
                     updateServerList(config["servers"])
                 }

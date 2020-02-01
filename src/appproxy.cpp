@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <cstdlib>
 
-#include <QCoreApplication>
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -167,15 +167,21 @@ void AppProxy::setAppConfig(QString configString) {
 
 void AppProxy::setAutoStart(bool autoStart) {
   const QString APP_NAME = "V2Ray Desktop";
-  const QString APP_PATH = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+  const QString APP_PATH =
+    QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
 #if defined(Q_OS_WIN)
-  QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+  QSettings settings(
+    "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+    QSettings::NativeFormat);
 #elif defined(Q_OS_LINUX)
   QFile srcFile(":/misc/tpl-linux-autostart.desktop");
-  QFile dstFile(QString("%1/.config/autostart/v2ray-dekstop.desktop").arg(QDir::homePath()));
+  QFile dstFile(QString("%1/.config/autostart/v2ray-dekstop.desktop")
+                  .arg(QDir::homePath()));
 #elif defined(Q_OS_MAC)
   QFile srcFile(":/misc/tpl-macos-autostart.plist");
-  QFile dstFile(QString("%1/Library/LaunchAgents/com.v2ray.desktop.launcher.plist").arg(QDir::homePath()));
+  QFile dstFile(
+    QString("%1/Library/LaunchAgents/com.v2ray.desktop.launcher.plist")
+      .arg(QDir::homePath()));
 #endif
 
 #if defined(Q_OS_WIN)
@@ -187,7 +193,8 @@ void AppProxy::setAutoStart(bool autoStart) {
 #elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
   if (autoStart) {
     QString fileContent;
-    if (srcFile.exists() && srcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (srcFile.exists() &&
+        srcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
       fileContent = srcFile.readAll();
     }
     if (dstFile.open(QIODevice::WriteOnly)) {
@@ -254,7 +261,7 @@ void AppProxy::getProxySettings() {
                   {"isPacServerRunning", isPacServerRunning},
                   {"proxyMode", proxyMode},
                   {"connectedServers", connectedServers.join(", ")}})
-              .toJson());
+      .toJson());
 }
 
 void AppProxy::setSystemProxyMode(QString proxyMode) {
