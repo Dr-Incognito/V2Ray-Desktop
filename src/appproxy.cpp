@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include <QCoreApplication>
 #include <QByteArray>
 #include <QDateTime>
 #include <QDebug>
@@ -11,6 +12,7 @@
 #include <QJsonDocument>
 #include <QNetworkProxy>
 #include <QPair>
+#include <QSettings>
 #include <QSysInfo>
 #include <QUrl>
 #include <QUrlQuery>
@@ -146,7 +148,7 @@ void AppProxy::getAppConfig() {
   emit appConfigReady(QJsonDocument(appConfig).toJson());
 }
 
-void AppProxy::saveAppConfig(QString configString) {
+void AppProxy::setAppConfig(QString configString) {
   QJsonDocument configDoc = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject appConfig   = configDoc.object();
   // TODO: Check app config before saving
@@ -156,6 +158,48 @@ void AppProxy::saveAppConfig(QString configString) {
   qInfo() << "Application config updated. Restarting V2Ray ...";
   // Restart V2Ray Core
   v2ray.restart();
+  // Update auto start item
+  if (appConfig.contains("autoStart")) {
+    bool autoStart = appConfig["autoStart"].toBool();
+    setAutoStart(autoStart);
+  }
+}
+
+void AppProxy::setAutoStart(bool autoStart) {
+  const QString APP_NAME = "V2Ray Desktop";
+  const QString APP_PATH = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+#if defined(Q_OS_WIN)
+  QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+#elif defined(Q_OS_LINUX)
+  QFile srcFile(":/misc/tpl-linux-autostart.desktop");
+  QFile dstFile(QString("%1/.config/autostart/v2ray-dekstop.desktop").arg(QDir::homePath()));
+#elif defined(Q_OS_MAC)
+  QFile srcFile(":/misc/tpl-macos-autostart.plist");
+  QFile dstFile(QString("%1/Library/LaunchAgents/com.v2ray.desktop.launcher.plist").arg(QDir::homePath()));
+#endif
+
+#if defined(Q_OS_WIN)
+  if (autoStart) {
+    settings.setValue(APP_NAME, APP_PATH);
+  } else {
+    settings.remove(APP_NAME);
+  }
+#elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
+  if (autoStart) {
+    QString fileContent;
+    if (srcFile.exists() && srcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      fileContent = srcFile.readAll();
+    }
+    if (dstFile.open(QIODevice::WriteOnly)) {
+      dstFile.write(fileContent.arg(APP_PATH).toUtf8());
+      dstFile.close();
+    }
+  } else {
+    if (dstFile.exists()) {
+      dstFile.remove();
+    }
+  }
+#endif
 }
 
 void AppProxy::getLogs() {
@@ -210,7 +254,7 @@ void AppProxy::getProxySettings() {
                   {"isPacServerRunning", isPacServerRunning},
                   {"proxyMode", proxyMode},
                   {"connectedServers", connectedServers.join(", ")}})
-      .toJson());
+              .toJson());
 }
 
 void AppProxy::setSystemProxyMode(QString proxyMode) {

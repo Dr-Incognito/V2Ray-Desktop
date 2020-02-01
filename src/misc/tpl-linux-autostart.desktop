@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=V2Ray-Desktop
+Exec=%1
+Type=Application
+Terminal=false
+X-GNOME-Autostart-enabled=true

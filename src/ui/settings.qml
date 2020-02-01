@@ -183,7 +183,7 @@ ColumnLayout {
                     "pacPort": parseInt(textPacServerPort.text),
                     "dns": textDnsServer.text
                 }
-                AppProxy.saveAppConfig(JSON.stringify(config))
+                AppProxy.setAppConfig(JSON.stringify(config))
             }
         }
     }
