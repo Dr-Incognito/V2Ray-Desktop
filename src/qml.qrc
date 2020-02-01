@@ -20,6 +20,6 @@
         <file>ui/logs.qml</file>
         <file>misc/tpl-pac.js</file>
         <file>misc/tpl-linux-autostart.desktop</file>
-        <file>misc/tpl-macos-autostart.desktop</file>
+        <file>misc/tpl-macos-autostart.plist</file>
     </qresource>
 </RCC>
