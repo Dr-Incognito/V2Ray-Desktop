@@ -102,6 +102,11 @@ ApplicationWindow {
 
             MenuItem {
                 text: qsTr("Scan QR Code on the Screen")
+                onTriggered: function() {
+                    AppProxy.scanQrCodeScreen()
+                    mouseAreaServers.clicked(null)
+                    appWindow.show()
+                }
             }
 
             MenuSeparator {}
