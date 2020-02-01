@@ -58,10 +58,10 @@ void PacServer::onNewConnection() {
        "Content-Type: text/x-ns-proxy-autoconfig; charset=\"utf-8\"\r\n"
        "Connection: keep-alive\r\n\r\n";
 
-  QFile pacFile(":/misc/tpl-pac.js");
+  QFile pacFile(":/misc/tpl-proxy.pac");
   QString proxy = getLocalProxy();
   QString rules = getPacRules();
-  if (pacFile.exists() && pacFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+  if (pacFile.exists() && pacFile.open(QIODevice::ReadOnly)) {
     QString fileContent = pacFile.readAll();
     outputStream
       << fileContent.replace("__PROXY__", proxy).replace("__RULES__", rules);
