@@ -18,7 +18,7 @@
         <file>images/icon-rules.svg</file>
         <file>images/icon-logs.svg</file>
         <file>ui/logs.qml</file>
-        <file>misc/tpl-pac.js</file>
+        <file>misc/tpl-proxy.pac</file>
         <file>misc/tpl-linux-autostart.desktop</file>
         <file>misc/tpl-macos-autostart.plist</file>
     </qresource>
