@@ -122,7 +122,7 @@ ColumnLayout {
                     "proxyMode": comboProxyMode.currentValue,
                     "gfwListUrl": textGfwListUrl.text
                 }
-                AppProxy.saveAppConfig(JSON.stringify(config))
+                AppProxy.setAppConfig(JSON.stringify(config))
                 AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
             }
         }

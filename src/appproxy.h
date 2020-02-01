@@ -55,7 +55,8 @@ class AppProxy : public QObject {
   void setV2RayCoreRunning(bool expectedRunning);
   void getNetworkStatus();
   void getAppConfig();
-  void saveAppConfig(QString configString);
+  void setAppConfig(QString configString);
+  void setAutoStart(bool autoStart);
   void getLogs();
   void clearLogs();
   void getProxySettings();
