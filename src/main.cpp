@@ -40,6 +40,11 @@ void messageHandler(QtMsgType msgType,
 }
 
 int main(int argc, char *argv[]) {
+  QCoreApplication::setApplicationVersion(
+    QString("v%1.%2.%3")
+      .arg(QString::number(APP_VERSION_MAJOR),
+           QString::number(APP_VERSION_MINOR),
+           QString::number(APP_VERSION_PATCH)));
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
   qmlRegisterSingletonType<AppProxy>(

@@ -4,14 +4,16 @@
 #include <cstdlib>
 
 #include <QByteArray>
-#include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QGuiApplication>
 #include <QJsonDocument>
 #include <QNetworkProxy>
 #include <QPair>
+#include <QPixmap>
+#include <QScreen>
 #include <QSettings>
 #include <QSysInfo>
 #include <QUrl>
@@ -20,6 +22,7 @@
 #include "constants.h"
 #include "networkproxy.h"
 #include "networkrequest.h"
+#include "qrcodehelper.h"
 
 AppProxy::AppProxy(QObject* parent)
   : QObject(parent),
@@ -168,7 +171,7 @@ void AppProxy::setAppConfig(QString configString) {
 void AppProxy::setAutoStart(bool autoStart) {
   const QString APP_NAME = "V2Ray Desktop";
   const QString APP_PATH =
-    QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+    QDir::toNativeSeparators(QGuiApplication::applicationFilePath());
 #if defined(Q_OS_WIN)
   QSettings settings(
     "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
@@ -563,8 +566,8 @@ void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
   emit getSubscriptionServersStarted(subsriptionUrl, getQProxy());
 }
 
-void AppProxy::addSubsriptionServers(QString subsriptionUrl,
-                                     QString subsriptionServers) {
+void AppProxy::addSubsriptionServers(QString subsriptionServers,
+                                     QString subsriptionUrl) {
   if (!subsriptionServers.size()) {
     emit addServerError("Failed to get subscription servers from URL.");
     return;
@@ -577,8 +580,7 @@ void AppProxy::addSubsriptionServers(QString subsriptionUrl,
   QJsonObject serverConfig;
   for (QString server : servers) {
     if (server.startsWith("ss://")) {
-      QJsonObject serverConfig =
-        getShadowsocksServerFromUrl(server, subsriptionUrl);
+      serverConfig = getShadowsocksServerFromUrl(server, subsriptionUrl);
       if (serverConfig.contains("obfs")) {
         qWarning() << "Ignore Shadowsocks server with obfs: " << serverConfig;
         continue;
@@ -600,6 +602,8 @@ void AppProxy::addSubsriptionServers(QString subsriptionUrl,
         ? removedServers[serverName]["autoConnect"].toBool()
         : false;
     configurator.addServer(serverConfig);
+    qInfo() << QString("Add a new server[Name=%1] from URI: %2")
+                 .arg(serverName, server);
   }
   emit serversChanged();
 }
@@ -617,12 +621,14 @@ QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
       .object();
   QString network =
     rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
+  QString serverAddr =
+    rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : "";
   QJsonObject serverConfig{
     {"autoConnect", false},
-    {"serverName",
-     rawServerConfig.contains("ps") ? rawServerConfig["ps"].toString() : ""},
-    {"serverAddr",
-     rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : ""},
+    {"serverName", rawServerConfig.contains("ps")
+                     ? rawServerConfig["ps"].toString()
+                     : serverAddr},
+    {"serverAddr", serverAddr},
     {"serverPort",
      rawServerConfig.contains("port") ? rawServerConfig["port"].toInt() : 0},
     {"subscription", subscriptionUrl},
@@ -725,4 +731,20 @@ void AppProxy::removeServer(QString serverName) {
   emit serversChanged();
   // Restart V2Ray Core
   v2ray.restart();
+}
+
+void AppProxy::scanQrCodeScreen() {
+  QStringList servers;
+  QList<QScreen*> screens = QGuiApplication::screens();
+  for (int i = 0; i < screens.size(); ++i) {
+    QPixmap screenshot = screens.at(i)->grabWindow(i);
+    QString serverUrl  = QrCodeHelper::decode(
+      screenshot.toImage().convertToFormat(QImage::Format_Grayscale8));
+    if (serverUrl.size()) {
+      servers.append(serverUrl);
+    }
+  }
+  qInfo() << QString("Add %1 servers from QR code.")
+               .arg(QString::number(servers.size()));
+  addSubsriptionServers(servers.join('\n'));
 }

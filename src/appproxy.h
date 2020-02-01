@@ -72,13 +72,14 @@ class AppProxy : public QObject {
   void addServerConfigFile(QString configFilePath);
   void editServer(QString serverName, QString protocol, QString configString);
   void removeServer(QString serverName);
+  void scanQrCodeScreen();
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
   void returnGfwList(QByteArray gfwList);
   void returnNetworkAccessiblity(QMap<QString, bool> accessible);
-  void addSubsriptionServers(QString subsriptionUrl,
-                             QString subsriptionServers);
+  void addSubsriptionServers(QString subsriptionServers,
+                             QString subsriptionUrl = "");
 
  private:
   V2RayCore& v2ray;

@@ -21,6 +21,7 @@ HEADERS += \
     networkproxy.h \
     networkrequest.h \
     pacserver.h \
+    qrcodehelper.h \
     v2raycore.h \
     zipfile.h
 
@@ -32,10 +33,12 @@ SOURCES += \
     networkproxy.cpp \
     networkrequest.cpp \
     pacserver.cpp \
+    qrcodehelper.cpp \
     v2raycore.cpp \
     zipfile.cpp
 
 include(3rdparty/quazip/quazip/quazip.pri)
+include(3rdparty/qzxing/src/QZXing.pri)
 LIBS += -lz
 
 RESOURCES += qml.qrc
