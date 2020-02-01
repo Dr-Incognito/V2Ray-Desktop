@@ -200,6 +200,7 @@ void AppProxy::setAutoStart(bool autoStart) {
         srcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
       fileContent = srcFile.readAll();
     }
+    qDebug() << fileContent;
     if (dstFile.open(QIODevice::WriteOnly)) {
       dstFile.write(fileContent.arg(APP_PATH).toUtf8());
       dstFile.close();
