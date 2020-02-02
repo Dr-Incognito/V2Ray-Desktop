@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QMap>
 #include <QProcess>
+#include <QSettings>
 
 QStringList NetworkProxyHelper::NETWORK_INTERFACES{"Wi-Fi", "Enternet"};
 
@@ -10,6 +11,21 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
   NetworkProxy proxy;
   proxy.type = NetworkProxyType::DISABLED;
 #if defined(Q_OS_WIN)
+  QSettings internetSettings(
+    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet "
+    "Settings",
+    QSettings::NativeFormat);
+  if (internetSettings.contains("AutoConfigURL")) {
+    proxy.type = NetworkProxyType::PAC_PROXY;
+    proxy.url  = internetSettings.value("AutoConfigURL").toString();
+  } else if (internetSettings.value("ProxyEnable").toInt() == 1 &&
+             internetSettings.contains("ProxyServer")) {
+    QString proxyServer = internetSettings.value("ProxyServer").toString();
+    int colonIndex      = proxyServer.indexOf(':');
+    proxy.type          = NetworkProxyType::SOCKS_PROXY;
+    proxy.host          = proxyServer.left(colonIndex);
+    proxy.port          = proxyServer.mid(colonIndex + 1).toInt();
+  }
 #elif defined(Q_OS_LINUX)
   QProcess p;
   QString httpProxyHost, socksProxyHost;
@@ -121,6 +137,19 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
 
 void NetworkProxyHelper::setSystemProxy(NetworkProxy proxy) {
 #if defined(Q_OS_WIN)
+  QSettings internetSettings(
+    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet "
+    "Settings",
+    QSettings::NativeFormat);
+  if (proxy.type == NetworkProxyType::PAC_PROXY) {
+    internetSettings.setValue("AutoConfigURL", proxy.url);
+  } else if (proxy.type == NetworkProxyType::HTTP_PROXY ||
+             proxy.type == NetworkProxyType::SOCKS_PROXY) {
+    internetSettings.setValue("ProxyEnable", 1);
+    internetSettings.setValue(
+      "ProxyServer",
+      QString("%1:%2").arg(proxy.host, QString::number(proxy.port)));
+  }
 #elif defined(Q_OS_LINUX)
   // Support GNOME only
   QMap<NetworkProxyType, QList<QStringList> > settingCommands{
@@ -169,6 +198,13 @@ void NetworkProxyHelper::setSystemProxy(NetworkProxy proxy) {
 
 void NetworkProxyHelper::resetSystemProxy() {
 #if defined(Q_OS_WIN)
+  QSettings internetSettings(
+    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet "
+    "Settings",
+    QSettings::NativeFormat);
+  internetSettings.setValue("ProxyEnable", 0);
+  internetSettings.remove("AutoConfigURL");
+  internetSettings.remove("ProxyServer");
 #elif defined(Q_OS_LINUX)
   QProcess p;
   p.start("gsettings", QStringList() << "set"
