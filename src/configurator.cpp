@@ -48,49 +48,34 @@ QString Configurator::getV2RayInstallDirPath() {
     .filePath(V2RAY_CORE_INSTALL_DIR);
 }
 
-QString Configurator::getAppLogFilePath() {
+QDir Configurator::getAppConfigDir() {
   QDir appConfigDir =
-    QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+    QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+      .filePath(QCoreApplication::applicationName());
   if (!appConfigDir.exists()) {
     appConfigDir.mkpath(".");
   }
-  return appConfigDir.filePath(APP_LOG_FILE_NAME);
+  return appConfigDir;
+}
+
+QString Configurator::getAppLogFilePath() {
+  return getAppConfigDir().filePath(APP_LOG_FILE_NAME);
 }
 
 QString Configurator::getAppConfigFilePath() {
-  QDir appConfigDir =
-    QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
-  if (!appConfigDir.exists()) {
-    appConfigDir.mkpath(".");
-  }
-  return appConfigDir.filePath(APP_CFG_FILE_NAME);
+  return getAppConfigDir().filePath(APP_CFG_FILE_NAME);
 }
 
 QString Configurator::getV2RayLogFilePath() {
-  QDir appConfigDir =
-    QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
-  if (!appConfigDir.exists()) {
-    appConfigDir.mkpath(".");
-  }
-  return appConfigDir.filePath(V2RAY_CORE_LOG_FILE_NAME);
+  return getAppConfigDir().filePath(V2RAY_CORE_LOG_FILE_NAME);
 }
 
 QString Configurator::getV2RayConfigFilePath() {
-  QDir appConfigDir =
-    QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
-  if (!appConfigDir.exists()) {
-    appConfigDir.mkpath(".");
-  }
-  return appConfigDir.filePath(V2RAY_CORE_CFG_FILE_NAME);
+  return getAppConfigDir().filePath(V2RAY_CORE_CFG_FILE_NAME);
 }
 
 QString Configurator::getGfwListFilePath() {
-  QDir appConfigDir =
-    QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
-  if (!appConfigDir.exists()) {
-    appConfigDir.mkpath(".");
-  }
-  return appConfigDir.filePath(GFW_LIST_FILE_NAME);
+  return getAppConfigDir().filePath(GFW_LIST_FILE_NAME);
 }
 
 QJsonObject Configurator::getAppConfig() {
