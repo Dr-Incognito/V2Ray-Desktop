@@ -40,6 +40,7 @@ void messageHandler(QtMsgType msgType,
 }
 
 int main(int argc, char *argv[]) {
+  QCoreApplication::setApplicationName(APP_NAME);
   QCoreApplication::setApplicationVersion(
     QString("v%1.%2.%3")
       .arg(QString::number(APP_VERSION_MAJOR),

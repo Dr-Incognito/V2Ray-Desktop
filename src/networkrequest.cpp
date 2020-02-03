@@ -33,11 +33,11 @@ QByteArray NetworkRequest::getNetworkResponse(QString url,
   QNetworkReply* networkReply = accessManager.get(request);
   QEventLoop eventLoop;
   connect(&timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
+  connect(networkReply, &QNetworkReply::finished, &eventLoop,
+          &QEventLoop::quit);
   if (timeout > 0) {
     timer.start(timeout);
   }
-  connect(networkReply, &QNetworkReply::finished, &eventLoop,
-          &QEventLoop::quit);
   eventLoop.exec();
 
   // Timeout handler
