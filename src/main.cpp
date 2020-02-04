@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFont>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
@@ -48,6 +49,10 @@ int main(int argc, char *argv[]) {
            QString::number(APP_VERSION_PATCH)));
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+#if defined(Q_OS_WIN)
+  QFont font("Microsoft YaHei", 10);
+  app.setFont(font);
+#endif
   qmlRegisterSingletonType<AppProxy>(
     "com.v2ray.desktop.AppProxy", APP_VERSION_MAJOR, APP_VERSION_MINOR,
     "AppProxy", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
