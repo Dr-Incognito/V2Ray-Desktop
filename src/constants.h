@@ -14,6 +14,7 @@ static const QString V2RAY_RELEASES_URL =
 static const QString V2RAY_ASSETS_URL =
   "https://github.com/v2ray/v2ray-core/releases/download/%1/v2ray-%2.zip";
 static const QString V2RAY_CORE_INSTALL_DIR   = "v2ray-core";
+static const QString LOCALE_DIR               = "locales";
 static const QString V2RAY_CORE_LOG_FILE_NAME = "v2ray.log";
 static const QString V2RAY_CORE_CFG_FILE_NAME = "v2ray-config.json";
 static const QString APP_LOG_FILE_NAME        = "v2ray-desktop.log";
