@@ -42,9 +42,7 @@ V2RayCore::~V2RayCore() {
 
 bool V2RayCore::start() {
   if (!isInstalled()) {
-    if (!install()) {
-      return false;
-    }
+    return false;
   }
   // Get latest configuration for V2Ray Core
   Configurator& configurator(Configurator::getInstance());

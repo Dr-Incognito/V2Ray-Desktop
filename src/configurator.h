@@ -20,6 +20,7 @@ class Configurator : public QObject {
   static QString getV2RayConfigFilePath();
   static QString getGfwListFilePath();
   QJsonObject getAppConfig();
+  QString getLanguage();
   QJsonObject getV2RayConfig();
   void setAppConfig(QJsonObject config);
   QJsonArray getServers();
@@ -37,6 +38,7 @@ class Configurator : public QObject {
   Configurator();
   static QJsonObject DEFAULT_APP_CONFIG;
   QStringList connectedServerNames;
+  static QString getDefaultLanguage();
   QJsonArray getPrettyDnsServers(QString dnsString);
   QStringList getAutoConnectServers();
 };

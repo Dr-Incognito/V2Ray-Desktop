@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QJsonDocument>
+#include <QLocale>
 #include <QStandardPaths>
 
 #include "constants.h"
@@ -13,6 +14,7 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"hideWindow", DEFAULT_HIDE_WINDOW},
   {"autoUpdate", DEFAULT_AUTO_UPDATE},
   {"enableUdp", DEFAULT_ENABLE_UDP},
+  {"language", ""},
   {"serverProtocol", DEFAULT_SERVER_PROTOCOL},
   {"serverIp", DEFAULT_SERVER_IP},
   {"serverPort", DEFAULT_SERVER_PORT},
@@ -23,6 +25,13 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"gfwListLastUpdated", "Never"},
   {"v2rayCoreVersion", DEFAULT_V2RAY_CORE_VERSION},
 };
+
+QString Configurator::getDefaultLanguage() {
+  const static QMap<QLocale::Language, QString> LANGUAGES{
+    {QLocale::Chinese, "zh-CN"}};
+  QLocale::Language systemLocale = QLocale::system().language();
+  return LANGUAGES.contains(systemLocale) ? LANGUAGES[systemLocale] : "en-US";
+}
 
 Configurator::Configurator() { connectedServerNames = getAutoConnectServers(); }
 
@@ -91,6 +100,12 @@ QJsonObject Configurator::getAppConfig() {
     }
   }
   return config;
+}
+
+QString Configurator::getLanguage() {
+  QJsonObject appConfig = getAppConfig();
+  return appConfig.contains("language") ? appConfig["language"].toString()
+                                        : getDefaultLanguage();
 }
 
 void Configurator::setAppConfig(QJsonObject config) {

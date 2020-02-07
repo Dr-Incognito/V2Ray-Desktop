@@ -8,9 +8,11 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 #include <QTextStream>
+#include <QTranslator>
 #include <QtGlobal>
 
 #include "appproxy.h"
+#include "configurator.h"
 #include "constants.h"
 #include "pacserver.h"
 

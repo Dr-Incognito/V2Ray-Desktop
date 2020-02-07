@@ -13,6 +13,8 @@
 #include <QNetworkProxy>
 #include <QPair>
 #include <QPixmap>
+#include <QQmlContext>
+#include <QQmlEngine>
 #include <QScreen>
 #include <QSettings>
 #include <QSysInfo>
@@ -166,6 +168,25 @@ void AppProxy::setAppConfig(QString configString) {
     bool autoStart = appConfig["autoStart"].toBool();
     setAutoStart(autoStart);
   }
+  // Update translation
+  if (appConfig.contains("language")) {
+      QString language = appConfig["language"].toString();
+      retranslate(language);
+  }
+}
+
+bool AppProxy::retranslate(QString language) {
+  if (language.isEmpty()) {
+      Configurator &configurator(Configurator::getInstance());
+      language = configurator.getLanguage();
+  }
+  QCoreApplication* app = QGuiApplication::instance();
+  app->removeTranslator(&translator);
+  bool isTrLoaded = translator.load(QString("locales/%1.qm").arg(language));
+
+  app->installTranslator(&translator);
+  QQmlEngine::contextForObject(this)->engine()->retranslate();
+  return isTrLoaded;
 }
 
 void AppProxy::setAutoStart(bool autoStart) {

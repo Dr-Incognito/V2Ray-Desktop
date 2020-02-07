@@ -7,6 +7,7 @@
 #include <QQmlEngine>
 #include <QString>
 #include <QThread>
+#include <QTranslator>
 
 #include "appproxyworker.h"
 #include "configurator.h"
@@ -73,6 +74,7 @@ class AppProxy : public QObject {
   void editServer(QString serverName, QString protocol, QString configString);
   void removeServer(QString serverName);
   void scanQrCodeScreen();
+  bool retranslate(QString language = "");
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
@@ -88,6 +90,7 @@ class AppProxy : public QObject {
   PacServer pacServer;
   AppProxyWorker* worker = new AppProxyWorker();
   QThread workerThread;
+  QTranslator translator;
 
   QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
   QJsonObject getV2RayServerFromUrl(QString serverUrl,

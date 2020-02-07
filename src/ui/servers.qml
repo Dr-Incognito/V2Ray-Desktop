@@ -496,10 +496,10 @@ ColumnLayout {
                         labelV2RayQuicKey.visible = false
                         textV2RayQuicKey.visible = false
 
-                        if ( comboV2RayNetwork.currentText === qsTr("TCP") ) {
+                        if ( comboV2RayNetwork.currentText === "TCP" ) {
                             labelV2RayTcpHeaderType.visible = true
                             comboV2RayTcpHeaderType.visible = true
-                        } else if ( comboV2RayNetwork.currentText === qsTr("KCP") ) {
+                        } else if ( comboV2RayNetwork.currentText === "KCP" ) {
                             labelV2RayKcpMtu.visible = true
                             textV2RayKcpMtu.visible = true
                             labelV2RayKcpTti.visible = true
@@ -516,16 +516,16 @@ ColumnLayout {
                             checkboxV2RayKcpCongestion.visible = true
                             labelV2RayPacketHeader.visible = true
                             comboV2RayPacketHeader.visible = true
-                        } else if ( comboV2RayNetwork.currentText === qsTr("Websocket") ||
-                                    comboV2RayNetwork.currentText === qsTr("HTTP/2") ) {
+                        } else if ( comboV2RayNetwork.currentText === "Websocket" ||
+                                    comboV2RayNetwork.currentText === "HTTP/2" ) {
                             labelV2RayNetworkHost.visible = true
                             textV2RayNetworktHost.visible = true
                             labelV2RayNetworkPath.visible = true
                             textV2RayNetworkPath.visible = true
-                        } else if ( comboV2RayNetwork.currentText === qsTr("Domain Socket") ) {
+                        } else if ( comboV2RayNetwork.currentText === "Domain Socket" ) {
                             labelV2RayDomainSocketFilePath.visible = true
                             textV2RayDomainSocketFilePath.visible = true
-                        } else if ( comboV2RayNetwork.currentText === qsTr("QUIC") ) {
+                        } else if ( comboV2RayNetwork.currentText === "QUIC" ) {
                             labelV2RayQuicSecurity.visible = true
                             comboV2RayQuicSecurity.visible = true
                             labelV2RayPacketHeader.visible = true
@@ -627,7 +627,7 @@ ColumnLayout {
                     id: textV2RayKcpTti
                     color: "white"
                     Layout.fillWidth: true
-                    placeholderText: qsTr("Transmission time interval. Default value: 50")
+                    placeholderText: qsTr("Transmission time interval. Default value: 50.")
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
                         border.color: Qt.rgba(120, 130, 140, .2)

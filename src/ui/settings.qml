@@ -71,6 +71,32 @@ ColumnLayout {
         }
 
         Label {
+            text: qsTr("Language")
+            color: "white"
+        }
+
+        ComboBox {
+            id: comboLanguage
+            Layout.fillWidth: true
+            textRole: "text"
+            valueRole: "value"
+            model: ListModel{
+                ListElement { text: "English"; value: "en-US" }
+                ListElement { text: "简体中文"; value: "zh-CN" }
+            }
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+            contentItem: Text {
+                text: comboLanguage.displayText
+                color: "white"
+                leftPadding: 10
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+        Label {
             text: qsTr("Local Server Protocol")
             color: "white"
         }
@@ -91,22 +117,6 @@ ColumnLayout {
                 color: "white"
                 leftPadding: 10
                 verticalAlignment: Text.AlignVCenter
-            }
-        }
-
-        Label {
-            text: qsTr("PAC Server Port")
-            color: "white"
-        }
-
-        TextField {
-            id: textPacServerPort
-            color: "white"
-            Layout.fillWidth: true
-            placeholderText: qsTr("Example: 1085")
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
             }
         }
 
@@ -144,6 +154,22 @@ ColumnLayout {
         }
 
         Label {
+            text: qsTr("PAC Server Port")
+            color: "white"
+        }
+
+        TextField {
+            id: textPacServerPort
+            color: "white"
+            Layout.fillWidth: true
+            placeholderText: qsTr("Example: 1085")
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+        }
+
+        Label {
             text: qsTr("DNS Server")
             color: "white"
         }
@@ -151,7 +177,6 @@ ColumnLayout {
         TextField {
             id: textDnsServer
             color: "white"
-            Layout.columnSpan: 3
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             background: Rectangle {
@@ -177,6 +202,7 @@ ColumnLayout {
                     "hideWindow": checkboxHideWindow.checked,
                     "autoUpdate": checkboxAutoUpdate.checked,
                     "enableUdp": checkboxEnableUdp.checked,
+                    "language": comboLanguage.currentValue,
                     "serverProtocol": comboServerProtocol.currentText,
                     "serverIp": textServerIpAddr.text,
                     "serverPort": parseInt(textServerPort.text),
@@ -214,6 +240,7 @@ ColumnLayout {
             checkboxHideWindow.checked = config["hideWindow"]
             checkboxAutoUpdate.checked = config["autoUpdate"]
             checkboxEnableUdp.checked = config["enableUdp"]
+            comboLanguage.currentIndex = comboLanguage.indexOfValue(config["language"])
             comboServerProtocol.currentIndex = comboServerProtocol.find(config["serverProtocol"])
             textServerIpAddr.text = config["serverIp"]
             textServerPort.text = config["serverPort"]
