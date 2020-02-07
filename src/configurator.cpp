@@ -57,6 +57,10 @@ QString Configurator::getV2RayInstallDirPath() {
     .filePath(V2RAY_CORE_INSTALL_DIR);
 }
 
+QString Configurator::getLocaleDirPath() {
+  return QDir(QCoreApplication::applicationDirPath()).filePath(LOCALE_DIR);
+}
+
 QDir Configurator::getAppConfigDir() {
   QDir appConfigDir =
     QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))

@@ -170,19 +170,20 @@ void AppProxy::setAppConfig(QString configString) {
   }
   // Update translation
   if (appConfig.contains("language")) {
-      QString language = appConfig["language"].toString();
-      retranslate(language);
+    QString language = appConfig["language"].toString();
+    retranslate(language);
   }
 }
 
 bool AppProxy::retranslate(QString language) {
   if (language.isEmpty()) {
-      Configurator &configurator(Configurator::getInstance());
-      language = configurator.getLanguage();
+    Configurator& configurator(Configurator::getInstance());
+    language = configurator.getLanguage();
   }
   QCoreApplication* app = QGuiApplication::instance();
   app->removeTranslator(&translator);
-  bool isTrLoaded = translator.load(QString("locales/%1.qm").arg(language));
+  bool isTrLoaded = translator.load(
+    QString("%1/%2.qm").arg(Configurator::getLocaleDirPath(), language));
 
   app->installTranslator(&translator);
   QQmlEngine::contextForObject(this)->engine()->retranslate();
