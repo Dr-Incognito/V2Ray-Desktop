@@ -92,6 +92,8 @@ bool V2RayCore::install() {
   QString operatingSystem = "linux-64";
 #elif defined(Q_OS_MAC)
   QString operatingSystem = "macos";
+#else
+  QString operatingSystem = "unknown";
 #endif
   // Download the zip file from GitHub
   QString assetsUrl =
