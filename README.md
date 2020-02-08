@@ -1,5 +1,8 @@
 # V2Ray-Desktop
 
+[![Build Status](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop.svg?branch=master)](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop)
+[![Build status](https://ci.appveyor.com/api/projects/status/0t07jpv22tf7xpn9?svg=true)](https://ci.appveyor.com/project/Dr-Incognito/V2Ray-Desktop)
+
 **Note:** The issues for this project is **temporarily closed** because it is still under development.
 If you want to contribute to this project, please open a pull request.
 
@@ -30,4 +33,4 @@ You can get the latest release at [Releases Page](https://github.com/Dr-Incognit
 
 ## License
 
-This project is licensed under version 3 of the GNU Lesser General Public License.
+This project is licensed under version 3 of the GNU General Public License.

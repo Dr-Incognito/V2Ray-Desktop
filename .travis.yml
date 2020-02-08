@@ -1,0 +1,37 @@
+language: cpp
+dist: bionic
+osx_image: xcode11.3
+
+os:
+  - linux
+  - osx
+
+branches:
+  only:
+  - 'master'
+
+before_install:
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    sudo apt-get install -y build-essential libqt5svg5-dev qt5-default qtbase5-dev qtdeclarative5-dev;
+    sudo apt-get install clang-format-9;
+    sudo rm /usr/local/clang-7.0.0/bin/clang-format;
+    sudo ln -s `which clang-format-9` /usr/bin/clang-format;
+  fi
+
+# Remove the retranslate() API because it is not supported below Qt 5.10
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    sed -i "/QQmlEngine::contextForObject/d" src/appproxy.cpp;
+  fi
+
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew install qt5 clang-format;
+    brew link qt5 --force;
+  fi
+
+- git submodule update --init --recursive
+
+script:
+- clang-format --version
+- bash scripts/clang-format.sh
+- qmake src/V2Ray-Desktop.pro
+- make -j4
