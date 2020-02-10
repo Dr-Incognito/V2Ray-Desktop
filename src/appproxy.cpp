@@ -758,9 +758,13 @@ void AppProxy::removeServer(QString serverName) {
 void AppProxy::scanQrCodeScreen() {
   QStringList servers;
   QList<QScreen*> screens = QGuiApplication::screens();
+
+  qDebug() << screens.size();
   for (int i = 0; i < screens.size(); ++i) {
-    QPixmap screenshot = screens.at(i)->grabWindow(i);
-    QString serverUrl  = QrCodeHelper::decode(
+    QRect r = screens.at(i)->geometry();
+    QPixmap screenshot =
+      screens.at(i)->grabWindow(0, r.x(), r.y(), r.width(), r.height());
+    QString serverUrl = QrCodeHelper::decode(
       screenshot.toImage().convertToFormat(QImage::Format_Grayscale8));
     if (serverUrl.size()) {
       servers.append(serverUrl);
