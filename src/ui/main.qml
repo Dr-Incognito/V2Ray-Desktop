@@ -88,6 +88,9 @@ ApplicationWindow {
                 onTriggered: function() {
                     mouseAreaSettings.clicked(null)
                     appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
+
                 }
             }
 
@@ -97,6 +100,8 @@ ApplicationWindow {
                 onTriggered: function() {
                     mouseAreaServers.clicked(null)
                     appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
                 }
             }
 
@@ -106,6 +111,8 @@ ApplicationWindow {
                     AppProxy.scanQrCodeScreen()
                     mouseAreaServers.clicked(null)
                     appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
                 }
             }
 
@@ -116,6 +123,8 @@ ApplicationWindow {
                 onTriggered: function() {
                     mouseAreaLogs.clicked(null)
                     appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
                 }
             }
 
@@ -129,6 +138,8 @@ ApplicationWindow {
                 onTriggered: function() {
                     mouseAreaAbout.clicked(null)
                     appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
                 }
             }
 

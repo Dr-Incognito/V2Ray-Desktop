@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.14
 import com.v2ray.desktop.AppProxy 1.0
 
 ColumnLayout {
+    id: layoutDashboard
     anchors.fill: parent
     anchors.margins: 10
     spacing: 20

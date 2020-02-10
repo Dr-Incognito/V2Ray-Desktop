@@ -707,7 +707,7 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="1167"/>
         <location filename="../ui/servers.qml" line="1183"/>
         <source>Disconnected</source>
-        <translation>断开连接</translation>
+        <translation>未连接</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="1170"/>

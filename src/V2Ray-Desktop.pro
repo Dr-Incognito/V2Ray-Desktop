@@ -22,6 +22,7 @@ HEADERS += \
     networkrequest.h \
     pacserver.h \
     qrcodehelper.h \
+    runguard.h \
     v2raycore.h \
     zipfile.h
 
@@ -34,6 +35,7 @@ SOURCES += \
     networkrequest.cpp \
     pacserver.cpp \
     qrcodehelper.cpp \
+    runguard.cpp \
     v2raycore.cpp \
     zipfile.cpp
 
