@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import com.v2ray.desktop.AppProxy 1.1
+import com.v2ray.desktop.AppProxy 1.2
 
 ColumnLayout {
     anchors.fill: parent
@@ -37,7 +37,7 @@ ColumnLayout {
                 color: "white"
             }
             background: Rectangle {
-                color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
+                color: parent.enabled ? (parent.down ? "#c0392b" : "#e74c3c") : "#bdc3c7"
                 radius: 4
             }
             onClicked: function() {

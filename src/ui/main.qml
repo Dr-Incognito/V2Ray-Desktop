@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 1.1
+import com.v2ray.desktop.AppProxy 1.2
 
 ApplicationWindow {
     id: appWindow
@@ -84,7 +84,7 @@ ApplicationWindow {
             MenuSeparator {}
 
             MenuItem {
-                text: qsTr("Preferences")
+                text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
                 onTriggered: function() {
                     mouseAreaSettings.clicked(null)
                     appWindow.show()
@@ -325,7 +325,7 @@ ApplicationWindow {
 
                     Text {
                         color: "white"
-                        text: qsTr("Settings")
+                        text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
                         font.pointSize: 14
                         x: 40
                         y: 10

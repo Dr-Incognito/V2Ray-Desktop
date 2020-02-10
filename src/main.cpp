@@ -1,10 +1,11 @@
+#include <QApplication>
 #include <QByteArray>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFont>
-#include <QGuiApplication>
+#include <QMessageBox>
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 #include <QTextStream>
@@ -42,19 +43,21 @@ void messageHandler(QtMsgType msgType,
 }
 
 int main(int argc, char *argv[]) {
-  QCoreApplication::setApplicationName(APP_NAME);
-  QCoreApplication::setApplicationVersion(
+  QApplication::setApplicationName(APP_NAME);
+  QApplication::setApplicationVersion(
     QString("v%1.%2.%3")
       .arg(QString::number(APP_VERSION_MAJOR),
            QString::number(APP_VERSION_MINOR),
            QString::number(APP_VERSION_PATCH)));
-  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QGuiApplication app(argc, argv);
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QApplication app(argc, argv);
   // Make sure there is no other instance running
   RunGuard runGuard(APP_NAME);
   if (!runGuard.tryToRun()) {
-    QTextStream(stderr)
-      << QString("There is another %1 instance running!\n").arg(APP_NAME);
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Icon::Critical);
+    msgBox.setText(QString("There is another %1 instance running!\n").arg(APP_NAME));
+    msgBox.exec();
     return 127;
   }
 
@@ -82,7 +85,7 @@ int main(int argc, char *argv[]) {
     &engine, &QQmlApplicationEngine::objectCreated, &app,
     [url](QObject *obj, const QUrl &objUrl) {
       if (!obj && url == objUrl) {
-        QCoreApplication::exit(-1);
+        QApplication::exit(-1);
       }
     },
     Qt::QueuedConnection);
