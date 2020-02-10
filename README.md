@@ -13,7 +13,11 @@ It is built with Qt 5 and QML 2 and provides advanced features for V2Ray.
 
 You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases).
 
-**Note:** The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.
+**Note:** The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.     
+
+If you want to build it from source,  your Qt version should be at equal or greater than  5.14.  UI files use QtQuick 2.14  which was released with Qt 5.14.
+
+
 
 ## Features
 
