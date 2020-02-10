@@ -27,6 +27,7 @@ class AppProxy : public QObject {
   void getGfwListStarted(QString gfwListUrl, QNetworkProxy proxy);
   void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServersStarted(QString url, QNetworkProxy proxy);
+  void getLogsStarted(QString appLogFilePath, QString v2RayLogFilePath);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
@@ -69,19 +70,22 @@ class AppProxy : public QObject {
   void setServerConnection(QString serverName, bool connected);
   void addV2RayServer(QString configString);
   void addShadowsocksServer(QString configString);
-  void addSubscriptionUrl(QString subsriptionUrl);
   void addServerConfigFile(QString configFilePath);
   void editServer(QString serverName, QString protocol, QString configString);
+  void updateSubscriptionServers(QString subsriptionUrl = "");
   void removeServer(QString serverName);
+  void removeSubscriptionServers(QString subscriptionUrl);
   void scanQrCodeScreen();
+  void copyToClipboard(QString text);
   bool retranslate(QString language = "");
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
   void returnGfwList(QByteArray gfwList);
   void returnNetworkAccessiblity(QMap<QString, bool> accessible);
-  void addSubsriptionServers(QString subsriptionServers,
-                             QString subsriptionUrl = "");
+  void addSubscriptionServers(QString subsriptionServers,
+                              QString subsriptionUrl = "");
+  void returnLogs(QString logs);
 
  private:
   V2RayCore& v2ray;

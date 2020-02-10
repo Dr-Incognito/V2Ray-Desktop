@@ -82,6 +82,7 @@ ColumnLayout {
                     focus: true
                     readOnly: true
                     selectByMouse: true
+                    text: qsTr("Loading logs ...")
                     textMargin: 10
                     wrapMode: Text.Wrap
                     width: flick.width
@@ -100,7 +101,7 @@ ColumnLayout {
     }
 
     Timer {
-        interval: 1000
+        interval: 5000
         running: true
         repeat: true
         onTriggered: function() {

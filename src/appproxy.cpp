@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 #include <QByteArray>
+#include <QClipboard>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -56,7 +57,11 @@ AppProxy::AppProxy(QObject* parent)
   connect(this, &AppProxy::getSubscriptionServersStarted, worker,
           &AppProxyWorker::getSubscriptionServers);
   connect(worker, &AppProxyWorker::subscriptionServersReady, this,
-          &AppProxy::addSubsriptionServers);
+          &AppProxy::addSubscriptionServers);
+
+  // Setup Worker -> getLogs
+  connect(this, &AppProxy::getLogsStarted, worker, &AppProxyWorker::getLogs);
+  connect(worker, &AppProxyWorker::logsReady, this, &AppProxy::returnLogs);
 
   workerThread.start();
 }
@@ -235,33 +240,11 @@ void AppProxy::setAutoStart(bool autoStart) {
 }
 
 void AppProxy::getLogs() {
-  QFile appLogFile(Configurator::getAppLogFilePath());
-  QFile v2RayLogFile(Configurator::getV2RayLogFilePath());
-  QStringList logs;
-  // Read the app and V2Ray logs
-  if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    QList<QByteArray> _logList = appLogFile.readAll().split('\n');
-    int cnt                    = 0;
-    for (auto itr = _logList.end() - 1;
-         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
-      logs.append(*itr);
-    }
-  }
-  if (v2RayLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    QList<QByteArray> _logList = v2RayLogFile.readAll().split('\n');
-    int cnt                    = 0;
-    for (auto itr = _logList.end() - 1;
-         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
-      logs.append(*itr);
-    }
-  }
-  // Sort logs by timestamp
-  logs.sort();
-  std::reverse(logs.begin(), logs.end());
-
-  QString _logs = logs.join('\n');
-  emit logsReady(_logs);
+  emit getLogsStarted(Configurator::getAppLogFilePath(),
+                      Configurator::getV2RayLogFilePath());
 }
+
+void AppProxy::returnLogs(QString logs) { emit logsReady(logs); }
 
 void AppProxy::clearLogs() {
   QFile appLogFile(Configurator::getAppLogFilePath());
@@ -584,12 +567,20 @@ QJsonObject AppProxy::getPrettyShadowsocksConfig(
     {"tag", "proxy-shadowsocks"}};
 }
 
-void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
-  emit getSubscriptionServersStarted(subsriptionUrl, getQProxy());
+void AppProxy::updateSubscriptionServers(QString subsriptionUrl) {
+  QStringList subscriptionUrls;
+  if (subsriptionUrl.isEmpty()) {
+    subscriptionUrls = configurator.getSubscriptionUrls();
+  } else {
+    subscriptionUrls.append(subsriptionUrl);
+  }
+  for (QString su : subscriptionUrls) {
+    emit getSubscriptionServersStarted(su, getQProxy());
+  }
 }
 
-void AppProxy::addSubsriptionServers(QString subsriptionServers,
-                                     QString subsriptionUrl) {
+void AppProxy::addSubscriptionServers(QString subsriptionServers,
+                                      QString subsriptionUrl) {
   if (!subsriptionServers.size()) {
     emit addServerError("Failed to get subscription servers from URL.");
     return;
@@ -755,11 +746,15 @@ void AppProxy::removeServer(QString serverName) {
   v2ray.restart();
 }
 
+void AppProxy::removeSubscriptionServers(QString subscriptionUrl) {
+  configurator.removeSubscriptionServers(subscriptionUrl);
+  emit serversChanged();
+}
+
 void AppProxy::scanQrCodeScreen() {
   QStringList servers;
   QList<QScreen*> screens = QGuiApplication::screens();
 
-  qDebug() << screens.size();
   for (int i = 0; i < screens.size(); ++i) {
     QRect r = screens.at(i)->geometry();
     QPixmap screenshot =
@@ -772,5 +767,10 @@ void AppProxy::scanQrCodeScreen() {
   }
   qInfo() << QString("Add %1 servers from QR code.")
                .arg(QString::number(servers.size()));
-  addSubsriptionServers(servers.join('\n'));
+  addSubscriptionServers(servers.join('\n'));
+}
+
+void AppProxy::copyToClipboard(QString text) {
+  QClipboard* clipboard = QGuiApplication::clipboard();
+  clipboard->setText(text, QClipboard::Clipboard);
 }

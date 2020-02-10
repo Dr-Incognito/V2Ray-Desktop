@@ -19,6 +19,7 @@ class AppProxyWorker : public QObject {
   void getGfwList(QString gfwListUrl, QNetworkProxy proxy);
   void getUrlAccessibility(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServers(QString url, QNetworkProxy proxy);
+  void getLogs(QString appLogFilePath, QString v2RayLogFilePath);
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
@@ -26,6 +27,7 @@ class AppProxyWorker : public QObject {
   void urlAccessibilityReady(QMap<QString, bool> accessible);
   void subscriptionServersReady(QString subscriptionServers,
                                 QString subscriptionUrl);
+  void logsReady(QString logs);
 
  private:
   QString getServerAddr(QJsonObject server);

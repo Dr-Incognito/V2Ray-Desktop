@@ -56,7 +56,8 @@ int main(int argc, char *argv[]) {
   if (!runGuard.tryToRun()) {
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Icon::Critical);
-    msgBox.setText(QString("There is another %1 instance running!\n").arg(APP_NAME));
+    msgBox.setText(
+      QString("There is another %1 instance running!\n").arg(APP_NAME));
     msgBox.exec();
     return 127;
   }
