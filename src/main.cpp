@@ -12,9 +12,8 @@
 #include <QtGlobal>
 
 #include "appproxy.h"
-#include "configurator.h"
 #include "constants.h"
-#include "pacserver.h"
+#include "runguard.h"
 
 void messageHandler(QtMsgType msgType,
                     const QMessageLogContext &context,
@@ -51,6 +50,15 @@ int main(int argc, char *argv[]) {
            QString::number(APP_VERSION_PATCH)));
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+  // Make sure there is no other instance running
+  RunGuard runGuard(APP_NAME);
+  if (!runGuard.tryToRun()) {
+    QTextStream(stderr)
+      << QString("There is another %1 instance running!\n").arg(APP_NAME);
+    return 127;
+  }
+
+  // Set up QML and AppProxy
 #if defined(Q_OS_WIN)
   QFont font("Microsoft YaHei", 10);
   app.setFont(font);
