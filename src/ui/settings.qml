@@ -3,7 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.1
+import com.v2ray.desktop.AppProxy 1.2
 
 ColumnLayout {
     anchors.fill: parent
@@ -18,7 +18,7 @@ ColumnLayout {
         }
 
         Text {
-            text: qsTr("Settings")
+            text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
             color: "white"
             font.pointSize: 24
         }

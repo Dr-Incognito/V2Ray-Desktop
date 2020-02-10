@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.1
+import com.v2ray.desktop.AppProxy 1.2
 
 ColumnLayout {
     id: layoutServer
@@ -29,6 +29,21 @@ ColumnLayout {
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
+            }
+        }
+
+        Button {
+            text: qsTr("Server Subscriptions")
+            contentItem: Text {
+                text: parent.text
+                color: "white"
+            }
+            background: Rectangle {
+                color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
+                radius: 4
+            }
+            onClicked: function() {
+                popUpSubscription.open()
             }
         }
 
@@ -1155,6 +1170,139 @@ ColumnLayout {
         }
     }
 
+    Popup {
+        id: popUpSubscription
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        height: parent.height
+        focus: true
+        modal: true
+        width: parent.width
+        background: Rectangle {
+            color: "#2e3e4e"
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 20
+
+            RowLayout {
+                Label {
+                    text: qsTr("Server Subscriptions")
+                    color: "white"
+                    font.pixelSize: 20
+                }
+
+                Item {      // spacer item
+                    Layout.fillWidth: true
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "transparent"
+                    }
+                }
+
+                Button {
+                    text: qsTr("Sync Servers")
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                    }
+                    background: Rectangle {
+                        color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
+                        radius: 4
+                    }
+                    onClicked: function() {
+                    }
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                ListView {
+                    id: listViewSubscriptions
+                    anchors.fill: parent
+                    anchors.rightMargin: 5
+                    flickableDirection: Flickable.HorizontalAndVerticalFlick
+                    headerPositioning: ListView.OverlayHeader
+                    clip: true
+
+                    function getColumnWidth(index) {
+                        switch (index) {
+                            case 0:
+                                return listViewServers.width * 0.1
+                            case 1:
+                                return listViewServers.width * 0.9
+                            default:
+                                return 0
+                        }
+                    }
+
+                    header: Row {
+                        spacing: 1
+                        z: 4
+                        function itemAt(index) {
+                            return listViewSubscriptionRepeater.itemAt(index)
+                        }
+                        Repeater {
+                            id: listViewSubscriptionRepeater
+                            model: [qsTr("#"), qsTr("URL")]
+                            Label {
+                                text: modelData
+                                color: "white"
+                                font.bold: true
+                                padding: 10
+                                width: listViewSubscriptions.getColumnWidth(index)
+                                background: Rectangle {
+                                    color: "#354759"
+                                }
+                            }
+                        }
+                    }
+
+                    model: listModelSubscriptions
+                    delegate: Column {
+                        Row {
+                            spacing: 1
+                            Repeater {
+                                model: values
+                                ItemDelegate {
+                                    text: value
+                                    width: listViewSubscriptions.getColumnWidth(index)
+
+                                    contentItem: Text {
+                                        clip: true
+                                        color: "white"
+                                        text: parent.text
+                                    }
+                                    background: MouseArea {
+                                        anchors.fill: parent
+                                        acceptedButtons: Qt.RightButton
+                                        onClicked: function() {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle {
+                            color: "#3b4d5d"
+                            width: parent.width
+                            height: 1
+                        }
+                    }
+
+                    ListModel {
+                        id: listModelSubscriptions
+                    }
+
+                    ScrollIndicator.horizontal: ScrollIndicator { }
+                    ScrollIndicator.vertical: ScrollIndicator { }
+                }
+            }
+        }
+    }
+
     Connections {
         target: AppProxy
 
@@ -1194,11 +1342,35 @@ ColumnLayout {
             }
         }
 
+        function getSubscriptionUrls(servers) {
+            var subscriptionUrls = []
+            for (var i = 0; i < servers.length; ++ i) {
+                if ("subscription" in servers[i]) {
+                    var subscriptionUrl = servers[i]["subscription"]
+                    if (subscriptionUrls.indexOf(subscriptionUrl) === -1) {
+                        subscriptionUrls.push(subscriptionUrl)
+                    }
+                }
+            }
+            return subscriptionUrls
+        }
+
         onServersReady: function(servers) {
             servers = JSON.parse(servers)
             listModelServers.clear()
-            for (var i = 0; i < servers.length; ++ i) {
+            listModelSubscriptions.clear()
+
+            var i = 0,
+                subscriptionUrls = getSubscriptionUrls(servers)
+            for (i = 0; i < servers.length; ++ i) {
                 listModelServers.append({values: getServerPrettyInformation(servers[i])})
+            }
+            for (i = 0; i < subscriptionUrls.length; ++ i) {
+                console.log(subscriptionUrls[i])
+                listModelSubscriptions.append({values: [
+                    {value: (i + 1).toString()},
+                    {value: subscriptionUrls[i]}
+                ]})
             }
         }
 
