@@ -194,6 +194,21 @@ QJsonObject Configurator::getServer(QString serverName) {
   return server;
 }
 
+QStringList Configurator::getSubscriptionUrls() {
+  QStringList subscriptionUrls;
+  QJsonArray servers = getServers();
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    if (server.contains("subscription")) {
+      QString subscriptionUrl = server["subscription"].toString();
+      if (!subscriptionUrls.contains(subscriptionUrl)) {
+        subscriptionUrls.append(subscriptionUrl);
+      }
+    }
+  }
+  return subscriptionUrls;
+}
+
 int Configurator::addServer(QJsonObject serverConfig) {
   QJsonArray servers = getServers();
   servers.append(serverConfig);

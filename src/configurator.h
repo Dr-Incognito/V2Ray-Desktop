@@ -26,6 +26,7 @@ class Configurator : public QObject {
   void setAppConfig(QJsonObject config);
   QJsonArray getServers();
   QJsonObject getServer(QString serverName);
+  QStringList getSubscriptionUrls();
   int addServer(QJsonObject serverConfig);
   int editServer(QString serverName, QJsonObject serverConfig);
   int removeServer(QString serverName);

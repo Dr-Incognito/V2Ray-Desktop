@@ -43,6 +43,8 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
+                buttonSyncServers.text = qsTr("Sync Servers")
+                buttonSyncServers.enabled = true
                 popUpSubscription.open()
             }
         }
@@ -1098,7 +1100,7 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonSubscriptionAddServer.enabled = false
-                        AppProxy.addSubscriptionUrl(textSubsriptionUrl.text)
+                        AppProxy.updateSubscriptionServers(textSubsriptionUrl.text)
                     }
                 }
             }
@@ -1202,6 +1204,7 @@ ColumnLayout {
                 }
 
                 Button {
+                    id: buttonSyncServers
                     text: qsTr("Sync Servers")
                     contentItem: Text {
                         text: parent.text
@@ -1212,6 +1215,10 @@ ColumnLayout {
                         radius: 4
                     }
                     onClicked: function() {
+                        menuSyncServers.enabled = true
+                        buttonSyncServers.enabled = false
+                        buttonSyncServers.text = qsTr("Please wait ...")
+                        AppProxy.updateSubscriptionServers(menuSubscription.currentSubscription)
                     }
                 }
             }
@@ -1280,6 +1287,10 @@ ColumnLayout {
                                         anchors.fill: parent
                                         acceptedButtons: Qt.RightButton
                                         onClicked: function() {
+                                            menuSubscription.x = parent.x + mouseX
+                                            menuSubscription.y = parent.parent.parent.y + mouseY
+                                            menuSubscription.currentSubscription = parent.parent.data[1].text
+                                            menuSubscription.open()
                                         }
                                     }
                                 }
@@ -1298,6 +1309,35 @@ ColumnLayout {
 
                     ScrollIndicator.horizontal: ScrollIndicator { }
                     ScrollIndicator.vertical: ScrollIndicator { }
+                }
+            }
+
+            Menu {
+                id: menuSubscription
+                padding: 5
+                property var currentSubscription
+
+                MenuItem {
+                    text: qsTr("Copy URL")
+                    onTriggered: function() {
+                        AppProxy.copyToClipboard(menuSubscription.currentSubscription)
+                    }
+                }
+
+                MenuItem {
+                    id: menuSyncServers
+                    text: qsTr("Sync Servers")
+                    onTriggered: function() {
+                        menuSyncServers.enabled = false
+                        AppProxy.updateSubscriptionServers(menuSubscription.currentSubscription)
+                    }
+                }
+
+                MenuItem {
+                    text: qsTr("Remove")
+                    onTriggered: function() {
+                        AppProxy.removeSubscriptionServers(menuSubscription.currentSubscription)
+                    }
                 }
             }
         }
@@ -1366,7 +1406,6 @@ ColumnLayout {
                 listModelServers.append({values: getServerPrettyInformation(servers[i])})
             }
             for (i = 0; i < subscriptionUrls.length; ++ i) {
-                console.log(subscriptionUrls[i])
                 listModelSubscriptions.append({values: [
                     {value: (i + 1).toString()},
                     {value: subscriptionUrls[i]}
@@ -1398,6 +1437,7 @@ ColumnLayout {
         onServersChanged: function() {
             AppProxy.getServers()
             popUpServer.close()
+            popUpSubscription.close()
         }
 
         onServerDInfoReady: function(server) {

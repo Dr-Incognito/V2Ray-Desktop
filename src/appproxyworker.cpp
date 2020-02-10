@@ -2,6 +2,7 @@
 #include "networkrequest.h"
 
 #include <QDebug>
+#include <QFile>
 
 #include "constants.h"
 
@@ -70,4 +71,32 @@ void AppProxyWorker::getSubscriptionServers(QString subscriptionUrl,
   QByteArray subscriptionServers = QByteArray::fromBase64(
     NetworkRequest::getNetworkResponse(subscriptionUrl, p));
   emit subscriptionServersReady(subscriptionServers, subscriptionUrl);
+}
+
+void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
+  QFile appLogFile(appLogFilePath);
+  QFile v2RayLogFile(v2RayLogFilePath);
+  QStringList logs;
+  // Read the app and V2Ray logs
+  if (appLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QList<QByteArray> _logList = appLogFile.readAll().split('\n');
+    int cnt                    = 0;
+    for (auto itr = _logList.end() - 1;
+         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
+      logs.append(*itr);
+    }
+  }
+  if (v2RayLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QList<QByteArray> _logList = v2RayLogFile.readAll().split('\n');
+    int cnt                    = 0;
+    for (auto itr = _logList.end() - 1;
+         itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
+      logs.append(*itr);
+    }
+  }
+  // Sort logs by timestamp
+  logs.sort();
+  std::reverse(logs.begin(), logs.end());
+
+  emit logsReady(logs.join('\n'));
 }
