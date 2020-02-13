@@ -293,6 +293,20 @@ QJsonArray Configurator::getConnectedServers() {
 }
 
 QStringList Configurator::getConnectedServerNames() {
+  QJsonArray servers = getServers();
+  QStringList serverNames;
+  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    QString serverName =
+      server.contains("serverName") ? server["serverName"].toString() : "";
+    serverNames.append(serverName);
+  }
+  // Remove connected servers that have been removed from server list
+  for (int i = 0; i < connectedServerNames.size(); ++i) {
+    if (!serverNames.contains(connectedServerNames[i])) {
+      connectedServerNames.removeAt(i);
+    }
+  }
   return connectedServerNames;
 }
 
