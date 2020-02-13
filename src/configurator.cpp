@@ -230,6 +230,12 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
       isEdited = true;
     }
   }
+  // Update the server in connected servers
+  if (connectedServerNames.contains(serverName)) {
+    connectedServerNames.removeAt(connectedServerNames.indexOf(serverName));
+    connectedServerNames.append(serverConfig["serverName"].toString());
+  }
+  // Update servers in the config
   setAppConfig(QJsonObject{{"servers", servers}});
   return isEdited;
 }
@@ -246,6 +252,11 @@ int Configurator::removeServer(QString serverName) {
     }
   }
   servers.removeAt(serverIndex);
+  // Remove the server from connected servers
+  if (connectedServerNames.contains(serverName)) {
+    connectedServerNames.removeAt(connectedServerNames.indexOf(serverName));
+  }
+  // Update servers in the config
   setAppConfig(QJsonObject{{"servers", servers}});
   return serverIndex != -1;
 }
@@ -264,10 +275,15 @@ QMap<QString, QJsonObject> Configurator::removeSubscriptionServers(
     if (server.contains("subscription") &&
         server["subscription"].toString() == subscriptionUrl) {
       removedServers[serverName] = server;
+      // Remove the server from connected servers
+      if (connectedServerNames.contains(serverName)) {
+        connectedServerNames.removeAt(connectedServerNames.indexOf(serverName));
+      }
       continue;
     }
     remainingServers.append(server);
   }
+  // Update servers in the config
   setAppConfig(QJsonObject{{"servers", remainingServers}});
   return removedServers;
 }
@@ -293,20 +309,6 @@ QJsonArray Configurator::getConnectedServers() {
 }
 
 QStringList Configurator::getConnectedServerNames() {
-  QJsonArray servers = getServers();
-  QStringList serverNames;
-  for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
-    QJsonObject server = (*itr).toObject();
-    QString serverName =
-      server.contains("serverName") ? server["serverName"].toString() : "";
-    serverNames.append(serverName);
-  }
-  // Remove connected servers that have been removed from server list
-  for (int i = 0; i < connectedServerNames.size(); ++i) {
-    if (!serverNames.contains(connectedServerNames[i])) {
-      connectedServerNames.removeAt(i);
-    }
-  }
   return connectedServerNames;
 }
 
