@@ -1434,6 +1434,44 @@ ColumnLayout {
             console.log(errorMessage)
         }
 
+        onServerConnectivityChanged: function(serverName, connected) {
+            // Refresh connectivity for the server
+            for (var i = 0; i < listModelServers.count; ++ i) {
+                var _serverName = listModelServers.get(i).values.get(0).value
+                if (_serverName === serverName) {
+                    listModelServers.get(i).values.get(3).value =
+                        connected ? qsTr("Connected") : qsTr("Disconnected")
+                    break
+                }
+            }
+        }
+
+        onServerChanged: function(serverName, serverConfig) {
+            serverConfig = JSON.parse(serverConfig)
+
+            for (var i = 0; i < listModelServers.count; ++ i) {
+                var _serverName = listModelServers.get(i).values.get(0).value
+                if (_serverName === serverName) {
+                    listModelServers.set(i, {
+                        values: getServerPrettyInformation(serverConfig)
+                    })
+                    break
+                }
+            }
+            popUpServer.close()
+            popUpSubscription.close()
+        }
+
+        onServerRemoved: function(serverName) {
+            for (var i = 0; i < listModelServers.count; ++ i) {
+                var _serverName = listModelServers.get(i).values.get(0).value
+                if (_serverName === serverName) {
+                    listModelServers.remove(i)
+                    break
+                }
+            }
+        }
+
         onServersChanged: function() {
             AppProxy.getServers()
             popUpServer.close()

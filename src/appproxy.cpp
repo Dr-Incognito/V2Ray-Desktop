@@ -379,7 +379,7 @@ void AppProxy::setServerConnection(QString serverName, bool connected) {
   configurator.setServerConnection(serverName, connected);
   v2ray.restart();
   qInfo() << (connected ? "Connected to " : "Disconnected from ") << serverName;
-  emit serversChanged();
+  emit serverConnectivityChanged(serverName, connected);
 }
 
 void AppProxy::addV2RayServer(QString configString) {
@@ -664,7 +664,6 @@ QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
                         ? rawServerConfig["type"].toString()
                         : ""},
     {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
-  qDebug() << rawServerConfig << serverConfig;
   return serverConfig;
 }
 
@@ -730,18 +729,31 @@ void AppProxy::editServer(QString serverName,
   } else if (protocol == "shadowsocks") {
     serverConfig = getPrettyShadowsocksConfig(serverConfig);
   }
-  bool isEdited = configurator.editServer(serverName, serverConfig);
-  if (isEdited > 0) {
-    emit serversChanged();
+
+  if (configurator.editServer(serverName, serverConfig)) {
+    QString newServerName = serverConfig["serverName"].toString();
+    // Update the information of server connectivity
+    QStringList connectedServerNames = configurator.getConnectedServerNames();
+    serverConfig["connected"] = connectedServerNames.contains(newServerName);
+    // Update the server latency even if the server name is changed
+    if (serverLatency.contains(serverName)) {
+      serverConfig["latency"] = serverLatency[serverName].toInt();
+
+      if (newServerName != serverName) {
+        serverLatency.insert(newServerName, serverLatency[serverName]);
+        serverLatency.remove(serverName);
+      }
+    }
+    emit serverChanged(serverName, QJsonDocument(serverConfig).toJson());
+    // Restart V2Ray Core
+    v2ray.restart();
   }
-  // Restart V2Ray Core
-  v2ray.restart();
 }
 
 void AppProxy::removeServer(QString serverName) {
   configurator.removeServer(serverName);
   qInfo() << QString("Server [Name=%1] have been removed.").arg(serverName);
-  emit serversChanged();
+  emit serverRemoved(serverName);
   // Restart V2Ray Core
   v2ray.restart();
 }

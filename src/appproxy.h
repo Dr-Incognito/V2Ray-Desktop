@@ -47,6 +47,9 @@ class AppProxy : public QObject {
   void serverDInfoReady(QString server);
   void serverLatencyReady(QString latency);
   void addServerError(QString errorMessage);
+  void serverConnectivityChanged(QString serverName, bool connected);
+  void serverChanged(QString serverName, QString serverConfig);
+  void serverRemoved(QString serverName);
   void serversChanged();
 
  public slots:
