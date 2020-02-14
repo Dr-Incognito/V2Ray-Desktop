@@ -101,16 +101,17 @@ class AppProxy : public QObject {
   QTranslator translator;
 
   QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
-  QJsonObject getV2RayServerFromUrl(QString serverUrl,
-                                    QString subscriptionUrl = "");
+  QJsonObject getV2RayServerFromUrl(const QString& serverUrl,
+                                    const QString& subscriptionUrl = "");
   QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
   QJsonArray getRandomUserAgents(int n);
   QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
   QJsonObject getShadowsocksServerFromUrl(QString serverUrl,
-                                          QString subscriptionUrl = "");
+                                          const QString& subscriptionUrl = "");
   QNetworkProxy getQProxy();
-  QStringList getAppConfigErrors(QJsonObject appConfig);
-  bool isIpAddrValid(QString ipAddr);
+  QStringList getAppConfigErrors(const QJsonObject& appConfig);
+  bool isIpAddrValid(const QString& ipAddr);
+  bool isUrlValid(const QString &url);
 };
 
 #endif  // APPPROXY_H

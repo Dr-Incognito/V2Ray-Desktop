@@ -24,6 +24,18 @@ ColumnLayout {
         }
     }
 
+    Label {
+        id: labelErrorMsg
+        background: Rectangle {
+            color: "#ee8989"
+        }
+        color: "#652424"
+        Layout.fillWidth: true
+        padding: 10
+        visible: false
+        wrapMode: Text.Wrap
+    }
+
     GridLayout {
         columns: 3
         flow: GridLayout.LeftToRight
@@ -118,6 +130,7 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
+                labelErrorMsg.visible = false
                 AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
                 AppProxy.setGfwListUrl(textGfwListUrl.text)
             }
@@ -153,6 +166,11 @@ ColumnLayout {
 
         onAppConfigChanged: function() {
             messageDialog.open()
+        }
+
+        onAppConfigError: function(errorMsg) {
+            labelErrorMsg.text = errorMsg
+            labelErrorMsg.visible = true
         }
 
         onProxyModeChanged: function(proxyMode) {
