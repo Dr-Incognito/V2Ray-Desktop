@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.2
+import com.v2ray.desktop.AppProxy 1.3
 
 ColumnLayout {
     anchors.fill: parent
@@ -118,12 +118,8 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
-                var config = {
-                    "proxyMode": comboProxyMode.currentValue,
-                    "gfwListUrl": textGfwListUrl.text
-                }
-                AppProxy.setAppConfig(JSON.stringify(config))
                 AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
+                AppProxy.setGfwListUrl(textGfwListUrl.text)
             }
         }
     }

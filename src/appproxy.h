@@ -46,7 +46,7 @@ class AppProxy : public QObject {
   void serversReady(QString servers);
   void serverDInfoReady(QString server);
   void serverLatencyReady(QString latency);
-  void addServerError(QString errorMessage);
+  void serverError(QString errorMessage);
   void serverConnectivityChanged(QString serverName, bool connected);
   void serverChanged(QString serverName, QString serverConfig);
   void serverRemoved(QString serverName);
@@ -62,11 +62,12 @@ class AppProxy : public QObject {
   void getAppConfig();
   void setAppConfig(QString configString);
   void setAutoStart(bool autoStart);
+  void setSystemProxyMode(QString proxyMode = "");
+  void getProxySettings();
+  void setGfwListUrl(QString gfwListUrl);
+  void updateGfwList(QString gfwListUrl);
   void getLogs();
   void clearLogs();
-  void getProxySettings();
-  void setSystemProxyMode(QString proxyMode = "");
-  void updateGfwList(QString gfwListUrl);
   void getServers();
   void getServer(QString serverName, bool forDuplicate = false);
   void getServerLatency(QString serverName = "");
@@ -108,6 +109,8 @@ class AppProxy : public QObject {
   QJsonObject getShadowsocksServerFromUrl(QString serverUrl,
                                           QString subscriptionUrl = "");
   QNetworkProxy getQProxy();
+  QStringList getAppConfigErrors(QJsonObject appConfig);
+  bool isIpAddrValid(QString ipAddr);
 };
 
 #endif  // APPPROXY_H

@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.2
+import com.v2ray.desktop.AppProxy 1.3
 
 ColumnLayout {
     id: layoutServer
@@ -1604,14 +1604,14 @@ ColumnLayout {
             labelAddServerMethod.visible = false
             comboAddServerMethod.visible = false
             for (i = 0; i < popUpButtons.length; ++ i) {
-                popUpButtons[i].text = "Edit Server"
+                popUpButtons[i].text = qsTr("Edit Server")
             }
         } else {
             labelServerInformation.visible = false
             labelAddServerMethod.visible = true
             comboAddServerMethod.visible = true
             for (i = 0; i < popUpButtons.length; ++ i) {
-                popUpButtons[i].text = "Add Server"
+                popUpButtons[i].text = qsTr("Add Server")
             }
         }
     }
