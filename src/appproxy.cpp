@@ -182,7 +182,7 @@ void AppProxy::setAppConfig(QString configString) {
   emit appConfigChanged();
 }
 
-QStringList AppProxy::getAppConfigErrors(QJsonObject appConfig) {
+QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   QStringList errors;
   if (!appConfig.contains("language") ||
       appConfig["language"].toString().isEmpty()) {
@@ -235,7 +235,7 @@ QStringList AppProxy::getAppConfigErrors(QJsonObject appConfig) {
   return errors;
 }
 
-bool AppProxy::isIpAddrValid(QString ipAddr) {
+bool AppProxy::isIpAddrValid(const QString& ipAddr) {
   QRegularExpression ipAddrRegex(
     "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]"
     "|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
@@ -370,7 +370,19 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 }
 
 void AppProxy::setGfwListUrl(QString gfwListUrl) {
+  if (!isUrlValid(gfwListUrl)) {
+    emit appConfigError(tr("The URL for GFW List seems invalid."));
+    return;
+  }
   configurator.setAppConfig({{"gfwListUrl", gfwListUrl}});
+  emit appConfigChanged();
+}
+
+bool AppProxy::isUrlValid(const QString& url) {
+  QRegularExpression urlRegex(
+    "^https?://(-\\.)?([^\\s/?\\.#-]+\\.?)+(/[^\\s]*)?$",
+    QRegularExpression::CaseInsensitiveOption);
+  return urlRegex.match(url).hasMatch();
 }
 
 void AppProxy::updateGfwList(QString gfwListUrl) {
@@ -390,7 +402,7 @@ void AppProxy::returnGfwList(QByteArray gfwList) {
     qInfo() << "GFW List updated successfully.";
     emit gfwListUpdated(updatedTime);
   } else {
-    emit gfwListUpdated("Failed to update GFW List.");
+    emit gfwListUpdated(tr("Failed to update GFW List."));
   }
 }
 
@@ -687,8 +699,8 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
   emit serversChanged();
 }
 
-QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
-                                            QString subscriptionUrl) {
+QJsonObject AppProxy::getV2RayServerFromUrl(const QString& server,
+                                            const QString& subscriptionUrl) {
   // Ref:
   // https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
   const QMap<QString, QString> NETWORK_MAPPER = {
@@ -733,8 +745,8 @@ QJsonObject AppProxy::getV2RayServerFromUrl(QString server,
   return serverConfig;
 }
 
-QJsonObject AppProxy::getShadowsocksServerFromUrl(QString serverUrl,
-                                                  QString subscriptionUrl) {
+QJsonObject AppProxy::getShadowsocksServerFromUrl(
+  QString serverUrl, const QString& subscriptionUrl) {
   serverUrl             = serverUrl.mid(5);
   int atIndex           = serverUrl.indexOf('@');
   int colonIndex        = serverUrl.indexOf(':');
