@@ -5,7 +5,7 @@
 
 static const QString APP_NAME      = "V2Ray-Desktop";
 static const int APP_VERSION_MAJOR = 1;
-static const int APP_VERSION_MINOR = 2;
+static const int APP_VERSION_MINOR = 3;
 static const int APP_VERSION_PATCH = 0;
 
 static const QString DEFAULT_V2RAY_CORE_VERSION = "v4.22.1";

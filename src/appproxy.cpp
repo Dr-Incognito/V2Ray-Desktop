@@ -16,6 +16,7 @@
 #include <QPixmap>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QSettings>
 #include <QSysInfo>
@@ -161,23 +162,81 @@ void AppProxy::getAppConfig() {
 void AppProxy::setAppConfig(QString configString) {
   QJsonDocument configDoc = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject appConfig   = configDoc.object();
-  // TODO: Check app config before saving
+  // Check if app config contains errors
+  QStringList appConfigErrors = getAppConfigErrors(appConfig);
+  if (appConfigErrors.size() > 0) {
+    emit appConfigError(appConfigErrors.join('\n'));
+    return;
+  }
+  // Set auto start and update UI language
+  setAutoStart(appConfig["autoStart"].toBool());
+  retranslate(appConfig["language"].toString());
   // Save app config
+  appConfig["serverPort"] = appConfig["serverPort"].toString().toInt();
+  appConfig["pacPort"]    = appConfig["pacPort"].toString().toInt();
   configurator.setAppConfig(appConfig);
-  emit appConfigChanged();
   qInfo() << "Application config updated. Restarting V2Ray ...";
   // Restart V2Ray Core
   v2ray.restart();
-  // Update auto start item
-  if (appConfig.contains("autoStart")) {
-    bool autoStart = appConfig["autoStart"].toBool();
-    setAutoStart(autoStart);
+  // Notify that the app config has changed
+  emit appConfigChanged();
+}
+
+QStringList AppProxy::getAppConfigErrors(QJsonObject appConfig) {
+  QStringList errors;
+  if (!appConfig.contains("language") ||
+      appConfig["language"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Language'."));
   }
-  // Update translation
-  if (appConfig.contains("language")) {
-    QString language = appConfig["language"].toString();
-    retranslate(language);
+  if (!appConfig.contains("serverProtocol") ||
+      appConfig["serverProtocol"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Local Server Protocol'."));
   }
+  if (!appConfig.contains("serverIp") ||
+       appConfig["serverIp"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Listening IP Address'."));
+  } else if (!isIpAddrValid(appConfig["serverIp"].toString())) {
+    errors.append(tr("'Listening IP Address' seems invalid."));
+  }
+  if (!appConfig.contains("serverPort") ||
+       appConfig["serverPort"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Listening Port'."));
+  } else {
+    int serverPort = appConfig["serverPort"].toString().toInt();
+    if (serverPort <= 0 || serverPort > 65535) {
+      errors.append(tr("'Listening Port' seems invalid."));
+    }
+  }
+  if (!appConfig.contains("pacPort") ||
+      appConfig["pacPort"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'PAC Server Port'."));
+  } else {
+    int pacPort = appConfig["pacPort"].toString().toInt();
+    qDebug() << pacPort;
+    if (pacPort <= 0 || pacPort > 65535) {
+      errors.append(tr("'PAC Server Port' seems invalid."));
+    }
+  }
+  if (!appConfig.contains("dns") ||
+      appConfig["dns"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'DNS Servers'."));
+  } else {
+    QStringList dnsServers = appConfig["dns"].toString().split(",");
+    for (QString dnsServer : dnsServers) {
+      if (!isIpAddrValid(dnsServer.trimmed())) {
+        errors.append(tr("'DNS Servers' seems invalid."));
+        break;
+      }
+    }
+  }
+  return errors;
+}
+
+bool AppProxy::isIpAddrValid(QString ipAddr) {
+  QRegularExpression ipAddrRegex(
+    "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]"
+    "|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
+  return ipAddrRegex.match(ipAddr).hasMatch();
 }
 
 bool AppProxy::retranslate(QString language) {
@@ -305,6 +364,10 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 
   // Update app config
   configurator.setAppConfig({{"proxyMode", proxyMode}});
+}
+
+void AppProxy::setGfwListUrl(QString gfwListUrl) {
+  configurator.setAppConfig({{"gfwListUrl", gfwListUrl}});
 }
 
 void AppProxy::updateGfwList(QString gfwListUrl) {
@@ -582,7 +645,7 @@ void AppProxy::updateSubscriptionServers(QString subsriptionUrl) {
 void AppProxy::addSubscriptionServers(QString subsriptionServers,
                                       QString subsriptionUrl) {
   if (!subsriptionServers.size()) {
-    emit addServerError("Failed to get subscription servers from URL.");
+    emit serverError("Failed to get subscription servers from URL.");
     return;
   }
   // Remove servers from the subscription if exists

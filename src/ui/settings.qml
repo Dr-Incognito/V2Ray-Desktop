@@ -3,7 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.2
+import com.v2ray.desktop.AppProxy 1.3
 
 ColumnLayout {
     anchors.fill: parent
@@ -22,6 +22,18 @@ ColumnLayout {
             color: "white"
             font.pointSize: 24
         }
+    }
+
+    Label {
+        id: labelErrorMsg
+        background: Rectangle {
+            color: "#ee8989"
+        }
+        color: "#652424"
+        Layout.fillWidth: true
+        padding: 10
+        visible: false
+        wrapMode: Text.Wrap
     }
 
     GridLayout {
@@ -170,12 +182,12 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("DNS Server")
+            text: qsTr("DNS Servers")
             color: "white"
         }
 
         TextField {
-            id: textDnsServer
+            id: textDnsServers
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
@@ -205,10 +217,11 @@ ColumnLayout {
                     "language": comboLanguage.currentValue,
                     "serverProtocol": comboServerProtocol.currentText,
                     "serverIp": textServerIpAddr.text,
-                    "serverPort": parseInt(textServerPort.text),
-                    "pacPort": parseInt(textPacServerPort.text),
-                    "dns": textDnsServer.text
+                    "serverPort": textServerPort.text,
+                    "pacPort": textPacServerPort.text,
+                    "dns": textDnsServers.text
                 }
+                labelErrorMsg.visible = false
                 AppProxy.setAppConfig(JSON.stringify(config))
             }
         }
@@ -245,10 +258,16 @@ ColumnLayout {
             textServerIpAddr.text = config["serverIp"]
             textServerPort.text = config["serverPort"]
             textPacServerPort.text = config["pacPort"]
-            textDnsServer.text = config["dns"]
+            textDnsServers.text = config["dns"]
         }
+
         onAppConfigChanged: function() {
             messageDialog.open()
+        }
+
+        onAppConfigError: function(errorMsg) {
+            labelErrorMsg.text = errorMsg
+            labelErrorMsg.visible = true
         }
     }
 
