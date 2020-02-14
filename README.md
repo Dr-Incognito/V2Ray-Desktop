@@ -22,7 +22,7 @@ You can get the latest release at [Releases Page](https://github.com/Dr-Incognit
 - Support Windows, Linux, and macOS.
 - Support both Shadowsocks (without obfs) and V2Ray servers.
 - Support connecting to multiple servers.
-- Support adding servers from a subscription URL.
+- Support adding/updating servers from subscription URLs.
 - Support adding servers by scanning QR codes.
 - Support PAC proxy mode, Global proxy mode, and Manual proxy mode.
 - Support getting and setting system proxies for Windows, Linux (GNOME), and macOS.
@@ -31,7 +31,9 @@ You can get the latest release at [Releases Page](https://github.com/Dr-Incognit
 
 ## Screenshot
 
-<img width="1072" alt="Screen Shot 2020-02-03 at 12 50 02 PM" src="https://user-images.githubusercontent.com/17879520/73626391-acae8500-4683-11ea-952f-b14dae450e0b.png">
+<img width="1072" alt="Dashboard" src="https://user-images.githubusercontent.com/17879520/73626391-acae8500-4683-11ea-952f-b14dae450e0b.png">
+
+<img width="1072" alt="Servers" src="https://user-images.githubusercontent.com/17879520/74507718-34c04480-4f38-11ea-89a3-8f2faea5ec0b.png">
 
 ## License
 
