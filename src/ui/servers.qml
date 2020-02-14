@@ -1430,8 +1430,8 @@ ColumnLayout {
             menuItemTestAllLatency.enabled = true
         }
 
-        onAddServerError: function(errorMessage) {
-            console.log(errorMessage)
+        onServerError: function(errorMsg) {
+            console.log(errorMsg)
         }
 
         onServerConnectivityChanged: function(serverName, connected) {

@@ -193,13 +193,13 @@ QStringList AppProxy::getAppConfigErrors(QJsonObject appConfig) {
     errors.append(tr("Missing the value for 'Local Server Protocol'."));
   }
   if (!appConfig.contains("serverIp") ||
-       appConfig["serverIp"].toString().isEmpty()) {
+      appConfig["serverIp"].toString().isEmpty()) {
     errors.append(tr("Missing the value for 'Listening IP Address'."));
   } else if (!isIpAddrValid(appConfig["serverIp"].toString())) {
     errors.append(tr("'Listening IP Address' seems invalid."));
   }
   if (!appConfig.contains("serverPort") ||
-       appConfig["serverPort"].toString().isEmpty()) {
+      appConfig["serverPort"].toString().isEmpty()) {
     errors.append(tr("Missing the value for 'Listening Port'."));
   } else {
     int serverPort = appConfig["serverPort"].toString().toInt();
@@ -211,14 +211,17 @@ QStringList AppProxy::getAppConfigErrors(QJsonObject appConfig) {
       appConfig["pacPort"].toString().isEmpty()) {
     errors.append(tr("Missing the value for 'PAC Server Port'."));
   } else {
-    int pacPort = appConfig["pacPort"].toString().toInt();
-    qDebug() << pacPort;
+    int pacPort    = appConfig["pacPort"].toString().toInt();
+    int serverPort = appConfig["serverPort"].toString().toInt();
     if (pacPort <= 0 || pacPort > 65535) {
       errors.append(tr("'PAC Server Port' seems invalid."));
     }
+    if (pacPort == serverPort) {
+      errors.append(
+        tr("'PAC Server Port' can not be the same as 'Listening Port'."));
+    }
   }
-  if (!appConfig.contains("dns") ||
-      appConfig["dns"].toString().isEmpty()) {
+  if (!appConfig.contains("dns") || appConfig["dns"].toString().isEmpty()) {
     errors.append(tr("Missing the value for 'DNS Servers'."));
   } else {
     QStringList dnsServers = appConfig["dns"].toString().split(",");
