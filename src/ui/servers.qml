@@ -1387,6 +1387,9 @@ ColumnLayout {
             for (var i = 0; i < servers.length; ++ i) {
                 if ("subscription" in servers[i]) {
                     var subscriptionUrl = servers[i]["subscription"]
+                    if (subscriptionUrl.length === 0) {
+                        continue
+                    }
                     if (subscriptionUrls.indexOf(subscriptionUrl) === -1) {
                         subscriptionUrls.push(subscriptionUrl)
                     }

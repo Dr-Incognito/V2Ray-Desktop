@@ -2,6 +2,74 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN" sourcelanguage="en_US">
 <context>
+    <name>AppProxy</name>
+    <message>
+        <location filename="../appproxy.cpp" line="189"/>
+        <source>Missing the value for &apos;Language&apos;.</source>
+        <translation>缺失值：“语言”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="193"/>
+        <source>Missing the value for &apos;Local Server Protocol&apos;.</source>
+        <translation>缺失值：“本地服务器协议”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="197"/>
+        <source>Missing the value for &apos;Listening IP Address&apos;.</source>
+        <translation>缺失值：“监听IP地址”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="199"/>
+        <source>&apos;Listening IP Address&apos; seems invalid.</source>
+        <translation>“监听IP地址”似乎是无效的。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="203"/>
+        <source>Missing the value for &apos;Listening Port&apos;.</source>
+        <translation>缺失值：“监听端口”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="207"/>
+        <source>&apos;Listening Port&apos; seems invalid.</source>
+        <translation>“监听端口”似乎是无效的。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="212"/>
+        <source>Missing the value for &apos;PAC Server Port&apos;.</source>
+        <translation>缺失值：“PAC服务器端口”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="217"/>
+        <source>&apos;PAC Server Port&apos; seems invalid.</source>
+        <translation>“PAC服务器端口”似乎是无效的。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="221"/>
+        <source>&apos;PAC Server Port&apos; can not be the same as &apos;Listening Port&apos;.</source>
+        <translation>“PAC服务器端口”不得于“监听端口”相同。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="225"/>
+        <source>Missing the value for &apos;DNS Servers&apos;.</source>
+        <translation>缺失值：“DNS服务器”。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="230"/>
+        <source>&apos;DNS Servers&apos; seems invalid.</source>
+        <translation>“DNS服务器”似乎是无效的。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="374"/>
+        <source>The URL for GFW List seems invalid.</source>
+        <translation>GFW List的URL似乎是无效的。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="405"/>
+        <source>Failed to update GFW List.</source>
+        <translation>更新GFW List失败。</translation>
+    </message>
+</context>
+<context>
     <name>QuaGzipFile</name>
     <message>
         <location filename="../3rdparty/quazip/quazip/quagzipfile.cpp" line="60"/>
@@ -295,48 +363,48 @@ Please check the network connection.</source>
         <translation>规则</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="34"/>
+        <location filename="../ui/rules.qml" line="46"/>
         <source>Proxy Mode</source>
         <translation>代理模式</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="62"/>
+        <location filename="../ui/rules.qml" line="74"/>
         <source>GFW List URL</source>
         <translation>GFW List URL</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="71"/>
+        <location filename="../ui/rules.qml" line="83"/>
         <source>Example: https://url/to/gfwlist.txt</source>
         <translation>例如：https://url/to/gfwlist.txt</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="79"/>
+        <location filename="../ui/rules.qml" line="91"/>
         <source>GFW List Last Updated on</source>
         <translation>GFW List最近更新时间</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="91"/>
-        <location filename="../ui/rules.qml" line="167"/>
+        <location filename="../ui/rules.qml" line="103"/>
+        <location filename="../ui/rules.qml" line="181"/>
         <source>Update GFW List Now</source>
         <translation>立即更新GFW List</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="104"/>
+        <location filename="../ui/rules.qml" line="116"/>
         <source>Updating ...</source>
         <translation>更新中…</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="111"/>
+        <location filename="../ui/rules.qml" line="123"/>
         <source>Save Settings</source>
         <translation>保存设置</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="142"/>
+        <location filename="../ui/rules.qml" line="151"/>
         <source>Message from V2Ray Desktop</source>
         <translation>来自V2Ray Desktop的消息</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="144"/>
+        <location filename="../ui/rules.qml" line="153"/>
         <source>Settings saved.</source>
         <translation>设置已保存。</translation>
     </message>
@@ -685,6 +753,7 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="899"/>
         <location filename="../ui/servers.qml" line="1037"/>
         <location filename="../ui/servers.qml" line="1056"/>
+        <location filename="../ui/servers.qml" line="1614"/>
         <source>Add Server</source>
         <translation>添加服务器</translation>
     </message>
@@ -769,6 +838,11 @@ Please check the network connection.</source>
         <source>N/a</source>
         <translation>不可用</translation>
     </message>
+    <message>
+        <location filename="../ui/servers.qml" line="1607"/>
+        <source>Edit Server</source>
+        <translation>编辑服务器</translation>
+    </message>
 </context>
 <context>
     <name>settings</name>
@@ -783,87 +857,91 @@ Please check the network connection.</source>
         <translation>偏好设置</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="34"/>
+        <location filename="../ui/settings.qml" line="46"/>
         <source>Launch V2Ray Desktop at Login</source>
         <translation>在登录时启动V2Ray Desktop</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="44"/>
+        <location filename="../ui/settings.qml" line="56"/>
         <source>Hide Window on Start Up</source>
         <translation>在启动后最小化</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="54"/>
+        <location filename="../ui/settings.qml" line="66"/>
         <source>Check for Updates Automatically</source>
         <translation>自动检查软件更新</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="64"/>
+        <location filename="../ui/settings.qml" line="76"/>
         <source>Enable UDP</source>
         <translation>启用UDP</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="74"/>
+        <location filename="../ui/settings.qml" line="86"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="100"/>
+        <location filename="../ui/settings.qml" line="112"/>
         <source>Local Server Protocol</source>
         <translation>本地服务器协议</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="124"/>
+        <location filename="../ui/settings.qml" line="136"/>
         <source>Listening IP Address</source>
         <translation>监听IP地址</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="132"/>
+        <location filename="../ui/settings.qml" line="144"/>
         <source>Example: 127.0.0.1</source>
         <translation>例如：127.0.0.1</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="140"/>
+        <location filename="../ui/settings.qml" line="152"/>
         <source>Listening Port</source>
         <translation>监听端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="148"/>
+        <location filename="../ui/settings.qml" line="160"/>
         <source>Example: 1080</source>
         <translation>例如：1080</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="157"/>
+        <location filename="../ui/settings.qml" line="169"/>
         <source>PAC Server Port</source>
         <translation>PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="165"/>
+        <location filename="../ui/settings.qml" line="177"/>
         <source>Example: 1085</source>
         <translation>例如：1085</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="173"/>
-        <source>DNS Server</source>
+        <location filename="../ui/settings.qml" line="185"/>
+        <source>DNS Servers</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="181"/>
+        <source>DNS Server</source>
+        <translation type="vanished">DNS服务器</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="193"/>
         <source>Example: 8.8.8.8,8.8.4.4</source>
         <translation>例如：8.8.8.8,8.8.4.4</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="190"/>
+        <location filename="../ui/settings.qml" line="202"/>
         <source>Save Settings</source>
         <translation>保存设置</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="228"/>
+        <location filename="../ui/settings.qml" line="241"/>
         <source>Message from V2Ray Desktop</source>
         <translation>来自V2Ray Desktop的消息</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="230"/>
+        <location filename="../ui/settings.qml" line="243"/>
         <source>Settings saved.</source>
         <translation>设置已保存。</translation>
     </message>
