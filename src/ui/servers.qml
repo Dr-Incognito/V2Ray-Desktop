@@ -310,6 +310,18 @@ ColumnLayout {
                 }
             }
 
+            Label {
+                id: labelServerConfigErrorMsg
+                background: Rectangle {
+                    color: "#ee8989"
+                }
+                color: "#652424"
+                Layout.fillWidth: true
+                padding: 10
+                visible: false
+                wrapMode: Text.Wrap
+            }
+
             GridLayout {
                 id: layoutServerV2rayManually
                 columns: 4
@@ -1433,8 +1445,17 @@ ColumnLayout {
             menuItemTestAllLatency.enabled = true
         }
 
-        onServerError: function(errorMsg) {
-            console.log(errorMsg)
+        onServerConfigError: function(errorMsg) {
+            var popUpButtons = [
+                buttonV2RayAddServer, buttonShadowsocksAddServer,
+                buttonSubscriptionAddServer, buttonConfigAddServer
+            ]
+            for (var i = 0; i < popUpButtons.length; ++ i) {
+                popUpButtons[i].enabled = true
+            }
+
+            labelServerConfigErrorMsg.text = errorMsg
+            labelServerConfigErrorMsg.visible = true
         }
 
         onServerConnectivityChanged: function(serverName, connected) {
@@ -1617,5 +1638,6 @@ ColumnLayout {
                 popUpButtons[i].text = qsTr("Add Server")
             }
         }
+        labelServerConfigErrorMsg.visible = false
     }
 }
