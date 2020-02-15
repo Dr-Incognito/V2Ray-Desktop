@@ -252,6 +252,7 @@ ColumnLayout {
         property var editServerName
 
         ColumnLayout {
+            id: layoutPopUpServer
             anchors.fill: parent
             anchors.margins: 10
             spacing: 20
@@ -296,6 +297,7 @@ ColumnLayout {
                         layoutServerShadowsocksManually.visible = false
                         layoutServerSubscriptionUrl.visible = false
                         layoutServerJsonFiles.visible = false
+                        labelServerConfigErrorMsg.visible = false
 
                         if ( comboAddServerMethod.currentText === qsTr("Manually setting up a V2Ray server") ) {
                             layoutServerV2rayManually.visible = true
@@ -326,8 +328,9 @@ ColumnLayout {
                 id: layoutServerV2rayManually
                 columns: 4
                 flow: GridLayout.LeftToRight
-                rowSpacing: 20
                 columnSpacing: 20
+                rowSpacing: 20
+                width: parent.width
 
                 Label {
                     text: qsTr("Server Name")
@@ -502,10 +505,10 @@ ColumnLayout {
                         textV2RayKcpMtu.visible = false
                         labelV2RayKcpTti.visible = false
                         textV2RayKcpTti.visible = false
-                        labelV2RayKcpUplinkCapcity.visible = false
-                        textV2RayKcpUplinkCapcity.visible = false
-                        labelV2RayKcpDownlinkCapcity.visible = false
-                        textV2RayKcpDownlinkCapcity.visible = false
+                        labelV2RayKcpUplinkCapacity.visible = false
+                        textV2RayKcpUplinkCapacity.visible = false
+                        labelV2RayKcpDownlinkCapacity.visible = false
+                        textV2RayKcpDownlinkCapacity.visible = false
                         labelV2RayReadBufferSize.visible = false
                         textV2RayKcpReadBufferSize.visible = false
                         labelV2RayKcpWriteBufferSize.visible = false
@@ -533,10 +536,10 @@ ColumnLayout {
                             textV2RayKcpMtu.visible = true
                             labelV2RayKcpTti.visible = true
                             textV2RayKcpTti.visible = true
-                            labelV2RayKcpUplinkCapcity.visible = true
-                            textV2RayKcpUplinkCapcity.visible = true
-                            labelV2RayKcpDownlinkCapcity.visible = true
-                            textV2RayKcpDownlinkCapcity.visible = true
+                            labelV2RayKcpUplinkCapacity.visible = true
+                            textV2RayKcpUplinkCapacity.visible = true
+                            labelV2RayKcpDownlinkCapacity.visible = true
+                            textV2RayKcpDownlinkCapacity.visible = true
                             labelV2RayReadBufferSize.visible = true
                             textV2RayKcpReadBufferSize.visible = true
                             labelV2RayKcpWriteBufferSize.visible = true
@@ -664,13 +667,13 @@ ColumnLayout {
                 }
 
                 Label {
-                    id: labelV2RayKcpUplinkCapcity
-                    text: qsTr("Uplink Capcity")
+                    id: labelV2RayKcpUplinkCapacity
+                    text: qsTr("Uplink Capacity")
                     color: "white"
                 }
 
                 TextField {
-                    id: textV2RayKcpUplinkCapcity
+                    id: textV2RayKcpUplinkCapacity
                     color: "white"
                     Layout.fillWidth: true
                     placeholderText: qsTr("Default value: 5.")
@@ -681,13 +684,13 @@ ColumnLayout {
                 }
 
                 Label {
-                    id: labelV2RayKcpDownlinkCapcity
-                    text: qsTr("Downlink Capcity")
+                    id: labelV2RayKcpDownlinkCapacity
+                    text: qsTr("Downlink Capacity")
                     color: "white"
                 }
 
                 TextField {
-                    id: textV2RayKcpDownlinkCapcity
+                    id: textV2RayKcpDownlinkCapacity
                     color: "white"
                     Layout.fillWidth: true
                     placeholderText: qsTr("Default value: 5.")
@@ -716,7 +719,7 @@ ColumnLayout {
 
                 Label {
                     id: labelV2RayKcpWriteBufferSize
-                    text: qsTr("Downlink Capcity")
+                    text: qsTr("Write Buffer Size")
                     color: "white"
                 }
 
@@ -884,22 +887,22 @@ ColumnLayout {
                         var server = {
                             "serverName": textV2RayServerName.text,
                             "serverAddr": textV2RayServerAddr.text,
-                            "serverPort": parseInt(textV2RayServerPort.text),
+                            "serverPort": textV2RayServerPort.text,
                             "autoConnect": checkboxV2RayAutoConnect.checked,
                             "id": textV2RayId.text,
                             "alterId": textV2RayAlterId.text,
                             "security": comboV2RaySecurity.currentText,
-                            "mux": parseInt(textMux.text),
+                            "mux": textMux.text,
                             "network": comboV2RayNetwork.currentValue,
                             "networkSecurity": comboV2RayNetworkSecurity.currentText,
                             "allowInsecure": checkboxV2RayAllowInsecure.checked,
                             "tcpHeaderType": comboV2RayTcpHeaderType.currentText,
-                            "kcpMtu": parseInt(textV2RayKcpMtu.text),
-                            "kcpTti": parseInt(textV2RayKcpTti.text),
-                            "kcpUpLink": parseInt(textV2RayKcpUplinkCapcity.text),
-                            "kcpDownLink": parseInt(textV2RayKcpDownlinkCapcity.text),
-                            "kcpReadBuffer": parseInt(textV2RayKcpReadBufferSize.text),
-                            "kcpWriteBuffer": parseInt(textV2RayKcpWriteBufferSize.text),
+                            "kcpMtu": textV2RayKcpMtu.text,
+                            "kcpTti": textV2RayKcpTti.text,
+                            "kcpUpLink": textV2RayKcpUplinkCapacity.text,
+                            "kcpDownLink": textV2RayKcpDownlinkCapacity.text,
+                            "kcpReadBuffer": textV2RayKcpReadBufferSize.text,
+                            "kcpWriteBuffer": textV2RayKcpWriteBufferSize.text,
                             "kcpCongestion": checkboxV2RayKcpCongestion.checked,
                             "networkHost": textV2RayNetworktHost.text,
                             "networkPath": textV2RayNetworkPath.text,
@@ -1060,7 +1063,7 @@ ColumnLayout {
                         var server = {
                             "serverName": textShadowsocksServerName.text,
                             "serverAddr": textShadowsocksServerAddr.text,
-                            "serverPort": parseInt(textShadowsocksServerPort.text),
+                            "serverPort": textShadowsocksServerPort.text,
                             "autoConnect": checkboxShadowsocksAutoConnect.checked,
                             "encryption": comboShadowsocksEncryptionMethod.currentText,
                             "password": textShadowsocksPassword.text
@@ -1112,7 +1115,7 @@ ColumnLayout {
                     }
                     onClicked: function() {
                         buttonSubscriptionAddServer.enabled = false
-                        AppProxy.updateSubscriptionServers(textSubsriptionUrl.text)
+                        AppProxy.addSubscriptionUrl(textSubsriptionUrl.text)
                     }
                 }
             }
@@ -1533,8 +1536,8 @@ ColumnLayout {
                 } else if (server["streamSettings"]["network"] === "kcp") {
                     textV2RayKcpMtu.text = server["streamSettings"]["kcpSettings"]["mtu"]
                     textV2RayKcpTti.text = server["streamSettings"]["kcpSettings"]["tti"]
-                    textV2RayKcpUplinkCapcity.text = server["streamSettings"]["kcpSettings"]["uplinkCapacity"]
-                    textV2RayKcpDownlinkCapcity.text = server["streamSettings"]["kcpSettings"]["downlinkCapacity"]
+                    textV2RayKcpUplinkCapacity.text = server["streamSettings"]["kcpSettings"]["uplinkCapacity"]
+                    textV2RayKcpDownlinkCapacity.text = server["streamSettings"]["kcpSettings"]["downlinkCapacity"]
                     textV2RayKcpReadBufferSize.text = server["streamSettings"]["kcpSettings"]["readBufferSize"]
                     textV2RayKcpWriteBufferSize.text = server["streamSettings"]["kcpSettings"]["writeBufferSize"]
                     checkboxV2RayKcpCongestion.checked = server["streamSettings"]["kcpSettings"]["congestion"]
@@ -1592,8 +1595,8 @@ ColumnLayout {
         comboV2RayTcpHeaderType.currentIndex = 0
         textV2RayKcpMtu.text = ""
         textV2RayKcpTti.text = ""
-        textV2RayKcpUplinkCapcity.text = ""
-        textV2RayKcpDownlinkCapcity.text = ""
+        textV2RayKcpUplinkCapacity.text = ""
+        textV2RayKcpDownlinkCapacity.text = ""
         textV2RayKcpReadBufferSize.text = ""
         textV2RayKcpWriteBufferSize.text = ""
         checkboxV2RayKcpCongestion.checked = false
