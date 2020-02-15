@@ -32,8 +32,7 @@ class AppProxy : public QObject {
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
   void operatingSystemReady(QString operatingSystem);
-  void v2RayCoreStatusReady(QString v2RayCoreStatus);
-  void v2RayRunningStatusChanging(bool isChanged);
+  void v2RayCoreStatusReady(bool isRunning);
   void networkStatusReady(QString networkStatus);
   void proxySettingsReady(QString proxySettings);
   void appConfigReady(QString appConfig);

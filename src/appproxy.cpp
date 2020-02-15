@@ -93,11 +93,7 @@ void AppProxy::getOperatingSystem() {
 }
 
 void AppProxy::getV2RayCoreStatus() {
-  bool isInstalled = v2ray.isInstalled();
-  bool isRunning   = v2ray.isRunning();
-  QString v2rayStatus =
-    isInstalled ? (isRunning ? "Running" : "Stopped") : "Not Installed";
-  emit v2RayCoreStatusReady(v2rayStatus);
+  emit v2RayCoreStatusReady(v2ray.isRunning());
 }
 
 void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
@@ -106,12 +102,13 @@ void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
     isSuccessful = v2ray.start();
     qInfo() << QString("Start V2Ray Core ... %1")
                  .arg(isSuccessful ? "success" : "failed");
-    emit v2RayRunningStatusChanging(isSuccessful);
   } else {
     isSuccessful = v2ray.stop();
     qInfo() << QString("Stop V2Ray Core ... %1")
                  .arg(isSuccessful ? "success" : "failed");
-    emit v2RayRunningStatusChanging(isSuccessful);
+  }
+  if (isSuccessful) {
+    emit v2RayCoreStatusReady(expectedRunning);
   }
 }
 

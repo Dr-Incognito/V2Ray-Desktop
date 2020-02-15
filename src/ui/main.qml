@@ -41,12 +41,12 @@ ApplicationWindow {
             MenuItem {
                 id: triggerV2RayCore
                 text: qsTr("Turn V2Ray On")
+                property var isV2RayRunning: false
+
                 onTriggered: function() {
-                    if (triggerV2RayCore.text === qsTr("V2Ray Core Installing ...")) {
-                        AppProxy.getV2RayCoreStatus()
-                    } else if (triggerV2RayCore.text === qsTr("Turn V2Ray On")) {
+                    if (!isV2RayRunning) {
                         AppProxy.setV2RayCoreRunning(true)
-                    } else if (triggerV2RayCore.text === qsTr("Turn V2Ray Off")) {
+                    } else if (isV2RayRunning) {
                         AppProxy.setV2RayCoreRunning(false)
                     }
                 }
@@ -468,23 +468,13 @@ ApplicationWindow {
                 }
             }
 
-            onV2RayCoreStatusReady: function(v2RayCoreStatus) {
-                if (v2RayCoreStatus === "Not Installed") {
-                    triggerV2RayCore.text = qsTr("V2Ray Core Installing ...")
-                } else if (v2RayCoreStatus === "Stopped") {
+            onV2RayCoreStatusReady: function(isRunning) {
+                if (!isRunning) {
                     triggerV2RayCore.text = qsTr("Turn V2Ray On")
-                } else if (v2RayCoreStatus === "Running") {
+                    triggerV2RayCore.isV2RayRunning = false
+                } else {
                     triggerV2RayCore.text = qsTr("Turn V2Ray Off")
-                }
-            }
-
-            onV2RayRunningStatusChanging: function(isChanged) {
-                if (isChanged) {
-                    if (triggerV2RayCore.text === qsTr("Turn V2Ray On")) {
-                        triggerV2RayCore.text = qsTr("Turn V2Ray Off")
-                    } else {
-                        triggerV2RayCore.text = qsTr("Turn V2Ray On")
-                    }
+                    triggerV2RayCore.isV2RayRunning = true
                 }
             }
 
