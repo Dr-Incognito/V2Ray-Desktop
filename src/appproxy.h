@@ -111,7 +111,7 @@ class AppProxy : public QObject {
   QNetworkProxy getQProxy();
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
   bool isIpAddrValid(const QString& ipAddr);
-  bool isUrlValid(const QString &url);
+  bool isUrlValid(const QString& url);
 };
 
 #endif  // APPPROXY_H

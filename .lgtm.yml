@@ -1,0 +1,16 @@
+extraction:
+  cpp:
+    prepare:
+      packages:
+      - "build-essential"
+      - "libqt5svg5-dev"
+      - "libssl-dev"
+      - "pkg-config"
+      - "qt5-default"
+      - "qtbase5-dev"
+      - "qtdeclarative5-dev"
+    index:
+      build_command:
+      - "qmake src/V2Ray-Desktop.pro"
+      - "make -j4"
+
