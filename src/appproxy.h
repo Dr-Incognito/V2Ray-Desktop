@@ -76,6 +76,7 @@ class AppProxy : public QObject {
   void addShadowsocksServer(QString configString);
   void addServerConfigFile(QString configFilePath);
   void editServer(QString serverName, QString protocol, QString configString);
+  void addSubscriptionUrl(QString subsriptionUrl);
   void updateSubscriptionServers(QString subsriptionUrl = "");
   void removeServer(QString serverName);
   void removeSubscriptionServers(QString subscriptionUrl);
@@ -110,10 +111,28 @@ class AppProxy : public QObject {
                                           const QString& subscriptionUrl = "");
   QNetworkProxy getQProxy();
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
+  QStringList getServerConfigErrors(const QJsonObject& serverConfig,
+                                    QString protocol);
+  QStringList getV2RayServerConfigErrors(const QJsonObject& serverConfig);
+  QStringList getV2RayStreamSettingsErrors(const QJsonObject& serverConfig,
+                                           const QString& network);
+  QString getNumericConfigError(const QJsonObject& serverConfig,
+                                const QString& key,
+                                const QString& name,
+                                int lowerBound,
+                                int upperBound);
+  QString getStringConfigError(
+    const QJsonObject& serverConfig,
+    const QString& key,
+    const QString& name,
+    const QList<std::function<bool(const QString&)>>& checkpoints = {});
   QStringList getShadowsocksServerConfigErrors(const QJsonObject& serverConfig);
+  QJsonObject getPrettyServerConfig(const QJsonObject& serverConfig,
+                                    QString protocol);
   bool isIpAddrValid(const QString& ipAddr);
   bool isDomainNameValid(const QString& domainName);
   bool isUrlValid(const QString& url);
+  bool isFileExists(const QString& filePath);
 };
 
 #endif  // APPPROXY_H
