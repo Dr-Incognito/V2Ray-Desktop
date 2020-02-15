@@ -13,4 +13,3 @@ extraction:
       build_command:
       - "qmake src/V2Ray-Desktop.pro"
       - "make -j4"
-

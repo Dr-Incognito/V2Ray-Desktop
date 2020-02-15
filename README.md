@@ -1,14 +1,15 @@
-# V2Ray-Desktop
+# V2Ray Desktop
 
 [![Build Status](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop.svg?branch=master)](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop)
 [![Build status](https://ci.appveyor.com/api/projects/status/0t07jpv22tf7xpn9?svg=true)](https://ci.appveyor.com/project/Dr-Incognito/V2Ray-Desktop)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/)
 
 **Note:** The issues for this project is **temporarily closed** because it is still under development.
 If you want to contribute to this project, please open a pull request.
 
 ## Introduction
 
-V2Ray-Desktop is a GUI client for [V2Ray](http://v2ray.com/), running on Windows, Linux, and macOS.
+V2Ray Desktop is a GUI client for [V2Ray](http://v2ray.com/), running on Windows, Linux, and macOS.
 It is built with Qt 5 and QML 2 and provides advanced features for V2Ray.
 
 You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases).

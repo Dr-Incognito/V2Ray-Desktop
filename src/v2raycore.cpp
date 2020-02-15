@@ -137,6 +137,7 @@ bool V2RayCore::upgrade() {
   if (!isUpgraded) {
     return false;
   }
+  return true;
 }
 
 QString V2RayCore::getLatestVersion() {
