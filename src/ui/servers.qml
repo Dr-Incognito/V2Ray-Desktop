@@ -274,13 +274,29 @@ ColumnLayout {
                 ComboBox {
                     id: comboAddServerMethod
                     Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
                     model: ListModel{
-                        ListElement { text: qsTr("Manually setting up a V2Ray server") }
-                        ListElement { text: qsTr("Manually setting up a Shadowsocks server") }
-                        ListElement { text: qsTr("Subscription URL") }
-                        ListElement { text: qsTr("V2Ray config files") }
-                        ListElement { text: qsTr("V2Ray Desktop config files") }
-                        ListElement { text: qsTr("Shadowsocks config files (gui-config.json)") }
+                        ListElement {
+                            text: qsTr("Manually setting up a V2Ray server");
+                            value: "v2ray-manual"
+                        }
+                        ListElement {
+                            text: qsTr("Manually setting up a Shadowsocks server");
+                            value: "shadowsocks-manual"
+                        }
+                        ListElement {
+                            text: qsTr("Subscription URL");
+                            value: "subscription"
+                        }
+                        ListElement {
+                            text: qsTr("V2Ray config files");
+                            value: "v2ray-config"
+                        }
+                        ListElement {
+                            text: qsTr("Shadowsocks-Qt5 config files (gui-config.json)");
+                            value: "shadowsocks-qt5-config"
+                        }
                     }
                     background: Rectangle {
                         color: Qt.rgba(255, 255, 255, .1)
@@ -292,18 +308,18 @@ ColumnLayout {
                         leftPadding: 10
                         verticalAlignment: Text.AlignVCenter
                     }
-                    onCurrentTextChanged: function() {
+                    onCurrentValueChanged: function() {
                         layoutServerV2rayManually.visible = false
                         layoutServerShadowsocksManually.visible = false
                         layoutServerSubscriptionUrl.visible = false
                         layoutServerJsonFiles.visible = false
                         labelServerConfigErrorMsg.visible = false
 
-                        if ( comboAddServerMethod.currentText === qsTr("Manually setting up a V2Ray server") ) {
+                        if ( comboAddServerMethod.currentValue === "v2ray-manual" ) {
                             layoutServerV2rayManually.visible = true
-                        } else if ( comboAddServerMethod.currentText === qsTr("Manually setting up a Shadowsocks server") ) {
+                        } else if ( comboAddServerMethod.currentValue === "shadowsocks-manual" ) {
                             layoutServerShadowsocksManually.visible = true
-                        } else if ( comboAddServerMethod.currentText === qsTr("Subscription URL") ) {
+                        } else if ( comboAddServerMethod.currentValue === "subscription" ) {
                             layoutServerSubscriptionUrl.visible = true
                         } else {
                             layoutServerJsonFiles.visible = true
