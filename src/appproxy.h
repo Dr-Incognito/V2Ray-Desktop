@@ -46,7 +46,7 @@ class AppProxy : public QObject {
   void serversReady(QString servers);
   void serverDInfoReady(QString server);
   void serverLatencyReady(QString latency);
-  void serverError(QString errorMessage);
+  void serverConfigError(QString errorMessage);
   void serverConnectivityChanged(QString serverName, bool connected);
   void serverChanged(QString serverName, QString serverConfig);
   void serverRemoved(QString serverName);
@@ -110,7 +110,9 @@ class AppProxy : public QObject {
                                           const QString& subscriptionUrl = "");
   QNetworkProxy getQProxy();
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
+  QStringList getShadowsocksServerConfigErrors(const QJsonObject& serverConfig);
   bool isIpAddrValid(const QString& ipAddr);
+  bool isDomainNameValid(const QString& domainName);
   bool isUrlValid(const QString& url);
 };
 

@@ -242,6 +242,13 @@ bool AppProxy::isIpAddrValid(const QString& ipAddr) {
   return ipAddrRegex.match(ipAddr).hasMatch();
 }
 
+bool AppProxy::isDomainNameValid(const QString& domainName) {
+  QRegularExpression domainNameRegex(
+    "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-"
+    "9]$");
+  return domainNameRegex.match(domainName).hasMatch();
+}
+
 bool AppProxy::retranslate(QString language) {
   if (language.isEmpty()) {
     Configurator& configurator(Configurator::getInstance());
@@ -616,13 +623,55 @@ QJsonArray AppProxy::getRandomUserAgents(int n) {
 void AppProxy::addShadowsocksServer(QString configString) {
   QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject serverConfig = configDoc.object();
-  // TODO: Check server config before saving
+  // Check server config before saving
+  QStringList serverConfigErrors =
+    getShadowsocksServerConfigErrors(serverConfig);
+  if (serverConfigErrors.size() > 0) {
+    emit serverConfigError(serverConfigErrors.join('\n'));
+    return;
+  }
   // Save server config
   configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
   emit serversChanged();
   qInfo() << QString("Add new Shadowsocks server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
+}
+
+QStringList AppProxy::getShadowsocksServerConfigErrors(
+  const QJsonObject& serverConfig) {
+  QStringList errors;
+  if (!serverConfig.contains("serverName") ||
+      serverConfig["serverName"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Server Name'."));
+  }
+  if (!serverConfig.contains("serverAddr") ||
+      serverConfig["serverAddr"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Server Address'."));
+  } else {
+    QString serverAddr = serverConfig["serverAddr"].toString();
+    if (!isIpAddrValid(serverAddr) && !isDomainNameValid(serverAddr)) {
+      errors.append(tr("'Server Address' seems invalid."));
+    }
+  }
+  if (!serverConfig.contains("serverPort") ||
+      serverConfig["serverPort"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Server Port'."));
+  } else {
+    int serverPort = serverConfig["serverPort"].toString().toInt();
+    if (serverPort <= 0 || serverPort > 65535) {
+      errors.append(tr("'Server Port' seems invalid."));
+    }
+  }
+  if (!serverConfig.contains("encryption") ||
+      serverConfig["encryption"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Security'."));
+  }
+  if (!serverConfig.contains("password") ||
+      serverConfig["password"].toString().isEmpty()) {
+    errors.append(tr("Missing the value for 'Password'."));
+  }
+  return errors;
 }
 
 QJsonObject AppProxy::getPrettyShadowsocksConfig(
@@ -660,7 +709,7 @@ void AppProxy::updateSubscriptionServers(QString subsriptionUrl) {
 void AppProxy::addSubscriptionServers(QString subsriptionServers,
                                       QString subsriptionUrl) {
   if (!subsriptionServers.size()) {
-    emit serverError("Failed to get subscription servers from URL.");
+    emit serverConfigError("Failed to get subscription servers from URL.");
     return;
   }
   // Remove servers from the subscription if exists
