@@ -436,8 +436,9 @@ QList<QJsonObject> ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
         !server["plugin_opts"].toString().isEmpty()) {
       QString plugins =
         QString("plugin=%1%3B%2")
-          .arg(server["plugin"].toString(),
-               QUrl::toPercentEncoding(server["plugin_opts"].toString()));
+          .arg(
+            server["plugin"].toString(),
+            QString(QUrl::toPercentEncoding(server["plugin_opts"].toString())));
       serverConfig["plugins"] = getShadowsocksPlugins(plugins);
     }
     servers.append(serverConfig);
