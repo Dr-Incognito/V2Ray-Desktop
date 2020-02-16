@@ -25,7 +25,7 @@ QString ServerConfigHelper::getServerNameError(const QJsonObject& serverConfig,
   return Utility::getStringConfigError(
     serverConfig, "serverName", tr("Server Name"),
     {std::bind(&Utility::isServerNameNotUsed, std::placeholders::_1)},
-    tr("The 'Server Name' has been used by another server."));
+    tr("The '%1' has been used by another server."));
 }
 
 QStringList ServerConfigHelper::getV2RayServerConfigErrors(
