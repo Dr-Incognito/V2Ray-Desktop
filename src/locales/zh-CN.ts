@@ -4,58 +4,14 @@
 <context>
     <name>AppProxy</name>
     <message>
-        <source>Missing the value for &apos;Language&apos;.</source>
-        <translation type="vanished">缺失值：“语言”。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;Local Server Protocol&apos;.</source>
-        <translation type="vanished">缺失值：“本地服务器协议”。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;Listening IP Address&apos;.</source>
-        <translation type="vanished">缺失值：“监听IP地址”。</translation>
-    </message>
-    <message>
-        <source>&apos;Listening IP Address&apos; seems invalid.</source>
-        <translation type="vanished">“监听IP地址”似乎是无效的。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;Listening Port&apos;.</source>
-        <translation type="vanished">缺失值：“监听端口”。</translation>
-    </message>
-    <message>
-        <source>&apos;Listening Port&apos; seems invalid.</source>
-        <translation type="vanished">“监听端口”似乎是无效的。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;PAC Server Port&apos;.</source>
-        <translation type="vanished">缺失值：“PAC服务器端口”。</translation>
-    </message>
-    <message>
-        <source>&apos;PAC Server Port&apos; seems invalid.</source>
-        <translation type="vanished">“PAC服务器端口”似乎是无效的。</translation>
-    </message>
-    <message>
         <location filename="../appproxy.cpp" line="197"/>
         <source>&apos;PAC Server Port&apos; can not be the same as &apos;Listening Port&apos;.</source>
-        <translation>“PAC服务器端口”不得于“监听端口”相同。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;DNS Servers&apos;.</source>
-        <translation type="vanished">缺失值：“DNS服务器”。</translation>
+        <translation>&apos;PAC服务器端口&apos;不得于&apos;监听端口&apos;相同。</translation>
     </message>
     <message>
         <location filename="../appproxy.cpp" line="205"/>
         <source>&apos;DNS Servers&apos; seems invalid.</source>
-        <translation>“DNS服务器”似乎是无效的。</translation>
-    </message>
-    <message>
-        <source>Missing the value for &apos;%1&apos;.</source>
-        <translation type="vanished">缺失值：&apos;%1&apos;。</translation>
-    </message>
-    <message>
-        <source>The value for &apos;%1&apos; seems invalid.</source>
-        <translation type="vanished">&apos;%1&apos;的值似乎是无效的。</translation>
+        <translation>&apos;DNS服务器&apos;似乎是无效的。</translation>
     </message>
     <message>
         <location filename="../appproxy.cpp" line="185"/>
@@ -233,10 +189,6 @@
         <location filename="../appproxy.cpp" line="786"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
-    </message>
-    <message>
-        <source>The URL for GFW List seems invalid.</source>
-        <translation type="vanished">GFW List的URL似乎是无效的。</translation>
     </message>
     <message>
         <location filename="../appproxy.cpp" line="372"/>
@@ -442,10 +394,6 @@ Please check the network connection.</source>
         <location filename="../ui/main.qml" line="473"/>
         <source>Turn V2Ray On</source>
         <translation>启动V2Ray</translation>
-    </message>
-    <message>
-        <source>V2Ray Core Installing ...</source>
-        <translation type="vanished">V2Ray Core正在安装…</translation>
     </message>
     <message>
         <location filename="../ui/main.qml" line="476"/>
@@ -680,7 +628,7 @@ Please check the network connection.</source>
     <message>
         <location filename="../ui/servers.qml" line="278"/>
         <source>Add new servers by </source>
-        <translation>添加新服务器方式：</translation>
+        <translation>添加服务器方式 </translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="289"/>
@@ -702,14 +650,6 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="301"/>
         <source>V2Ray config files</source>
         <translation>V2Ray配置文件</translation>
-    </message>
-    <message>
-        <source>V2Ray Desktop config files</source>
-        <translation type="vanished">V2Ray Desktop配置文件</translation>
-    </message>
-    <message>
-        <source>Shadowsocks config files (gui-config.json)</source>
-        <translation type="vanished">Shadowsocks配置文件 (gui-config.json)</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="360"/>
@@ -829,18 +769,10 @@ Please check the network connection.</source>
         <translation>传输时间间隔，默认值：50。</translation>
     </message>
     <message>
-        <source>Uplink Capcity</source>
-        <translation type="vanished">上行链路容量</translation>
-    </message>
-    <message>
         <location filename="../ui/servers.qml" line="703"/>
         <location filename="../ui/servers.qml" line="720"/>
         <source>Default value: 5.</source>
         <translation>默认值：5。</translation>
-    </message>
-    <message>
-        <source>Downlink Capcity</source>
-        <translation type="vanished">下行链路容量</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="305"/>
@@ -1100,10 +1032,6 @@ Please check the network connection.</source>
         <location filename="../ui/settings.qml" line="185"/>
         <source>DNS Servers</source>
         <translation>DNS服务器</translation>
-    </message>
-    <message>
-        <source>DNS Server</source>
-        <translation type="vanished">DNS服务器</translation>
     </message>
     <message>
         <location filename="../ui/settings.qml" line="193"/>

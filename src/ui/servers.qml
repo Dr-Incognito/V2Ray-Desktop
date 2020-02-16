@@ -261,7 +261,6 @@ ColumnLayout {
             ColumnLayout {
                 id: colLayoutServer
                 anchors.margins: 10
-                anchors.fill: popUpServer
                 width: popUpServer.width - 25
                 spacing: 20
 
@@ -357,9 +356,9 @@ ColumnLayout {
                     width: parent.width
 
                     Label {
+                        id: labelShadowsocksServerName
                         text: qsTr("Server Name")
                         color: "white"
-                        rightPadding: 28
                     }
 
                     TextField {
@@ -955,7 +954,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Name")
                         color: "white"
-                        rightPadding: 28
+                        width: labelAddServerMethod.width
                     }
 
                     TextField {
@@ -1155,7 +1154,6 @@ ColumnLayout {
                     Label {
                         text: qsTr("Config File Path")
                         color: "white"
-                        rightPadding: 12
                     }
 
                     TextField {
