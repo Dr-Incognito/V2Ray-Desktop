@@ -20,7 +20,7 @@ ColumnLayout {
         Text {
             text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
             color: "white"
-            font.pointSize: 24
+            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
         }
     }
 

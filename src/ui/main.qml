@@ -192,7 +192,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: qsTr("Dashboard")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }
@@ -247,7 +247,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: qsTr("Servers")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }
@@ -286,7 +286,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: qsTr("Rules")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }
@@ -326,7 +326,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }
@@ -366,7 +366,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: qsTr("Logs")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }
@@ -406,7 +406,7 @@ ApplicationWindow {
                     Text {
                         color: "white"
                         text: qsTr("About")
-                        font.pointSize: 14
+                        font.pointSize: Qt.platform.os == "windows" ? 12 : 14
                         x: 40
                         y: 10
                     }

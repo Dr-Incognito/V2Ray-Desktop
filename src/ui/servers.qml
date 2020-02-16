@@ -21,7 +21,7 @@ ColumnLayout {
         Text {
             text: qsTr("Servers")
             color: "white"
-            font.pointSize: 24
+            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
         }
 
         Item {      // spacer item
@@ -43,8 +43,7 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
-                buttonSyncServers.text = qsTr("Sync Servers")
-                buttonSyncServers.enabled = true
+                labelSubscriptionErrorMsg.visible = false
                 popUpSubscription.open()
             }
         }
@@ -1261,6 +1260,18 @@ ColumnLayout {
                 }
             }
 
+            Label {
+                id: labelSubscriptionErrorMsg
+                background: Rectangle {
+                    color: "#ee8989"
+                }
+                color: "#652424"
+                Layout.fillWidth: true
+                padding: 10
+                visible: false
+                wrapMode: Text.Wrap
+            }
+
             Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -1474,14 +1485,18 @@ ColumnLayout {
         onServerConfigError: function(errorMsg) {
             var popUpButtons = [
                 buttonV2RayAddServer, buttonShadowsocksAddServer,
-                buttonSubscriptionAddServer, buttonConfigAddServer
+                buttonSubscriptionAddServer, buttonConfigAddServer,
+                buttonSyncServers
             ]
             for (var i = 0; i < popUpButtons.length; ++ i) {
                 popUpButtons[i].enabled = true
             }
+            buttonSyncServers.text = qsTr("Sync Servers")
 
             labelServerConfigErrorMsg.text = errorMsg
+            labelSubscriptionErrorMsg.text = errorMsg
             labelServerConfigErrorMsg.visible = true
+            labelSubscriptionErrorMsg.visible = true
         }
 
         onServerConnectivityChanged: function(serverName, connected) {

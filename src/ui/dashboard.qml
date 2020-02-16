@@ -21,7 +21,7 @@ ColumnLayout {
         Text {
             text: qsTr("Dashboard")
             color: "white"
-            font.pointSize: 24
+            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
         }
     }
 
