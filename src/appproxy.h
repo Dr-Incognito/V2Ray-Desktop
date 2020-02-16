@@ -12,6 +12,7 @@
 #include "appproxyworker.h"
 #include "configurator.h"
 #include "pacserver.h"
+#include "serverconfighelper.h"
 #include "v2raycore.h"
 
 class AppProxy : public QObject {
@@ -60,7 +61,6 @@ class AppProxy : public QObject {
   void getNetworkStatus();
   void getAppConfig();
   void setAppConfig(QString configString);
-  void setAutoStart(bool autoStart);
   void setSystemProxyMode(QString proxyMode = "");
   void getProxySettings();
   void setGfwListUrl(QString gfwListUrl);
@@ -73,7 +73,7 @@ class AppProxy : public QObject {
   void setServerConnection(QString serverName, bool connected);
   void addV2RayServer(QString configString);
   void addShadowsocksServer(QString configString);
-  void addServerConfigFile(QString configFilePath);
+  void addServerConfigFile(QString configFilePath, QString configFileType);
   void editServer(QString serverName, QString protocol, QString configString);
   void addSubscriptionUrl(QString subsriptionUrl);
   void updateSubscriptionServers(QString subsriptionUrl = "");
@@ -93,45 +93,19 @@ class AppProxy : public QObject {
 
  private:
   V2RayCore& v2ray;
-  Configurator& configurator;
   QJsonObject serverLatency;
+  Configurator& configurator;
   PacServer pacServer;
+
   AppProxyWorker* worker = new AppProxyWorker();
   QThread workerThread;
   QTranslator translator;
 
-  QJsonObject getPrettyV2RayConfig(const QJsonObject& serverConfig);
-  QJsonObject getV2RayServerFromUrl(const QString& serverUrl,
-                                    const QString& subscriptionUrl = "");
-  QJsonObject getV2RayStreamSettingsConfig(const QJsonObject& serverConfig);
-  QJsonArray getRandomUserAgents(int n);
-  QJsonObject getPrettyShadowsocksConfig(const QJsonObject& serverConfig);
-  QJsonObject getShadowsocksServerFromUrl(QString serverUrl,
-                                          const QString& subscriptionUrl = "");
   QNetworkProxy getQProxy();
+  void setAutoStart(bool autoStart);
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
-  QStringList getServerConfigErrors(const QJsonObject& serverConfig,
-                                    QString protocol);
-  QStringList getV2RayServerConfigErrors(const QJsonObject& serverConfig);
-  QStringList getV2RayStreamSettingsErrors(const QJsonObject& serverConfig,
-                                           const QString& network);
-  QString getNumericConfigError(const QJsonObject& serverConfig,
-                                const QString& key,
-                                const QString& name,
-                                int lowerBound,
-                                int upperBound);
-  QString getStringConfigError(
-    const QJsonObject& serverConfig,
-    const QString& key,
-    const QString& name,
-    const QList<std::function<bool(const QString&)>>& checkpoints = {});
-  QStringList getShadowsocksServerConfigErrors(const QJsonObject& serverConfig);
-  QJsonObject getPrettyServerConfig(const QJsonObject& serverConfig,
-                                    QString protocol);
-  bool isIpAddrValid(const QString& ipAddr);
-  bool isDomainNameValid(const QString& domainName);
-  bool isUrlValid(const QString& url);
-  bool isFileExists(const QString& filePath);
+  void addServersFromV2RayConfigFile(const QJsonDocument& configDoc);
+  void addServersFromShadowsocksQt5ConfigFile(const QJsonDocument& configDoc);
 };
 
 #endif  // APPPROXY_H

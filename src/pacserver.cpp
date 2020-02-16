@@ -65,6 +65,7 @@ void PacServer::onNewConnection() {
     QString fileContent = pacFile.readAll();
     outputStream
       << fileContent.replace("__PROXY__", proxy).replace("__RULES__", rules);
+    pacFile.close();
   }
   clientSocket->waitForBytesWritten();
   clientSocket->close();
@@ -92,6 +93,7 @@ QString PacServer::getPacRules() {
       }
       rules.append(QString("\"%1\"").arg(gfwRule));
     }
+    gfwListFile.close();
   }
   return QString("[%1]").arg(rules.join(",\n"));
 }

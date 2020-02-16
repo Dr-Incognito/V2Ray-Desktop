@@ -1,9 +1,5 @@
 #include "appproxy.h"
 
-#include <algorithm>
-#include <cstdlib>
-#include <functional>
-
 #include <QByteArray>
 #include <QClipboard>
 #include <QDateTime>
@@ -13,21 +9,19 @@
 #include <QGuiApplication>
 #include <QJsonDocument>
 #include <QNetworkProxy>
-#include <QPair>
 #include <QPixmap>
 #include <QQmlContext>
 #include <QQmlEngine>
-#include <QRegularExpression>
 #include <QScreen>
 #include <QSettings>
 #include <QSysInfo>
-#include <QUrl>
-#include <QUrlQuery>
 
 #include "constants.h"
 #include "networkproxy.h"
 #include "networkrequest.h"
 #include "qrcodehelper.h"
+#include "serverconfighelper.h"
+#include "utility.h"
 
 AppProxy::AppProxy(QObject* parent)
   : QObject(parent),
@@ -182,18 +176,19 @@ void AppProxy::setAppConfig(QString configString) {
 
 QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   QStringList errors;
-  errors.append(getStringConfigError(appConfig, "language", tr("Language")));
-  errors.append(getStringConfigError(appConfig, "serverProtocol",
-                                     tr("Local Server Protocol")));
-  errors.append(getStringConfigError(
+  errors.append(
+    Utility::getStringConfigError(appConfig, "language", tr("Language")));
+  errors.append(Utility::getStringConfigError(appConfig, "serverProtocol",
+                                              tr("Local Server Protocol")));
+  errors.append(Utility::getStringConfigError(
     appConfig, "serverIp", tr("Listening IP Address"),
     {
-      std::bind(&AppProxy::isIpAddrValid, this, std::placeholders::_1),
+      std::bind(&Utility::isIpAddrValid, std::placeholders::_1),
     }));
-  errors.append(getNumericConfigError(appConfig, "serverPort",
-                                      tr("Listening Port"), 1, 65535));
-  errors.append(getNumericConfigError(appConfig, "pacPort",
-                                      tr("PAC Server Port"), 1, 65535));
+  errors.append(Utility::getNumericConfigError(appConfig, "serverPort",
+                                               tr("Listening Port"), 1, 65535));
+  errors.append(Utility::getNumericConfigError(
+    appConfig, "pacPort", tr("PAC Server Port"), 1, 65535));
   if (appConfig["pacPort"].toString() == appConfig["serverPort"].toString()) {
     errors.append(
       tr("'PAC Server Port' can not be the same as 'Listening Port'."));
@@ -203,7 +198,7 @@ QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   } else {
     QStringList dnsServers = appConfig["dns"].toString().split(",");
     for (QString dnsServer : dnsServers) {
-      if (!isIpAddrValid(dnsServer.trimmed())) {
+      if (!Utility::isIpAddrValid(dnsServer.trimmed())) {
         errors.append(tr("'DNS Servers' seems invalid."));
         break;
       }
@@ -261,6 +256,7 @@ void AppProxy::setAutoStart(bool autoStart) {
     if (srcFile.exists() &&
         srcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
       fileContent = srcFile.readAll();
+      srcFile.close();
     }
     if (dstFile.open(QIODevice::WriteOnly)) {
       dstFile.write(fileContent.arg(APP_PATH).toUtf8());
@@ -344,9 +340,9 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
 
 void AppProxy::setGfwListUrl(QString gfwListUrl) {
   QJsonObject appConfig = {{"gfwListUrl", gfwListUrl}};
-  QString error         = getStringConfigError(
+  QString error         = Utility::getStringConfigError(
     appConfig, "gfwListUrl", tr("GFW List URL"),
-    {std::bind(&AppProxy::isUrlValid, this, std::placeholders::_1)});
+    {std::bind(&Utility::isUrlValid, std::placeholders::_1)});
   if (!error.isEmpty()) {
     emit appConfigError(error);
     return;
@@ -434,367 +430,45 @@ void AppProxy::addV2RayServer(QString configString) {
   QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject serverConfig = configDoc.object();
   // Check server config before saving
-  QStringList serverConfigErrors = getV2RayServerConfigErrors(serverConfig);
+  QStringList serverConfigErrors = ServerConfigHelper::getServerConfigErrors(
+    serverConfig, ServerConfigHelper::Protocol::VMESS);
   if (serverConfigErrors.size() > 0) {
     emit serverConfigError(serverConfigErrors.join('\n'));
     return;
   }
   // Save server config
-  configurator.addServer(getPrettyV2RayConfig(serverConfig));
+  configurator.addServer(ServerConfigHelper::getPrettyServerConfig(
+    serverConfig, ServerConfigHelper::Protocol::VMESS));
   emit serversChanged();
   qInfo() << QString("Add new V2Ray server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
 }
 
-QStringList AppProxy::getV2RayServerConfigErrors(
-  const QJsonObject& serverConfig) {
-  QStringList errors;
-  errors.append(
-    getStringConfigError(serverConfig, "serverName", tr("Server Name")));
-  errors.append(getStringConfigError(
-    serverConfig, "serverAddr", tr("Server Address"),
-    {
-      std::bind(&AppProxy::isIpAddrValid, this, std::placeholders::_1),
-      std::bind(&AppProxy::isDomainNameValid, this, std::placeholders::_1),
-    }));
-  errors.append(getNumericConfigError(serverConfig, "serverPort",
-                                      tr("Server Port"), 0, 65535));
-  errors.append(getStringConfigError(serverConfig, "id", tr("ID")));
-  errors.append(
-    getNumericConfigError(serverConfig, "alterId", tr("Alter ID"), 0, 65535));
-  errors.append(getStringConfigError(serverConfig, "security", tr("Security")));
-  errors.append(
-    getNumericConfigError(serverConfig, "mux", tr("MUX"), -1, 1024));
-  errors.append(getStringConfigError(serverConfig, "network", tr("Network")));
-  errors.append(getStringConfigError(serverConfig, "networkSecurity",
-                                     tr("Network Security")));
-  errors.append(getV2RayStreamSettingsErrors(
-    serverConfig, serverConfig["network"].toString()));
-
-  // Remove empty error messages generated by getNumericConfigError() and
-  // getStringConfigError()
-  errors.removeAll("");
-  return errors;
-}
-
-QStringList AppProxy::getV2RayStreamSettingsErrors(
-  const QJsonObject& serverConfig, const QString& network) {
-  QStringList errors;
-  if (network == "kcp") {
-    errors.append(
-      getNumericConfigError(serverConfig, "kcpMtu", tr("MTU"), 576, 1460));
-    errors.append(
-      getNumericConfigError(serverConfig, "kcpTti", tr("TTI"), 10, 100));
-    errors.append(getNumericConfigError(serverConfig, "kcpUpLink",
-                                        tr("Uplink Capacity"), 0, -127));
-    errors.append(getNumericConfigError(serverConfig, "kcpDownLink",
-                                        tr("Downlink Capacity"), 0, -127));
-    errors.append(getNumericConfigError(serverConfig, "kcpReadBuffer",
-                                        tr("Read Buffer Size"), 0, -127));
-    errors.append(getNumericConfigError(serverConfig, "kcpWriteBuffer",
-                                        tr("Write Buffer Size"), 0, -127));
-    errors.append(
-      getStringConfigError(serverConfig, "packetHeader", tr("Packet Header")));
-  } else if (network == "ws" || network == "http") {
-    errors.append(getStringConfigError(
-      serverConfig, "networkHost", tr("Host"),
-      {std::bind(&AppProxy::isDomainNameValid, this, std::placeholders::_1)}));
-    errors.append(
-      getStringConfigError(serverConfig, "networkPath", tr("Path")));
-  } else if (network == "domainsocket") {
-    errors.append(getStringConfigError(
-      serverConfig, "domainSocketFilePath", tr("Socket File Path"),
-      {std::bind(&AppProxy::isFileExists, this, std::placeholders::_1)}));
-  } else if (network == "quic") {
-    errors.append(
-      getStringConfigError(serverConfig, "quicSecurity", tr("QUIC Security")));
-    errors.append(
-      getStringConfigError(serverConfig, "packetHeader", tr("Packet Header")));
-    errors.append(
-      getStringConfigError(serverConfig, "quicKey", tr("QUIC Key")));
-  }
-  return errors;
-}
-
-QString AppProxy::getStringConfigError(
-  const QJsonObject& serverConfig,
-  const QString& key,
-  const QString& name,
-  const QList<std::function<bool(const QString&)>>& checkpoints) {
-  if (!serverConfig.contains(key) || serverConfig[key].toString().isEmpty()) {
-    return QString(tr("Missing the value of '%1'.")).arg(name);
-  }
-  if (checkpoints.size() > 0) {
-    bool isMatched = false;
-    for (std::function<bool(const QString&)> ckpt : checkpoints) {
-      if (ckpt(serverConfig[key].toString())) {
-        isMatched = true;
-      }
-    }
-    if (!isMatched) {
-      return QString(tr("The value of '%1' seems invalid.")).arg(name);
-    }
-  }
-  return "";
-}
-
-bool AppProxy::isIpAddrValid(const QString& ipAddr) {
-  QRegularExpression ipAddrRegex(
-    "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]"
-    "|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
-  return ipAddrRegex.match(ipAddr).hasMatch();
-}
-
-bool AppProxy::isDomainNameValid(const QString& domainName) {
-  QRegularExpression domainNameRegex(
-    "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-"
-    "9]$");
-  return domainNameRegex.match(domainName).hasMatch();
-}
-
-bool AppProxy::isUrlValid(const QString& url) {
-  QRegularExpression urlRegex(
-    "^https?://(-\\.)?([^\\s/?\\.#-]+\\.?)+(/[^\\s]*)?$",
-    QRegularExpression::CaseInsensitiveOption);
-  return urlRegex.match(url).hasMatch();
-}
-
-bool AppProxy::isFileExists(const QString& filePath) {
-  return QDir(filePath).exists();
-}
-
-QString AppProxy::getNumericConfigError(const QJsonObject& serverConfig,
-                                        const QString& key,
-                                        const QString& name,
-                                        int lowerBound,
-                                        int upperBound) {
-  if (!serverConfig.contains(key) || serverConfig[key].toString().isEmpty()) {
-    return QString(tr("Missing the value of '%1'.")).arg(name);
-  } else {
-    bool isConverted = false;
-    int value        = serverConfig[key].toString().toInt(&isConverted);
-    if (!isConverted) {
-      return QString(tr("The value of '%1' seems invalid.")).arg(name);
-    } else if (upperBound == -127 && value < lowerBound) {
-      return QString(tr("The value of '%1' should above %2."))
-        .arg(name, QString::number(lowerBound));
-    } else if (value < lowerBound || value > upperBound) {
-      return QString(tr("The value of '%1' should between %2 and %3."))
-        .arg(name, QString::number(lowerBound), QString::number(upperBound));
-    }
-    return "";
-  }
-}
-
-QJsonObject AppProxy::getPrettyV2RayConfig(const QJsonObject& serverConfig) {
-  QJsonObject v2RayConfig{
-    {"autoConnect", serverConfig["autoConnect"].toBool()},
-    {"serverName", serverConfig["serverName"].toString()},
-    {"subscription", serverConfig.contains("subscription")
-                       ? serverConfig["subscription"].toString()
-                       : ""},
-    {"protocol", "vmess"},
-    {"mux",
-     QJsonObject{
-       {"enabled", serverConfig["mux"].toString().toInt() != 1},
-       {"concurrency", serverConfig["mux"].toString().toInt()},
-     }},
-    {"settings",
-     QJsonObject{
-       {"vnext",
-        QJsonArray{QJsonObject{
-          {"address", serverConfig["serverAddr"].toString()},
-          {"port", serverConfig["serverPort"].toString().toInt()},
-          {"users",
-           QJsonArray{QJsonObject{
-             {"id", serverConfig["id"].toString()},
-             {"alterId", serverConfig["alterId"].toString().toInt()},
-             {"security", serverConfig["security"].toString().toLower()},
-           }}}}}}}},
-    {"tag", "proxy-vmess"}};
-
-  QJsonObject streamSettings = getV2RayStreamSettingsConfig(serverConfig);
-  v2RayConfig.insert("streamSettings", streamSettings);
-  return v2RayConfig;
-}
-
-QJsonObject AppProxy::getV2RayStreamSettingsConfig(
-  const QJsonObject& serverConfig) {
-  QString network = serverConfig["network"].toString();
-  QJsonObject streamSettings{
-    {"network", serverConfig["network"]},
-    {"security", serverConfig["networkSecurity"].toString().toLower()},
-    {"tlsSettings",
-     QJsonObject{{"allowInsecure", serverConfig["allowInsecure"].toBool()}}},
-  };
-
-  if (network == "tcp") {
-    QString tcpHeaderType = serverConfig["tcpHeaderType"].toString().toLower();
-    QJsonObject tcpSettings{{"type", tcpHeaderType}};
-    if (tcpHeaderType == "http") {
-      tcpSettings.insert(
-        "request",
-        QJsonObject{
-          {"version", "1.1"},
-          {"method", "GET"},
-          {"path", QJsonArray{"/"}},
-          {"headers",
-           QJsonObject{
-             {"host",
-              QJsonArray{"www.baidu.com", "www.bing.com", "www.163.com",
-                         "www.netease.com", "www.qq.com", "www.tencent.com",
-                         "www.taobao.com", "www.tmall.com",
-                         "www.alibaba-inc.com", "www.aliyun.com",
-                         "www.sensetime.com", "www.megvii.com"}},
-             {"User-Agent", getRandomUserAgents(24)},
-             {"Accept-Encoding", QJsonArray{"gzip, deflate"}},
-             {"Connection", QJsonArray{"keep-alive"}},
-             {"Pragma", "no-cache"},
-           }},
-        });
-      tcpSettings.insert(
-        "response",
-        QJsonObject{
-          {"version", "1.1"},
-          {"status", "200"},
-          {"reason", "OK"},
-          {"headers",
-           QJsonObject{{"Content-Type", QJsonArray{"text/html;charset=utf-8"}},
-                       {"Transfer-Encoding", QJsonArray{"chunked"}},
-                       {"Connection", QJsonArray{"keep-alive"}},
-                       {"Pragma", "no-cache"}}}});
-    }
-    streamSettings.insert("tcpSettings", tcpSettings);
-  } else if (network == "kcp") {
-    streamSettings.insert(
-      "kcpSettings",
-      QJsonObject{
-        {"mtu", serverConfig["kcpMtu"].toString().toInt()},
-        {"tti", serverConfig["kcpTti"].toString().toInt()},
-        {"uplinkCapacity", serverConfig["kcpUpLink"].toString().toInt()},
-        {"downlinkCapacity", serverConfig["kcpDownLink"].toString().toInt()},
-        {"congestion", serverConfig["kcpCongestion"].toBool()},
-        {"readBufferSize", serverConfig["kcpReadBuffer"].toString().toInt()},
-        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toString().toInt()},
-        {"header",
-         QJsonObject{
-           {"type", serverConfig["packetHeader"].toString().toLower()}}}});
-  } else if (network == "ws") {
-    streamSettings.insert(
-      "wsSettings",
-      QJsonObject{
-        {"path", serverConfig["networkPath"].toString()},
-        {"headers", QJsonObject{{"host", serverConfig["networkHost"]}}}});
-  } else if (network == "http") {
-    streamSettings.insert(
-      "httpSettings",
-      QJsonObject{
-        {"host", QJsonArray{serverConfig["networkHost"].toString()}},
-        {"path", QJsonArray{serverConfig["networkPath"].toString()}}});
-  } else if (network == "domainsocket") {
-    streamSettings.insert(
-      "dsSettings",
-      QJsonObject{{"path", serverConfig["domainSocketFilePath"].toString()}});
-  } else if (network == "quic") {
-    streamSettings.insert(
-      "quicSettings",
-      QJsonObject{
-        {"security", serverConfig["quicSecurity"].toString().toLower()},
-        {"key", serverConfig["quicKey"].toString()},
-        {"header",
-         QJsonObject{
-           {"type", serverConfig["packetHeader"].toString().toLower()}}}});
-  }
-  return streamSettings;
-}
-
-QJsonArray AppProxy::getRandomUserAgents(int n) {
-  QStringList OPERATING_SYSTEMS{"Macintosh; Intel Mac OS X 10_15",
-                                "X11; Linux x86_64",
-                                "Windows NT 10.0; Win64; x64"};
-  QJsonArray userAgents;
-  for (int i = 0; i < n; ++i) {
-    int osIndex            = std::rand() % 3;
-    int chromeMajorVersion = std::rand() % 30 + 50;
-    int chromeBuildVersion = std::rand() % 4000 + 1000;
-    int chromePatchVersion = std::rand() % 100;
-    userAgents.append(QString("Mozilla/5.0 (%1) AppleWebKit/537.36 (KHTML, "
-                              "like Gecko) Chrome/%2.0.%3.%4 Safari/537.36")
-                        .arg(OPERATING_SYSTEMS[osIndex],
-                             QString::number(chromeMajorVersion),
-                             QString::number(chromeBuildVersion),
-                             QString::number(chromePatchVersion)));
-  }
-  return userAgents;
-}
-
 void AppProxy::addShadowsocksServer(QString configString) {
   QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject serverConfig = configDoc.object();
   // Check server config before saving
-  QStringList serverConfigErrors =
-    getShadowsocksServerConfigErrors(serverConfig);
+  QStringList serverConfigErrors = ServerConfigHelper::getServerConfigErrors(
+    serverConfig, ServerConfigHelper::Protocol::SHADOWSOCKS);
   if (serverConfigErrors.size() > 0) {
     emit serverConfigError(serverConfigErrors.join('\n'));
     return;
   }
   // Save server config
-  configurator.addServer(getPrettyShadowsocksConfig(serverConfig));
+  configurator.addServer(ServerConfigHelper::getPrettyServerConfig(
+    serverConfig, ServerConfigHelper::Protocol::SHADOWSOCKS));
   emit serversChanged();
   qInfo() << QString("Add new Shadowsocks server [Name=%1, Addr=%2].")
                .arg(serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
 }
 
-QStringList AppProxy::getShadowsocksServerConfigErrors(
-  const QJsonObject& serverConfig) {
-  QStringList errors;
-  errors.append(
-    getStringConfigError(serverConfig, "serverName", tr("Server Name")));
-  errors.append(getStringConfigError(
-    serverConfig, "serverAddr", tr("Server Address"),
-    {
-      std::bind(&AppProxy::isIpAddrValid, this, std::placeholders::_1),
-      std::bind(&AppProxy::isDomainNameValid, this, std::placeholders::_1),
-    }));
-  errors.append(getNumericConfigError(serverConfig, "serverPort",
-                                      tr("Server Port"), 0, 65535));
-  errors.append(
-    getStringConfigError(serverConfig, "encryption", tr("Security")));
-  errors.append(getStringConfigError(serverConfig, "password", tr("Password")));
-
-  // Remove empty error messages generated by getNumericConfigError() and
-  // getStringConfigError()
-  errors.removeAll("");
-  return errors;
-}
-
-QJsonObject AppProxy::getPrettyShadowsocksConfig(
-  const QJsonObject& serverConfig) {
-  return QJsonObject{
-    {"autoConnect", serverConfig["autoConnect"].toBool()},
-    {"serverName", serverConfig["serverName"].toString()},
-    {"subscription", serverConfig.contains("subscription")
-                       ? serverConfig["subscription"].toString()
-                       : ""},
-    {"protocol", "shadowsocks"},
-    {"settings",
-     QJsonObject{{"servers",
-                  QJsonArray{QJsonObject{
-                    {"address", serverConfig["serverAddr"].toString()},
-                    {"port", serverConfig["serverPort"].toString().toInt()},
-                    {"method", serverConfig["encryption"].toString().toLower()},
-                    {"password", serverConfig["password"].toString()}}}}}},
-    {"streamSettings", QJsonObject{{"network", "tcp"}}},
-    {"tag", "proxy-shadowsocks"}};
-}
-
 void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
-  QString error = getStringConfigError(
+  QString error = Utility::getStringConfigError(
     {{"subsriptionUrl", subsriptionUrl}}, "subsriptionUrl",
     tr("Subscription URL"),
-    {std::bind(&AppProxy::isUrlValid, this, std::placeholders::_1)});
+    {std::bind(&Utility::isUrlValid, std::placeholders::_1)});
   if (!error.isEmpty()) {
     emit serverConfigError(error);
     return;
@@ -824,21 +498,25 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
   QMap<QString, QJsonObject> removedServers =
     configurator.removeSubscriptionServers(subsriptionUrl);
   // Add new servers
+  int nServersAdded   = 0;
   QStringList servers = subsriptionServers.split('\n');
-  QJsonObject serverConfig;
   for (QString server : servers) {
+    ServerConfigHelper::Protocol protocol =
+      ServerConfigHelper::Protocol::UNKNOWN;
     if (server.startsWith("ss://")) {
-      serverConfig = getShadowsocksServerFromUrl(server, subsriptionUrl);
-      if (serverConfig.contains("obfs")) {
-        qWarning() << "Ignore Shadowsocks server with obfs: " << serverConfig;
-        continue;
-      }
-      serverConfig = getPrettyShadowsocksConfig(serverConfig);
+      protocol = ServerConfigHelper::Protocol::SHADOWSOCKS;
     } else if (server.startsWith("vmess://")) {
-      serverConfig =
-        getPrettyV2RayConfig(getV2RayServerFromUrl(server, subsriptionUrl));
-    } else {
-      qWarning() << QString("Ignore subscription server: %1").arg(server);
+      protocol = ServerConfigHelper::Protocol::VMESS;
+    }
+    QJsonObject serverConfig = ServerConfigHelper::getServerConfigFromUrl(
+      server, subsriptionUrl, protocol);
+    QStringList serverConfigErrors =
+      ServerConfigHelper::getServerConfigErrors(serverConfig, protocol);
+    serverConfig =
+      ServerConfigHelper::getPrettyServerConfig(serverConfig, protocol);
+    if (!serverConfigErrors.empty()) {
+      qWarning() << QString("Error occurred for the server URL: %1. Errors: %2")
+                      .arg(server, serverConfigErrors.join(" "));
       continue;
     }
     // Recover auto connect option for the server
@@ -849,123 +527,59 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
       removedServers.contains(serverName)
         ? removedServers[serverName]["autoConnect"].toBool()
         : false;
+    // Save the server
     configurator.addServer(serverConfig);
     qInfo() << QString("Add a new server[Name=%1] from URI: %2")
                  .arg(serverName, server);
+    ++nServersAdded;
   }
-  emit serversChanged();
+  if (nServersAdded) {
+    emit serversChanged();
+  } else {
+    emit serverConfigError(tr("No supported servers added from the URL."));
+  }
 }
 
-QJsonObject AppProxy::getV2RayServerFromUrl(const QString& server,
-                                            const QString& subscriptionUrl) {
-  // Ref:
-  // https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
-  const QMap<QString, QString> NETWORK_MAPPER = {
-    {"tcp", "tcp"}, {"kcp", "kcp"},   {"ws", "ws"},
-    {"h2", "http"}, {"quic", "quic"},
-  };
-  QJsonObject rawServerConfig =
-    QJsonDocument::fromJson(QByteArray::fromBase64(server.mid(8).toUtf8()))
-      .object();
-  QString network =
-    rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
-  QString serverAddr =
-    rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : "";
-  QJsonObject serverConfig{
-    {"autoConnect", false},
-    {"serverName", rawServerConfig.contains("ps")
-                     ? rawServerConfig["ps"].toString()
-                     : serverAddr},
-    {"serverAddr", serverAddr},
-    {"serverPort",
-     rawServerConfig.contains("port") ? rawServerConfig["port"].toInt() : 0},
-    {"subscription", subscriptionUrl},
-    {"id",
-     rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
-    {"alterId", rawServerConfig.contains("aid")
-                  ? rawServerConfig["aid"].toString().toInt()
-                  : 0},
-    {"mux", -1},
-    {"security", "auto"},
-    {"network",
-     NETWORK_MAPPER.contains(network) ? NETWORK_MAPPER[network] : "tcp"},
-    {"networkHost", rawServerConfig.contains("host")
-                      ? rawServerConfig["host"].toString()
-                      : ""},
-    {"networkPath", rawServerConfig.contains("path")
-                      ? rawServerConfig["path"].toString()
-                      : ""},
-    {"tcpHeaderType", rawServerConfig.contains("type")
-                        ? rawServerConfig["type"].toString()
-                        : ""},
-    {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
-  return serverConfig;
+void AppProxy::addServerConfigFile(QString configFilePath,
+                                   QString configFileType) {
+  QFile configFile(configFilePath);
+  if (!configFile.exists()) {
+    emit serverConfigError(tr("The config file does not exist."));
+    return;
+  }
+
+  configFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  QJsonDocument configDoc = QJsonDocument::fromJson(configFile.readAll());
+  configFile.close();
+  if (configFileType == "v2ray-config") {
+    addServersFromV2RayConfigFile(configDoc);
+  } else if (configFileType == "shadowsocks-qt5-config") {
+    addServersFromShadowsocksQt5ConfigFile(configDoc);
+  } else {
+    emit serverConfigError(tr("Unknown config file format."));
+  }
 }
 
-QJsonObject AppProxy::getShadowsocksServerFromUrl(
-  QString serverUrl, const QString& subscriptionUrl) {
-  serverUrl             = serverUrl.mid(5);
-  int atIndex           = serverUrl.indexOf('@');
-  int colonIndex        = serverUrl.indexOf(':');
-  int splashIndex       = serverUrl.indexOf('/');
-  int sharpIndex        = serverUrl.indexOf('#');
-  int questionMarkIndex = serverUrl.indexOf('?');
+void AppProxy::addServersFromV2RayConfigFile(const QJsonDocument& configDoc) {}
 
-  QString confidential =
-    QByteArray::fromBase64(serverUrl.left(atIndex).toUtf8());
-  QString serverAddr = serverUrl.mid(atIndex + 1, colonIndex - atIndex - 1);
-  int serverPort =
-    serverUrl.mid(colonIndex + 1, splashIndex - colonIndex - 1).toInt();
-  QString options =
-    serverUrl.mid(questionMarkIndex + 1, sharpIndex - questionMarkIndex - 1);
-  QString serverName =
-    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8());
-
-  colonIndex         = confidential.indexOf(':');
-  QString encryption = confidential.left(colonIndex);
-  QString password   = confidential.mid(colonIndex + 1);
-
-  QJsonObject serverConfig{{"serverName", serverName},
-                           {"autoConnect", false},
-                           {"subscription", subscriptionUrl},
-                           {"serverAddr", serverAddr},
-                           {"serverPort", serverPort},
-                           {"encryption", encryption},
-                           {"password", password}};
-
-  QJsonObject obfsOptions;
-  for (QPair<QString, QString> p : QUrlQuery(options).queryItems()) {
-    if (p.first == "plugin") {
-      QStringList obfs =
-        QUrl::fromPercentEncoding(p.second.toUtf8()).split(';');
-      for (QString o : obfs) {
-        QStringList t = o.split('=');
-        if (t.size() == 2) {
-          obfsOptions[t[0]] = t[1];
-        }
-      }
-    }
-  }
-  if (obfsOptions.size()) {
-    serverConfig["obfs"] = obfsOptions;
-  }
-  return serverConfig;
-}
-
-void AppProxy::addServerConfigFile(QString configFilePath) {}
+void AppProxy::addServersFromShadowsocksQt5ConfigFile(
+  const QJsonDocument& configDoc) {}
 
 void AppProxy::editServer(QString serverName,
                           QString protocol,
                           QString configString) {
-  QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
+  QJsonDocument configDoc = QJsonDocument::fromJson(configString.toUtf8());
+  ServerConfigHelper::Protocol _protocol =
+    ServerConfigHelper::getProtocol(protocol);
   QJsonObject serverConfig = configDoc.object();
   QStringList serverConfigErrors =
-    getServerConfigErrors(serverConfig, protocol);
+    ServerConfigHelper::getServerConfigErrors(serverConfig, _protocol);
   if (serverConfigErrors.size() > 0) {
     emit serverConfigError(serverConfigErrors.join('\n'));
     return;
   }
-  serverConfig = getPrettyServerConfig(serverConfig, protocol);
+  serverConfig =
+    ServerConfigHelper::getPrettyServerConfig(serverConfig, _protocol);
 
   if (configurator.editServer(serverName, serverConfig)) {
     QString newServerName = serverConfig["serverName"].toString();
@@ -986,30 +600,9 @@ void AppProxy::editServer(QString serverName,
   }
 }
 
-QStringList AppProxy::getServerConfigErrors(const QJsonObject& serverConfig,
-                                            QString protocol) {
-  if (protocol == "vmess") {
-    return getV2RayServerConfigErrors(serverConfig);
-  } else if (protocol == "shadowsocks") {
-    return getShadowsocksServerConfigErrors(serverConfig);
-  } else {
-    return {QString("Unknown Protocol: %1").arg(protocol)};
-  }
-}
-
-QJsonObject AppProxy::getPrettyServerConfig(const QJsonObject& serverConfig,
-                                            QString protocol) {
-  if (protocol == "vmess") {
-    return getPrettyV2RayConfig(serverConfig);
-  } else if (protocol == "shadowsocks") {
-    return getPrettyShadowsocksConfig(serverConfig);
-  }
-  return QJsonObject{};
-}
-
 void AppProxy::removeServer(QString serverName) {
   configurator.removeServer(serverName);
-  qInfo() << QString("Server [Name=%1] have been removed.").arg(serverName);
+  qInfo() << QString("Server [Name=%1] has been removed.").arg(serverName);
   emit serverRemoved(serverName);
   // Restart V2Ray Core
   v2ray.restart();
@@ -1017,6 +610,8 @@ void AppProxy::removeServer(QString serverName) {
 
 void AppProxy::removeSubscriptionServers(QString subscriptionUrl) {
   configurator.removeSubscriptionServers(subscriptionUrl);
+  qInfo() << QString("Servers from Subscription=%1 have been removed.")
+               .arg(subscriptionUrl);
   emit serversChanged();
 }
 

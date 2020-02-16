@@ -23,6 +23,8 @@ HEADERS += \
     pacserver.h \
     qrcodehelper.h \
     runguard.h \
+    serverconfighelper.h \
+    utility.h \
     v2raycore.h \
     zipfile.h
 
@@ -36,6 +38,8 @@ SOURCES += \
     pacserver.cpp \
     qrcodehelper.cpp \
     runguard.cpp \
+    serverconfighelper.cpp \
+    utility.cpp \
     v2raycore.cpp \
     zipfile.cpp
 
