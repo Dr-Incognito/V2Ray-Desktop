@@ -44,14 +44,14 @@ void messageHandler(QtMsgType msgType,
 }
 
 int main(int argc, char *argv[]) {
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QApplication app(argc, argv);
   QApplication::setApplicationName(APP_NAME);
   QApplication::setApplicationVersion(
     QString("v%1.%2.%3")
       .arg(QString::number(APP_VERSION_MAJOR),
            QString::number(APP_VERSION_MINOR),
            QString::number(APP_VERSION_PATCH)));
-  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QApplication app(argc, argv);
   QApplication::setWindowIcon(QIcon(":/images/v2ray.ico"));
   // Make sure there is no other instance running
   RunGuard runGuard(APP_NAME);

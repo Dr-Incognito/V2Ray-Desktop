@@ -817,7 +817,7 @@ void AppProxy::updateSubscriptionServers(QString subsriptionUrl) {
 void AppProxy::addSubscriptionServers(QString subsriptionServers,
                                       QString subsriptionUrl) {
   if (!subsriptionServers.size()) {
-    emit serverConfigError("Failed to get subscription servers from URL.");
+    emit serverConfigError(tr("Failed to get subscription servers from URLs."));
     return;
   }
   // Remove servers from the subscription if exists

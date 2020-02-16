@@ -19,7 +19,7 @@ ColumnLayout {
         Text {
             text: qsTr("Logs")
             color: "white"
-            font.pointSize: 24
+            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
         }
 
         Item {      // spacer item
