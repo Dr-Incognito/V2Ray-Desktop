@@ -17,6 +17,8 @@ class ServerConfigHelper : public QObject {
   static QJsonObject getServerConfigFromUrl(const QString &serverUrl,
                                             const QString &subscriptionUrl,
                                             Protocol protocol);
+  static QList<QJsonObject> getServerConfigFromShadowsocksQt5Config(
+    const QJsonObject &config);
 
  private:
   static QStringList getV2RayServerConfigErrors(

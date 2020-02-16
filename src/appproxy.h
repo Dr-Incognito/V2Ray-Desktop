@@ -104,8 +104,8 @@ class AppProxy : public QObject {
   QNetworkProxy getQProxy();
   void setAutoStart(bool autoStart);
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
-  void addServersFromV2RayConfigFile(const QJsonDocument& configDoc);
-  void addServersFromShadowsocksQt5ConfigFile(const QJsonDocument& configDoc);
+  int addServersFromV2RayConfigFile(const QJsonDocument& configDoc);
+  int addServersFromShadowsocksQt5ConfigFile(const QJsonDocument& configDoc);
 };
 
 #endif  // APPPROXY_H

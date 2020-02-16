@@ -417,3 +417,30 @@ QJsonObject ServerConfigHelper::getServerConfigFromUrl(
   }
   return QJsonObject{};
 }
+
+QList<QJsonObject> ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
+  const QJsonObject& config) {
+  QList<QJsonObject> servers;
+  QJsonArray serverConfig = config["configs"].toArray();
+
+  for (auto itr = serverConfig.begin(); itr != serverConfig.end(); ++itr) {
+    QJsonObject server       = (*itr).toObject();
+    QJsonObject serverConfig = {
+      {"serverName", server["remarks"].toString()},
+      {"serverAddr", server["server"].toString()},
+      {"serverPort", QString::number(server["server_port"].toInt())},
+      {"encryption", server["method"].toString()},
+      {"password", server["password"].toString()},
+    };
+    if (server.contains("plugin_opts") &&
+        !server["plugin_opts"].toString().isEmpty()) {
+      QString plugins =
+        QString("plugin=%1%3B%2")
+          .arg(server["plugin"].toString(),
+               QUrl::toPercentEncoding(server["plugin_opts"].toString()));
+      serverConfig["plugins"] = getShadowsocksPlugins(plugins);
+    }
+    servers.append(serverConfig);
+  }
+  return servers;
+}
