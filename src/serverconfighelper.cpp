@@ -1,5 +1,6 @@
 #include "serverconfighelper.h"
 
+#include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -12,11 +13,25 @@
 
 #include "utility.h"
 
+QString ServerConfigHelper::getServerNameError(const QJsonObject& serverConfig,
+                                               const QString* pServerName) {
+  if (pServerName != nullptr) {
+    QString newServerName = serverConfig["serverName"].toString();
+    if (newServerName == *pServerName) {
+      return Utility::getStringConfigError(serverConfig, "serverName",
+                                           tr("Server Name"));
+    }
+  }
+  return Utility::getStringConfigError(
+    serverConfig, "serverName", tr("Server Name"),
+    {std::bind(&Utility::isServerNameNotUsed, std::placeholders::_1)},
+    tr("The 'Server Name' has been used by another server."));
+}
+
 QStringList ServerConfigHelper::getV2RayServerConfigErrors(
-  const QJsonObject& serverConfig) {
+  const QJsonObject& serverConfig, const QString* serverName) {
   QStringList errors;
-  errors.append(Utility::Utility::getStringConfigError(
-    serverConfig, "serverName", tr("Server Name")));
+  errors.append(getServerNameError(serverConfig, serverName));
   errors.append(Utility::getStringConfigError(
     serverConfig, "serverAddr", tr("Server Address"),
     {
@@ -274,10 +289,9 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
 }
 
 QStringList ServerConfigHelper::getShadowsocksServerConfigErrors(
-  const QJsonObject& serverConfig) {
+  const QJsonObject& serverConfig, const QString* pServerName) {
   QStringList errors;
-  errors.append(Utility::getStringConfigError(serverConfig, "serverName",
-                                              tr("Server Name")));
+  errors.append(getServerNameError(serverConfig, pServerName));
   errors.append(Utility::getStringConfigError(
     serverConfig, "serverAddr", tr("Server Address"),
     {
@@ -387,17 +401,19 @@ ServerConfigHelper::Protocol ServerConfigHelper::getProtocol(QString protocol) {
 }
 
 QStringList ServerConfigHelper::getServerConfigErrors(
-  const QJsonObject& serverConfig, Protocol protocol) {
+  Protocol protocol,
+  const QJsonObject& serverConfig,
+  const QString* pServerName) {
   if (protocol == Protocol::VMESS) {
-    return getV2RayServerConfigErrors(serverConfig);
+    return getV2RayServerConfigErrors(serverConfig, pServerName);
   } else if (protocol == Protocol::SHADOWSOCKS) {
-    return getShadowsocksServerConfigErrors(serverConfig);
+    return getShadowsocksServerConfigErrors(serverConfig, pServerName);
   }
   return QStringList{tr("Unknown Server protocol")};
 }
 
 QJsonObject ServerConfigHelper::getPrettyServerConfig(
-  const QJsonObject& serverConfig, Protocol protocol) {
+  Protocol protocol, const QJsonObject& serverConfig) {
   if (protocol == Protocol::VMESS) {
     return getPrettyV2RayConfig(serverConfig);
   } else if (protocol == Protocol::SHADOWSOCKS) {
@@ -407,9 +423,7 @@ QJsonObject ServerConfigHelper::getPrettyServerConfig(
 }
 
 QJsonObject ServerConfigHelper::getServerConfigFromUrl(
-  const QString& serverUrl,
-  const QString& subscriptionUrl,
-  ServerConfigHelper::Protocol protocol) {
+  Protocol protocol, const QString& serverUrl, const QString& subscriptionUrl) {
   if (protocol == Protocol::VMESS) {
     return getV2RayServerConfigFromUrl(serverUrl, subscriptionUrl);
   } else if (protocol == Protocol::SHADOWSOCKS) {

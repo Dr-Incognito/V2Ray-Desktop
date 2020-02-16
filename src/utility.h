@@ -19,11 +19,14 @@ class Utility : public QObject {
     const QJsonObject &serverConfig,
     const QString &key,
     const QString &name,
-    const QList<std::function<bool(const QString &)>> &checkpoints = {});
-  static bool isFileExists(const QString &filePath);
-  static bool isUrlValid(const QString &url);
-  static bool isDomainNameValid(const QString &domainName);
+    const QList<std::function<bool(const QString &)>> &checkpoints = {},
+    const QString &notPassedMsg = tr("The value of '%1' seems invalid."));
   static bool isIpAddrValid(const QString &ipAddr);
+  static bool isIpAddrListValid(const QString &ipAddrList);
+  static bool isDomainNameValid(const QString &domainName);
+  static bool isUrlValid(const QString &url);
+  static bool isFileExists(const QString &filePath);
+  static bool isServerNameNotUsed(const QString &serverName);
 };
 
 #endif  // UTILITY_H

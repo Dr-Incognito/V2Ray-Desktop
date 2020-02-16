@@ -10,27 +10,31 @@ class ServerConfigHelper : public QObject {
   enum class Protocol { VMESS, SHADOWSOCKS, UNKNOWN };
 
   static Protocol getProtocol(QString protocol);
-  static QStringList getServerConfigErrors(const QJsonObject &serverConfig,
-                                           Protocol protocol);
-  static QJsonObject getPrettyServerConfig(const QJsonObject &serverConfig,
-                                           Protocol protocol);
-  static QJsonObject getServerConfigFromUrl(const QString &serverUrl,
-                                            const QString &subscriptionUrl,
-                                            Protocol protocol);
+  static QStringList getServerConfigErrors(
+    Protocol protocol,
+    const QJsonObject &serverConfig,
+    const QString *pServerName = nullptr);
+  static QJsonObject getPrettyServerConfig(Protocol protocol,
+                                           const QJsonObject &serverConfig);
+  static QJsonObject getServerConfigFromUrl(Protocol protocol,
+                                            const QString &serverUrl,
+                                            const QString &subscriptionUrl);
   static QList<QJsonObject> getServerConfigFromShadowsocksQt5Config(
     const QJsonObject &config);
 
  private:
   static QStringList getV2RayServerConfigErrors(
-    const QJsonObject &serverConfig);
+    const QJsonObject &serverConfig, const QString *pServerName = nullptr);
   static QStringList getV2RayStreamSettingsErrors(
     const QJsonObject &serverConfig, const QString &network);
+  static QString getServerNameError(const QJsonObject &serverConfig,
+                                    const QString *pServerName = nullptr);
   static QJsonObject getPrettyV2RayConfig(const QJsonObject &serverConfig);
   static QJsonObject getV2RayStreamSettingsConfig(
     const QJsonObject &serverConfig);
   static QJsonArray getRandomUserAgents(int n);
   static QStringList getShadowsocksServerConfigErrors(
-    const QJsonObject &serverConfig);
+    const QJsonObject &serverConfig, const QString *pServerName = nullptr);
   static QJsonObject getPrettyShadowsocksConfig(
     const QJsonObject &serverConfig);
   static QJsonObject getV2RayServerConfigFromUrl(
