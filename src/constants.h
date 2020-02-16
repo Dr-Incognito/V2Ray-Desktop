@@ -5,7 +5,7 @@
 
 static const QString APP_NAME      = "V2Ray-Desktop";
 static const int APP_VERSION_MAJOR = 1;
-static const int APP_VERSION_MINOR = 3;
+static const int APP_VERSION_MINOR = 4;
 static const int APP_VERSION_PATCH = 0;
 
 static const QString DEFAULT_V2RAY_CORE_VERSION = "v4.22.1";
@@ -13,6 +13,7 @@ static const QString V2RAY_RELEASES_URL =
   "https://api.github.com/repos/v2ray/v2ray-core/releases";
 static const QString V2RAY_ASSETS_URL =
   "https://github.com/v2ray/v2ray-core/releases/download/%1/v2ray-%2.zip";
+
 static const QString V2RAY_CORE_INSTALL_DIR   = "v2ray-core";
 static const QString LOCALE_DIR               = "locales";
 static const QString V2RAY_CORE_LOG_FILE_NAME = "v2ray.log";

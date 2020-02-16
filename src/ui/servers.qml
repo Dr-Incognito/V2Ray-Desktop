@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.3
+import com.v2ray.desktop.AppProxy 1.4
 
 ColumnLayout {
     id: layoutServer
@@ -1178,6 +1178,7 @@ ColumnLayout {
                             radius: 4
                         }
                         onClicked: function() {
+                            fileDialog.open()
                         }
                     }
 
@@ -1193,6 +1194,31 @@ ColumnLayout {
                             radius: 4
                         }
                         onClicked: function() {
+                            var configFilePath = textConfigFilePath.text,
+                                configFileType = comboAddServerMethod.currentValue
+
+                            AppProxy.addServerConfigFile(configFilePath, configFileType)
+                        }
+                    }
+
+                    FileDialog {
+                        id: fileDialog
+                        visible: false
+                        modality: Qt.WindowModal
+                        selectMultiple: false
+                        selectFolder: false
+                        nameFilters: [qsTr("Config File (*.json)")]
+                        selectedNameFilter: qsTr("Config File (*.json)")
+                        onAccepted: {
+                            var path = fileDialog.fileUrl.toString()
+                            path = path.replace(/^(file:\/{2})/,"") // remove prefixed "file://"
+                            path = decodeURIComponent(path)         // unescape html codes like '%23' for '#'
+                            if ( Qt.platform.os === "windows" || Qt.platform.os === "winrt" ) {
+                                // Remove leading splash for Windows
+                                // The path in Windows looks like /C:/Windows/System32
+                                path = path.substring(1)
+                            }
+                            textConfigFilePath.text = path
                         }
                     }
                 }

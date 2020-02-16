@@ -102,6 +102,7 @@ QJsonObject Configurator::getAppConfig() {
       qWarning() << "Failed to parse the app config.";
       config = DEFAULT_APP_CONFIG;
     }
+    appCfgFile.close();
   }
   return config;
 }

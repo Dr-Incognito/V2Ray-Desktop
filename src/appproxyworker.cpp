@@ -85,6 +85,7 @@ void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
          itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
       logs.append(*itr);
     }
+    appLogFile.close();
   }
   if (v2RayLogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QList<QByteArray> _logList = v2RayLogFile.readAll().split('\n');
@@ -93,6 +94,7 @@ void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
          itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
       logs.append(*itr);
     }
+    v2RayLogFile.close();
   }
   // Sort logs by timestamp
   logs.sort();
