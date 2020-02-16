@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFont>
+#include <QIcon>
 #include <QMessageBox>
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
@@ -51,6 +52,7 @@ int main(int argc, char *argv[]) {
            QString::number(APP_VERSION_PATCH)));
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
+  QApplication::setWindowIcon(QIcon(":/images/v2ray.ico"));
   // Make sure there is no other instance running
   RunGuard runGuard(APP_NAME);
   if (!runGuard.tryToRun()) {
