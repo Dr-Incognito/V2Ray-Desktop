@@ -545,50 +545,43 @@ void AppProxy::addServerConfigFile(QString configFilePath,
   QJsonDocument configDoc = QJsonDocument::fromJson(configFile.readAll());
   configFile.close();
 
-  int nImportedServers = 0;
+  int nAddServers                       = 0;
+  ServerConfigHelper::Protocol protocol = ServerConfigHelper::Protocol::UNKNOWN;
+  QList<QJsonObject> servers;
   if (configFileType == "v2ray-config") {
-    nImportedServers = addServersFromV2RayConfigFile(configDoc);
+    protocol = ServerConfigHelper::Protocol::VMESS;
+    servers =
+      ServerConfigHelper::getServerConfigFromV2RayConfig(configDoc.object());
   } else if (configFileType == "shadowsocks-qt5-config") {
-    nImportedServers = addServersFromShadowsocksQt5ConfigFile(configDoc);
+    protocol = ServerConfigHelper::Protocol::SHADOWSOCKS;
+    servers  = ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
+      configDoc.object());
   }
-  if (nImportedServers) {
+  for (QJsonObject server : servers) {
+    QStringList serverConfigErrors =
+      ServerConfigHelper::getServerConfigErrors(protocol, server);
+    if (!serverConfigErrors.empty()) {
+      qWarning() << QString(
+                      "Error occurred for the server[Name=%1]. Errors: %2")
+                      .arg(server["serverName"].toString(),
+                           serverConfigErrors.join(" "));
+      continue;
+    } else {
+      configurator.addServer(
+        ServerConfigHelper::getPrettyServerConfig(protocol, server));
+      qInfo()
+        << QString(
+             "Add a new server[Name=%1] from Shadowsocks-Qt5 config file.")
+             .arg(server["serverName"].toString());
+      ++nAddServers;
+    }
+  }
+  if (nAddServers) {
     emit serversChanged();
   } else {
     emit serverConfigError(
       tr("No supported servers added from the config file."));
   }
-}
-
-int AppProxy::addServersFromV2RayConfigFile(const QJsonDocument& configDoc) {
-  return 0;
-}
-
-int AppProxy::addServersFromShadowsocksQt5ConfigFile(
-  const QJsonDocument& configDoc) {
-  int nImportedServers = 0;
-  QList<QJsonObject> servers =
-    ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
-      configDoc.object());
-  for (QJsonObject serverCfg : servers) {
-    QStringList serverConfigErrors = ServerConfigHelper::getServerConfigErrors(
-      ServerConfigHelper::Protocol::SHADOWSOCKS, serverCfg);
-    if (!serverConfigErrors.empty()) {
-      qWarning() << QString(
-                      "Error occurred for the server[Name=%1]. Errors: %2")
-                      .arg(serverCfg["serverName"].toString(),
-                           serverConfigErrors.join(" "));
-      continue;
-    } else {
-      configurator.addServer(ServerConfigHelper::getPrettyServerConfig(
-        ServerConfigHelper::Protocol::SHADOWSOCKS, serverCfg));
-      qInfo()
-        << QString(
-             "Add a new server[Name=%1] from Shadowsocks-Qt5 config file.")
-             .arg(serverCfg["serverName"].toString());
-      ++nImportedServers;
-    }
-  }
-  return nImportedServers;
 }
 
 void AppProxy::editServer(QString serverName,
@@ -636,7 +629,7 @@ void AppProxy::removeServer(QString serverName) {
 
 void AppProxy::removeSubscriptionServers(QString subscriptionUrl) {
   configurator.removeSubscriptionServers(subscriptionUrl);
-  qInfo() << QString("Servers from Subscription=%1 have been removed.")
+  qInfo() << QString("Servers from Subscription %1 have been removed.")
                .arg(subscriptionUrl);
   emit serversChanged();
 }

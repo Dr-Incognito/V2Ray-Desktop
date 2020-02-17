@@ -19,6 +19,8 @@ class ServerConfigHelper : public QObject {
   static QJsonObject getServerConfigFromUrl(Protocol protocol,
                                             const QString &serverUrl,
                                             const QString &subscriptionUrl);
+  static QList<QJsonObject> getServerConfigFromV2RayConfig(
+    const QJsonObject &config);
   static QList<QJsonObject> getServerConfigFromShadowsocksQt5Config(
     const QJsonObject &config);
 
@@ -29,6 +31,10 @@ class ServerConfigHelper : public QObject {
     const QJsonObject &serverConfig, const QString &network);
   static QString getServerNameError(const QJsonObject &serverConfig,
                                     const QString *pServerName = nullptr);
+  static QJsonObject getV2RayServerSettingsFromConfig(
+    const QJsonObject &settings);
+  static QJsonObject getV2RayStreamSettingsFromConfig(
+    const QJsonObject &transport, const QJsonObject &streamSettings);
   static QJsonObject getPrettyV2RayConfig(const QJsonObject &serverConfig);
   static QJsonObject getV2RayStreamSettingsConfig(
     const QJsonObject &serverConfig);

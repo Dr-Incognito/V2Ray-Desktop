@@ -11,6 +11,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 
+#include "constants.h"
 #include "utility.h"
 
 QString ServerConfigHelper::getServerNameError(const QJsonObject& serverConfig,
@@ -110,19 +111,19 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
     {"protocol", "vmess"},
     {"mux",
      QJsonObject{
-       {"enabled", serverConfig["mux"].toString().toInt() != 1},
-       {"concurrency", serverConfig["mux"].toString().toInt()},
+       {"enabled", serverConfig["mux"].toVariant().toInt() != -1},
+       {"concurrency", serverConfig["mux"].toVariant().toInt()},
      }},
     {"settings",
      QJsonObject{
        {"vnext",
         QJsonArray{QJsonObject{
           {"address", serverConfig["serverAddr"].toString()},
-          {"port", serverConfig["serverPort"].toString().toInt()},
+          {"port", serverConfig["serverPort"].toVariant().toInt()},
           {"users",
            QJsonArray{QJsonObject{
              {"id", serverConfig["id"].toString()},
-             {"alterId", serverConfig["alterId"].toString().toInt()},
+             {"alterId", serverConfig["alterId"].toVariant().toInt()},
              {"security", serverConfig["security"].toString().toLower()},
            }}}}}}}},
     {"tag", "proxy-vmess"}};
@@ -183,13 +184,13 @@ QJsonObject ServerConfigHelper::getV2RayStreamSettingsConfig(
     streamSettings.insert(
       "kcpSettings",
       QJsonObject{
-        {"mtu", serverConfig["kcpMtu"].toString().toInt()},
-        {"tti", serverConfig["kcpTti"].toString().toInt()},
-        {"uplinkCapacity", serverConfig["kcpUpLink"].toString().toInt()},
-        {"downlinkCapacity", serverConfig["kcpDownLink"].toString().toInt()},
+        {"mtu", serverConfig["kcpMtu"].toVariant().toInt()},
+        {"tti", serverConfig["kcpTti"].toVariant().toInt()},
+        {"uplinkCapacity", serverConfig["kcpUpLink"].toVariant().toInt()},
+        {"downlinkCapacity", serverConfig["kcpDownLink"].toVariant().toInt()},
         {"congestion", serverConfig["kcpCongestion"].toBool()},
-        {"readBufferSize", serverConfig["kcpReadBuffer"].toString().toInt()},
-        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toString().toInt()},
+        {"readBufferSize", serverConfig["kcpReadBuffer"].toVariant().toInt()},
+        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toVariant().toInt()},
         {"header",
          QJsonObject{
            {"type", serverConfig["packetHeader"].toString().toLower()}}}});
@@ -271,7 +272,7 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
      rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
     {"alterId",
      rawServerConfig.contains("aid") ? rawServerConfig["aid"].toString() : 0},
-    {"mux", "-1"},
+    {"mux", -1},
     {"security", "auto"},
     {"network",
      NETWORK_MAPPER.contains(network) ? NETWORK_MAPPER[network] : "tcp"},
@@ -327,7 +328,7 @@ QJsonObject ServerConfigHelper::getPrettyShadowsocksConfig(
      QJsonObject{{"servers",
                   QJsonArray{QJsonObject{
                     {"address", serverConfig["serverAddr"].toString()},
-                    {"port", serverConfig["serverPort"].toString().toInt()},
+                    {"port", serverConfig["serverPort"].toVariant().toInt()},
                     {"method", serverConfig["encryption"].toString().toLower()},
                     {"password", serverConfig["password"].toString()}}}}}},
     {"streamSettings", QJsonObject{{"network", "tcp"}}},
@@ -432,12 +433,154 @@ QJsonObject ServerConfigHelper::getServerConfigFromUrl(
   return QJsonObject{};
 }
 
+QList<QJsonObject> ServerConfigHelper::getServerConfigFromV2RayConfig(
+  const QJsonObject& config) {
+  QList<QJsonObject> servers;
+  QJsonArray serversConfig = config["outbounds"].toArray();
+  for (auto itr = serversConfig.begin(); itr != serversConfig.end(); ++itr) {
+    QJsonObject server = (*itr).toObject();
+    QString protocol   = server["protocol"].toString();
+    if (protocol != "vmess") {
+      qWarning() << QString("Ignore the server protocol: %1").arg(protocol);
+      continue;
+    }
+    QJsonObject serverSettings =
+      getV2RayServerSettingsFromConfig(server["settings"].toObject());
+    QJsonObject streamSettings = getV2RayStreamSettingsFromConfig(
+      server["streamSettings"].toObject(), config["transport"].toObject());
+    if (!serverSettings.empty()) {
+      QJsonObject serverConfig = serverSettings;
+      // Stream Settings
+      for (auto itr = streamSettings.begin(); itr != streamSettings.end();
+           ++itr) {
+        serverConfig.insert(itr.key(), itr.value());
+      }
+      // MUX Settings
+      if (server.contains("mux")) {
+        QJsonObject muxObject = server["mux"].toObject();
+        int mux               = muxObject["concurrency"].toVariant().toInt();
+        if (mux > 0) {
+          serverConfig.insert("mux", QString::number(mux));
+        }
+      }
+      if (!serverConfig.contains("mux")) {
+        // Default value for MUX
+        serverConfig["mux"] = -1;
+      }
+      servers.append(serverConfig);
+    }
+  }
+  return servers;
+}
+
+QJsonObject ServerConfigHelper::getV2RayServerSettingsFromConfig(
+  const QJsonObject& settings) {
+  QJsonObject server;
+  QJsonArray vnext = settings["vnext"].toArray();
+  if (vnext.size()) {
+    QJsonObject _server  = vnext.at(0).toObject();
+    server["serverAddr"] = _server["address"].toString();
+    server["serverPort"] = _server["port"].toVariant().toInt();
+    server["serverName"] =
+      QString("%1:%2").arg(server["serverAddr"].toString(),
+                           QString::number(server["serverPort"].toInt()));
+    QJsonArray users = _server["users"].toArray();
+    if (users.size()) {
+      QJsonObject user  = users.at(0).toObject();
+      server["id"]      = user["id"].toString();
+      server["alterId"] = user["alterId"].toVariant().toInt();
+      server["security"] =
+        user.contains("security") ? user["security"].toString() : "auto";
+    }
+  }
+  return server;
+}
+
+QJsonObject ServerConfigHelper::getV2RayStreamSettingsFromConfig(
+  const QJsonObject& transport, const QJsonObject& streamSettings) {
+  QJsonObject _streamSettings =
+    streamSettings.empty() ? transport : streamSettings;
+  QJsonObject serverStreamSettings;
+  QString network = _streamSettings.contains("network")
+                      ? _streamSettings["network"].toString()
+                      : "tcp";
+  serverStreamSettings["network"] = network;
+  serverStreamSettings["networkSecurity"] =
+    _streamSettings.contains("security")
+      ? _streamSettings["security"].toString()
+      : "none";
+  serverStreamSettings["allowInsecure"] = true;
+  if (_streamSettings.contains("tlsSettings")) {
+    QJsonObject tlsSettings = _streamSettings["tlsSettings"].toObject();
+    serverStreamSettings["allowInsecure"] = tlsSettings["allowInsecure"];
+  }
+  if (network == "tcp") {
+    QJsonObject tcpSettings = _streamSettings["tcpSettings"].toObject();
+    QJsonObject header      = tcpSettings["header"].toObject();
+    serverStreamSettings["tcpHeaderType"] =
+      header.contains("type") ? header["type"].toString() : "none";
+  } else if (network == "kcp") {
+    QJsonObject kcpSettings        = _streamSettings["kcpSettings"].toObject();
+    QJsonObject header             = kcpSettings["header"].toObject();
+    serverStreamSettings["kcpMtu"] = kcpSettings.contains("mtu")
+                                       ? kcpSettings["mtu"].toVariant().toInt()
+                                       : DEFAULT_V2RAY_KCP_MTU;
+    serverStreamSettings["kcpTti"] = kcpSettings.contains("tti")
+                                       ? kcpSettings["tti"].toVariant().toInt()
+                                       : DEFAULT_V2RAY_KCP_TTI;
+    serverStreamSettings["kcpUpLink"] =
+      kcpSettings.contains("uplinkCapacity")
+        ? kcpSettings["uplinkCapacity"].toVariant().toInt()
+        : DEFAULT_V2RAY_KCP_UP_CAPACITY;
+    serverStreamSettings["kcpDownLink"] =
+      kcpSettings.contains("downlinkCapacity")
+        ? kcpSettings["downlinkCapacity"].toVariant().toInt()
+        : DEFAULT_V2RAY_KCP_DOWN_CAPACITY;
+    serverStreamSettings["kcpReadBuffer"] =
+      kcpSettings.contains("readBufferSize")
+        ? kcpSettings["readBufferSize"].toVariant().toInt()
+        : DEFAULT_V2RAY_KCP_READ_BUF_SIZE;
+    serverStreamSettings["kcpWriteBuffer"] =
+      kcpSettings.contains("writeBufferSize")
+        ? kcpSettings["writeBufferSize"].toVariant().toInt()
+        : DEFAULT_V2RAY_KCP_READ_BUF_SIZE;
+    serverStreamSettings["kcpCongestion"] = kcpSettings["congestion"].toBool();
+    serverStreamSettings["packetHeader"] =
+      header.contains("type") ? header["type"].toString() : "none";
+  } else if (network == "ws") {
+    QJsonObject wsSettings = _streamSettings["wsSettings"].toObject();
+    QJsonObject headers    = wsSettings["headers"].toObject();
+    serverStreamSettings["networkHost"] = headers.contains("host")
+                                            ? headers["host"].toString()
+                                            : headers["Host"].toString();
+    serverStreamSettings["networkPath"] = wsSettings["path"];
+  } else if (network == "http") {
+    QJsonObject httpSettings = _streamSettings["httpSettings"].toObject();
+    serverStreamSettings["networkHost"] = httpSettings["host"].toArray().at(0);
+    serverStreamSettings["networkPath"] = httpSettings["path"].toString();
+  } else if (network == "domainsocket") {
+    QJsonObject dsSettings = _streamSettings["dsSettings"].toObject();
+    serverStreamSettings["domainSocketFilePath"] =
+      dsSettings["path"].toString();
+  } else if (network == "quic") {
+    QJsonObject quicSettings = _streamSettings["quicSettings"].toObject();
+    QJsonObject header       = quicSettings["header"].toObject();
+    serverStreamSettings["quicSecurity"] =
+      quicSettings.contains("security") ? quicSettings["security"].toString()
+                                        : "none";
+    serverStreamSettings["packetHeader"] =
+      header.contains("type") ? header["type"].toString() : "none";
+    serverStreamSettings["quicKey"] = quicSettings["key"].toString();
+  }
+  return serverStreamSettings;
+}
+
 QList<QJsonObject> ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
   const QJsonObject& config) {
   QList<QJsonObject> servers;
-  QJsonArray serverConfig = config["configs"].toArray();
+  QJsonArray serversConfig = config["configs"].toArray();
 
-  for (auto itr = serverConfig.begin(); itr != serverConfig.end(); ++itr) {
+  for (auto itr = serversConfig.begin(); itr != serversConfig.end(); ++itr) {
     QJsonObject server       = (*itr).toObject();
     QJsonObject serverConfig = {
       {"serverName", server["remarks"].toString()},
