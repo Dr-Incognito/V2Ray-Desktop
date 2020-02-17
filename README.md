@@ -16,7 +16,9 @@ It is built with Qt 5 and QML 2.
 
 Compared to [V2Ray](http://v2ray.com/), V2Ray Desktop provides more advanced features such as server subscription and latency test. You can easily migrate to V2Ray Desktop from [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) by importing their config files.
 
-You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases). For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
+You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases). If you are using Arch Linux, you can install it from [AUR](https://aur.archlinux.org/packages/v2ray-desktop/).
+
+For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
 
 **Notes:** 
 - The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.     
