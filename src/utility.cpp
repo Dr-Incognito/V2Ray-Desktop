@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include <QDebug>
 #include <QDir>
 #include <QList>
 #include <QRegularExpression>
@@ -13,11 +14,12 @@ QString Utility::getNumericConfigError(const QJsonObject& config,
                                        const QString& name,
                                        int lowerBound,
                                        int upperBound) {
-  if (!config.contains(key) || config[key].toString().isEmpty()) {
+  if (!config.contains(key) ||
+      (config[key].isString() && config[key].toString().isEmpty())) {
     return QString(tr("Missing the value of '%1'.")).arg(name);
   } else {
     bool isConverted = false;
-    int value        = config[key].toString().toInt(&isConverted);
+    int value        = config[key].toVariant().toInt(&isConverted);
     if (!isConverted) {
       return QString(tr("The value of '%1' seems invalid.")).arg(name);
     } else if (upperBound == -127 && value < lowerBound) {

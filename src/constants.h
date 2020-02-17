@@ -22,6 +22,13 @@ static const QString APP_LOG_FILE_NAME        = "v2ray-desktop.log";
 static const QString APP_CFG_FILE_NAME        = "v2ray-desktop-config.json";
 static const QString GFW_LIST_FILE_NAME       = "gfwlist.txt";
 
+static const int DEFAULT_V2RAY_KCP_MTU            = 1350;
+static const int DEFAULT_V2RAY_KCP_TTI            = 50;
+static const int DEFAULT_V2RAY_KCP_UP_CAPACITY    = 5;
+static const int DEFAULT_V2RAY_KCP_DOWN_CAPACITY  = 20;
+static const int DEFAULT_V2RAY_KCP_READ_BUF_SIZE  = 2;
+static const int DEFAULT_V2RAY_KCP_WRITE_BUF_SIZE = 2;
+
 static const int TCP_PING_TIMEOUT = 2500;
 static const int HTTP_GET_TIMEOUT = 2500;
 static const int MAX_N_LOGS       = 2500;

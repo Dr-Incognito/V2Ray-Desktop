@@ -1400,10 +1400,10 @@ ColumnLayout {
                 }
 
                 MenuItem {
-                    id: menuSyncServers
+                    id: menuItemSyncServers
                     text: qsTr("Sync Servers")
                     onTriggered: function() {
-                        menuSyncServers.enabled = false
+                        menuItemSyncServers.enabled = false
                         AppProxy.updateSubscriptionServers(menuSubscription.currentSubscription)
                     }
                 }
@@ -1512,7 +1512,7 @@ ColumnLayout {
             var popUpButtons = [
                 buttonV2RayAddServer, buttonShadowsocksAddServer,
                 buttonSubscriptionAddServer, buttonConfigAddServer,
-                buttonSyncServers
+                buttonSyncServers, menuItemSyncServers
             ]
             for (var i = 0; i < popUpButtons.length; ++ i) {
                 popUpButtons[i].enabled = true

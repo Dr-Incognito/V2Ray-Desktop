@@ -11,9 +11,11 @@ If you want to contribute to this project, please open a pull request.
 ## Introduction
 
 V2Ray Desktop is a GUI client for [V2Ray](http://v2ray.com/), running on Windows, Linux, and macOS.
-It is built with Qt 5 and QML 2 and provides advanced features for V2Ray.
+It is built with Qt 5 and QML 2.
 
-You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases).
+Compared to [V2Ray](http://v2ray.com/), V2Ray Desktop provides more advanced features such as server subscription and latency test. You can easily migrate to V2Ray Desktop from [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) by importing their config files.
+
+You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases). For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
 
 **Notes:** 
 - The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.     
@@ -22,9 +24,10 @@ You can get the latest release at [Releases Page](https://github.com/Dr-Incognit
 ## Features
 
 - Support Windows, Linux, and macOS.
-- Support both Shadowsocks (without obfs) and V2Ray servers.
+- Support both Shadowsocks (without plugins) and V2Ray servers.
 - Support connecting to multiple servers.
 - Support adding/updating servers from subscription URLs.
+- Support adding servers by importing [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) config.
 - Support adding servers by scanning QR codes.
 - Support PAC proxy mode, Global proxy mode, and Manual proxy mode.
 - Support getting and setting system proxies for Windows, Linux (GNOME), and macOS.
