@@ -1057,7 +1057,7 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="1210"/>
         <location filename="../ui/servers.qml" line="1211"/>
         <source>Config File (*.json)</source>
-        <translation type="unfinished">配置文件 (*.json)</translation>
+        <translation>配置文件 (*.json)</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="1283"/>

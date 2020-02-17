@@ -1,6 +1,7 @@
 [Desktop Entry]
-Name=V2Ray-Desktop
+Name=V2Ray Desktop
 Exec=%1
+Icon=v2ray-desktop.png
 Type=Application
 Terminal=false
 X-GNOME-Autostart-enabled=true
