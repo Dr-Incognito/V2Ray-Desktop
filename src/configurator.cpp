@@ -53,6 +53,9 @@ Configurator &Configurator::getInstance() {
 }
 
 QString Configurator::getV2RayInstallDirPath() {
+  if (QDir(V2RAY_CORE_INSTALL_DIR).exists()) {
+    return V2RAY_CORE_INSTALL_DIR;
+  }
   return QDir(QCoreApplication::applicationDirPath())
     .filePath(V2RAY_CORE_INSTALL_DIR);
 }
