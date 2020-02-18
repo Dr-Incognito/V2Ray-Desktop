@@ -9,8 +9,7 @@
 
 #include "configurator.h"
 #include "constants.h"
-#include "networkrequest.h"
-#include "zipfile.h"
+#include "utility.h"
 
 V2RayCore::V2RayCore() {
   QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
@@ -98,17 +97,11 @@ bool V2RayCore::isRunning() {
   return v2rayProcess->state() == QProcess::Running;
 }
 
-bool V2RayCore::isUpgradable() {
-  return V2RAY_USE_LOCAL_INSTALL;
-}
+bool V2RayCore::isUpgradable() { return V2RAY_USE_LOCAL_INSTALL; }
 
 bool V2RayCore::isInstalled() { return QFile(v2RayExecFilePath).exists(); }
 
-bool V2RayCore::install() {
-  QString latestVersion = getLatestVersion();
-  if (latestVersion.isEmpty()) {
-    return false;
-  }
+bool V2RayCore::upgrade(const QString& version, const QNetworkProxy* proxy) {
 #if defined(Q_OS_WIN)
   QString operatingSystem = "windows-64";
 #elif defined(Q_OS_LINUX)
@@ -118,58 +111,6 @@ bool V2RayCore::install() {
 #else
   QString operatingSystem = "unknown";
 #endif
-  // Download the zip file from GitHub
-  QString assetsUrl =
-    QString(V2RAY_ASSETS_URL).arg(latestVersion, operatingSystem);
-  QByteArray assetsBytes = NetworkRequest::getNetworkResponse(assetsUrl);
-  QString v2rayZipFilePath =
-    QDir(QDir::currentPath())
-      .filePath(QString("v2ray-core-%1.zip").arg(latestVersion));
-  QFile v2RayZipFile(v2rayZipFilePath);
-  if (!v2RayZipFile.open(QIODevice::WriteOnly)) {
-    return false;
-  }
-  v2RayZipFile.write(assetsBytes);
-  v2RayZipFile.close();
-
-  // Unzip the file and make v2ray executable
-  QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
-  ZipFile::unzipFile(v2rayZipFilePath, v2RayInstallFolderPath);
-  QFile(v2RayExecFilePath)
-    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
-                    QFileDevice::ExeUser);
-  QFile(v2RayCtlExecFilePath)
-    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
-                    QFileDevice::ExeUser);
-
-  return true;
-}
-
-bool V2RayCore::upgrade() {
-  // Rename old version
-
-  // Install new version
-  bool isUpgraded = install();
-
-  // Remove old version if install successfully
-  if (!isUpgraded) {
-    return false;
-  }
-  return true;
-}
-
-QString V2RayCore::getLatestVersion() {
-  QByteArray releaseJsonStr =
-    NetworkRequest::getNetworkResponse(V2RAY_RELEASES_URL);
-  QJsonObject latestRelease;
-  QJsonDocument releaseJsonDoc = QJsonDocument::fromJson(releaseJsonStr);
-  QJsonArray releases          = releaseJsonDoc.array();
-  for (int i = 0; i < releases.size(); ++i) {
-    QJsonObject release = releases[i].toObject();
-    if (release.contains("prerelease") && !release["prerelease"].toBool()) {
-      latestRelease = release;
-      break;
-    }
-  }
-  return latestRelease.empty() ? "" : latestRelease["name"].toString();
+  QString assetsUrl = QString(V2RAY_ASSETS_URL).arg(version, operatingSystem);
+  return false;
 }

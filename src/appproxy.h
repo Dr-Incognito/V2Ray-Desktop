@@ -29,6 +29,13 @@ class AppProxy : public QObject {
   void getNetworkStatusStarted(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServersStarted(QString url, QNetworkProxy proxy);
   void getLogsStarted(QString appLogFilePath, QString v2RayLogFilePath);
+  void getLatestReleaseStarted(QString name,
+                               QString releaseUrl,
+                               QNetworkProxy proxy);
+  void upgradeStarted(QString name,
+                      QString assetsUrl,
+                      QString outputFolderPath,
+                      QNetworkProxy proxy);
 
   void appVersionReady(QString appVersion);
   void v2RayCoreVersionReady(QString v2RayCoreVersion);
@@ -51,9 +58,13 @@ class AppProxy : public QObject {
   void serverChanged(QString serverName, QString serverConfig);
   void serverRemoved(QString serverName);
   void serversChanged();
+  void latestReleaseReady(QString name, QString version);
+  void latestReleaseError(QString name, QString errorMsg);
+  void upgradeCompleted(QString name);
+  void upgradeError(QString name, QString errorMsg);
 
  public slots:
-  void getAppVersion();
+  QString getAppVersion();
   void getV2RayCoreVersion();
   void getOperatingSystem();
   void getV2RayCoreStatus();
@@ -82,6 +93,8 @@ class AppProxy : public QObject {
   void scanQrCodeScreen();
   void copyToClipboard(QString text);
   bool retranslate(QString language = "");
+  void getLatestRelease(QString name);
+  void upgradeDependency(QString name, QString version);
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
@@ -90,12 +103,17 @@ class AppProxy : public QObject {
   void addSubscriptionServers(QString subsriptionServers,
                               QString subsriptionUrl = "");
   void returnLogs(QString logs);
+  void returnLatestRelease(QString name, QString version);
+  void replaceDependency(QString name,
+                         QString outputFilePath,
+                         QString errorMsg);
 
  private:
   V2RayCore& v2ray;
   QJsonObject serverLatency;
   Configurator& configurator;
   PacServer pacServer;
+  QMap<QString, QMap<QString, QVariant>> latestVersion;
 
   AppProxyWorker* worker = new AppProxyWorker();
   QThread workerThread;

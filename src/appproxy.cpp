@@ -59,6 +59,18 @@ AppProxy::AppProxy(QObject* parent)
   connect(this, &AppProxy::getLogsStarted, worker, &AppProxyWorker::getLogs);
   connect(worker, &AppProxyWorker::logsReady, this, &AppProxy::returnLogs);
 
+  // Setup Worker -> getLatestRelease
+  connect(this, &AppProxy::getLatestReleaseStarted, worker,
+          &AppProxyWorker::getLatestRelease);
+  connect(worker, &AppProxyWorker::latestReleaseReady, this,
+          &AppProxy::returnLatestRelease);
+
+  // Setup Worker -> upgradeDependency
+  connect(this, &AppProxy::upgradeStarted, worker,
+          &AppProxyWorker::upgradeDependency);
+  connect(worker, &AppProxyWorker::upgradeFinished, this,
+          &AppProxy::replaceDependency);
+
   workerThread.start();
 }
 
@@ -67,12 +79,13 @@ AppProxy::~AppProxy() {
   workerThread.wait();
 }
 
-void AppProxy::getAppVersion() {
+QString AppProxy::getAppVersion() {
   QString appVersion = QString("v%1.%2.%3")
                          .arg(QString::number(APP_VERSION_MAJOR),
                               QString::number(APP_VERSION_MINOR),
                               QString::number(APP_VERSION_PATCH));
   emit appVersionReady(appVersion);
+  return appVersion;
 }
 
 void AppProxy::getV2RayCoreVersion() {
@@ -654,4 +667,92 @@ void AppProxy::scanQrCodeScreen() {
 void AppProxy::copyToClipboard(QString text) {
   QClipboard* clipboard = QGuiApplication::clipboard();
   clipboard->setText(text, QClipboard::Clipboard);
+}
+
+void AppProxy::getLatestRelease(QString name) {
+  if (!latestVersion.contains(name)) {
+    QDateTime initTime = QDateTime::currentDateTime();
+    initTime.setTime_t(0);
+    latestVersion[name] = {
+      {"currentVersion", ""},
+      {"latestVersion", ""},
+      {"checkTime", initTime},
+    };
+  }
+
+  if (latestVersion[name]["checkTime"].toDateTime().secsTo(
+        QDateTime::currentDateTime()) < RELEASE_CHECK_INTERVAL) {
+    emit latestReleaseReady(name,
+                            latestVersion[name]["latestVersion"].toString());
+    return;
+  }
+  if (name == "v2ray-core") {
+    latestVersion[name]["currentVersion"] = v2ray.getVersion();
+    emit getLatestReleaseStarted(name, V2RAY_RELEASES_URL, getQProxy());
+  } else if (name == "v2ray-desktop") {
+    latestVersion[name]["currentVersion"] = getAppVersion();
+    emit getLatestReleaseStarted(name, APP_RELEASES_URL, getQProxy());
+  }
+}
+
+void AppProxy::returnLatestRelease(QString name, QString version) {
+  if (version.isEmpty()) {
+    emit latestReleaseError(name, tr("Failed to check updates"));
+    return;
+  }
+  if (!Utility::isVersionNewer(latestVersion[name]["currentVersion"].toString(),
+                               version)) {
+    version = "";
+  }
+  latestVersion[name]["checkTime"]     = QDateTime::currentDateTime();
+  latestVersion[name]["latestVersion"] = version;
+  emit latestReleaseReady(name, version);
+}
+
+void AppProxy::upgradeDependency(QString name, QString version) {
+  if (!V2RAY_USE_LOCAL_INSTALL) {
+    emit upgradeError(name, tr("Please upgrade from the package manager"));
+    return;
+  }
+  if (name == "v2ray-core") {
+#if defined(Q_OS_WIN)
+    QString operatingSystem = "windows-64";
+#elif defined(Q_OS_LINUX)
+    QString operatingSystem = "linux-64";
+#elif defined(Q_OS_MAC)
+    QString operatingSystem = "macos";
+#else
+    QString operatingSystem = "unknown";
+#endif
+    emit upgradeStarted(name, V2RAY_ASSETS_URL.arg(version, operatingSystem),
+                        Configurator::getAppTempDir().filePath(name),
+                        getQProxy());
+  } else if (name == "v2ray-desktop") {
+#if defined(Q_OS_WIN)
+    QString operatingSystem = "win64";
+    QString fileExtension   = "zip";
+#elif defined(Q_OS_LINUX)
+    QString operatingSystem = "linux-x86_64";
+    QString fileExtension   = "AppImage";
+#elif defined(Q_OS_MAC)
+    QString operatingSystem = "macOS";
+    QString fileExtension   = "zip";
+#else
+    QString operatingSystem = "unknown";
+    QString fileExtension   = "";
+#endif
+    emit upgradeStarted(
+      name,
+      APP_ASSETS_URL.arg(version, version, operatingSystem, fileExtension),
+      Configurator::getAppTempDir().filePath(name), getQProxy());
+  }
+}
+
+void AppProxy::replaceDependency(QString name,
+                                 QString outputFilePath,
+                                 QString errorMsg) {
+  if (!errorMsg.isEmpty()) {
+    emit upgradeError(name, errorMsg);
+  }
+  // TODO
 }

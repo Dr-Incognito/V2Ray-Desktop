@@ -62,6 +62,16 @@ QDir Configurator::getAppConfigDir() {
   return appConfigDir;
 }
 
+QDir Configurator::getAppTempDir() {
+  QDir tempDir =
+    QDir(QStandardPaths::writableLocation(QStandardPaths::TempLocation))
+      .filePath(QCoreApplication::applicationName());
+  if (!tempDir.exists()) {
+    tempDir.mkpath(".");
+  }
+  return tempDir;
+}
+
 QString Configurator::getV2RayInstallDirPath() {
   if (!V2RAY_USE_LOCAL_INSTALL) {
     return V2RAY_SYS_INSTALL_DIR;
@@ -73,7 +83,6 @@ QString Configurator::getV2RayInstallDirPath() {
 QString Configurator::getLocaleDirPath() {
   return QDir(QCoreApplication::applicationDirPath()).filePath(LOCALE_DIR);
 }
-
 
 QString Configurator::getAppFilePath() {
   if (QProcessEnvironment::systemEnvironment().contains("APPIMAGE")) {
