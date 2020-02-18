@@ -17,8 +17,8 @@ V2RayCore::V2RayCore() {
   v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
   v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl.exe");
 #elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
-  v2RayExecFilePath       = QDir(v2RayInstallFolderPath).filePath("v2ray");
-  v2RayCtlExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ctl");
+  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray");
+  v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl");
 #endif
   QDir v2RayInstallFolder(v2RayInstallFolderPath);
   // Create the install folder if not exists
@@ -97,20 +97,4 @@ bool V2RayCore::isRunning() {
   return v2rayProcess->state() == QProcess::Running;
 }
 
-bool V2RayCore::isUpgradable() { return V2RAY_USE_LOCAL_INSTALL; }
-
 bool V2RayCore::isInstalled() { return QFile(v2RayExecFilePath).exists(); }
-
-bool V2RayCore::upgrade(const QString& version, const QNetworkProxy* proxy) {
-#if defined(Q_OS_WIN)
-  QString operatingSystem = "windows-64";
-#elif defined(Q_OS_LINUX)
-  QString operatingSystem = "linux-64";
-#elif defined(Q_OS_MAC)
-  QString operatingSystem = "macos";
-#else
-  QString operatingSystem = "unknown";
-#endif
-  QString assetsUrl = QString(V2RAY_ASSETS_URL).arg(version, operatingSystem);
-  return false;
-}

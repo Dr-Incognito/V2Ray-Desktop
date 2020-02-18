@@ -14,11 +14,9 @@ class V2RayCore : public QObject {
   ~V2RayCore();
   QString getVersion();
   bool isRunning();
-  bool isUpgradable();
   bool start();
   bool stop();
   bool restart();
-  bool upgrade(const QString& version, const QNetworkProxy* proxy = nullptr);
 
  private:
   V2RayCore();
