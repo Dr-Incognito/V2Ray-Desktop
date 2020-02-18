@@ -4,7 +4,7 @@
 <context>
     <name>AppProxy</name>
     <message>
-        <location filename="../appproxy.cpp" line="194"/>
+        <location filename="../appproxy.cpp" line="211"/>
         <source>&apos;PAC Server Port&apos; can not be the same as &apos;Listening Port&apos;.</source>
         <translation>&apos;PAC服务器端口&apos;不得于&apos;监听端口&apos;相同。</translation>
     </message>
@@ -13,61 +13,81 @@
         <translation type="vanished">&apos;DNS服务器&apos;似乎是无效的。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="180"/>
+        <location filename="../appproxy.cpp" line="197"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="182"/>
+        <location filename="../appproxy.cpp" line="199"/>
         <source>Local Server Protocol</source>
         <translation>本地服务器协议</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="184"/>
+        <location filename="../appproxy.cpp" line="201"/>
         <source>Listening IP Address</source>
         <translation>监听IP地址</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="189"/>
+        <location filename="../appproxy.cpp" line="206"/>
         <source>Listening Port</source>
         <translation>监听端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="191"/>
+        <location filename="../appproxy.cpp" line="208"/>
         <source>PAC Server Port</source>
         <translation>PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="197"/>
+        <location filename="../appproxy.cpp" line="214"/>
         <source>DNS Server</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="488"/>
+        <location filename="../appproxy.cpp" line="505"/>
         <source>Failed to get subscription servers from URLs.</source>
         <translation>无法从指定的URL获取订阅服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="533"/>
+        <location filename="../appproxy.cpp" line="550"/>
         <source>No supported servers added from the URL.</source>
         <translation>未能从该URL中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="541"/>
+        <location filename="../appproxy.cpp" line="558"/>
         <source>The config file does not exist.</source>
         <translation>配置文件不存在。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="583"/>
+        <location filename="../appproxy.cpp" line="600"/>
         <source>No supported servers added from the config file.</source>
         <translation>未能从该配置文件中添加支持的服务器。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="706"/>
+        <source>Failed to check updates</source>
+        <translation>检查更新失败</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="721"/>
+        <source>Please upgrade from the package manager</source>
+        <translation>请使用包管理器更新</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="726"/>
+        <source>The V2Ray Core in AppImage is not upgradable.</source>
+        <translation>无法更新AppImage中的V2Ray Core。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="771"/>
+        <source>Failed to replace V2Ray Core files.</source>
+        <translation>无法替换V2Ray Core的文件。</translation>
     </message>
     <message>
         <source>Missing the value of &apos;DNS Servers&apos;.</source>
         <translation type="vanished">缺失值：&apos;DNS服务器&apos;。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="338"/>
+        <location filename="../appproxy.cpp" line="355"/>
         <source>GFW List URL</source>
         <translation>GFW List URL</translation>
     </message>
@@ -176,14 +196,23 @@
         <translation type="vanished">密码</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="464"/>
+        <location filename="../appproxy.cpp" line="481"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="365"/>
+        <location filename="../appproxy.cpp" line="382"/>
         <source>Failed to update GFW List.</source>
         <translation>更新GFW List失败。</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../main.cpp" line="68"/>
+        <source>There is another %1 instance running!
+</source>
+        <translation>已有另一个%1的实例正在运行！</translation>
     </message>
 </context>
 <context>
@@ -236,156 +265,184 @@
         <location filename="../serverconfighelper.cpp" line="23"/>
         <location filename="../serverconfighelper.cpp" line="27"/>
         <source>Server Name</source>
-        <translation type="unfinished">服务器名称</translation>
+        <translation>服务器名称</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="29"/>
         <source>The &apos;%1&apos; has been used by another server.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;已经被其他服务器使用。</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="37"/>
         <location filename="../serverconfighelper.cpp" line="297"/>
         <source>Server Address</source>
-        <translation type="unfinished">服务器地址</translation>
+        <translation>服务器地址</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="43"/>
         <location filename="../serverconfighelper.cpp" line="303"/>
         <source>Server Port</source>
-        <translation type="unfinished">服务器端口</translation>
+        <translation>服务器端口</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="44"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="46"/>
         <source>Alter ID</source>
-        <translation type="unfinished">Alter ID</translation>
+        <translation>Alter ID</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="48"/>
         <location filename="../serverconfighelper.cpp" line="305"/>
         <source>Security</source>
-        <translation type="unfinished">加密方式</translation>
+        <translation>加密方式</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="50"/>
         <source>MUX</source>
-        <translation type="unfinished">MUX</translation>
+        <translation>MUX</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="52"/>
         <source>Network</source>
-        <translation type="unfinished">传输协议</translation>
+        <translation>传输协议</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="54"/>
         <source>Network Security</source>
-        <translation type="unfinished">网络加密方式</translation>
+        <translation>网络加密方式</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="69"/>
         <source>MTU</source>
-        <translation type="unfinished">MTU</translation>
+        <translation>MTU</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="71"/>
         <source>TTI</source>
-        <translation type="unfinished">TTI</translation>
+        <translation>TTI</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="73"/>
         <source>Uplink Capacity</source>
-        <translation type="unfinished">上行链路容量</translation>
+        <translation>上行链路容量</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="75"/>
         <source>Downlink Capacity</source>
-        <translation type="unfinished">下行链路容量</translation>
+        <translation>下行链路容量</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="77"/>
         <source>Read Buffer Size</source>
-        <translation type="unfinished">读取缓冲区大小</translation>
+        <translation>读取缓冲区大小</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="79"/>
         <source>Write Buffer Size</source>
-        <translation type="unfinished">写入缓冲区大小</translation>
+        <translation>写入缓冲区大小</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="81"/>
         <location filename="../serverconfighelper.cpp" line="96"/>
         <source>Packet Header</source>
-        <translation type="unfinished">数据包头</translation>
+        <translation>数据包头</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="84"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="87"/>
         <source>Path</source>
-        <translation type="unfinished">Path</translation>
+        <translation>Path</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="90"/>
         <source>Socket File Path</source>
-        <translation type="unfinished">Socket文件路径</translation>
+        <translation>Socket文件路径</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="94"/>
         <source>QUIC Security</source>
-        <translation type="unfinished">QUIC加密方式</translation>
+        <translation>QUIC加密方式</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="98"/>
         <source>QUIC Key</source>
-        <translation type="unfinished">QUIC 密钥</translation>
+        <translation>QUIC 密钥</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="307"/>
         <source>Password</source>
-        <translation type="unfinished">密码</translation>
+        <translation>密码</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="309"/>
         <source>The Shadowsocks plugins are currently not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Shadowsocks插件目前暂不支持。</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="413"/>
         <source>Unknown Server protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>未知的服务器协议</translation>
     </message>
 </context>
 <context>
     <name>Utility</name>
     <message>
-        <location filename="../utility.cpp" line="19"/>
-        <location filename="../utility.cpp" line="43"/>
+        <location filename="../utility.cpp" line="23"/>
+        <location filename="../utility.cpp" line="47"/>
         <source>Missing the value of &apos;%1&apos;.</source>
         <translation>缺失值：&apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="24"/>
-        <location filename="../utility.h" line="23"/>
+        <location filename="../utility.cpp" line="28"/>
+        <location filename="../utility.h" line="24"/>
         <source>The value of &apos;%1&apos; seems invalid.</source>
         <translation>&apos;%1&apos;的值似乎是无效的。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="26"/>
+        <location filename="../utility.cpp" line="30"/>
         <source>The value of &apos;%1&apos; should above %2.</source>
         <translation>&apos;%1&apos;的值应大于%2。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="29"/>
+        <location filename="../utility.cpp" line="33"/>
         <source>The value of &apos;%1&apos; should between %2 and %3.</source>
         <translation>&apos;%1&apos;的值应介于%2和%3之间。</translation>
+    </message>
+    <message>
+        <location filename="../utility.cpp" line="163"/>
+        <source>Failed to download the file %1.</source>
+        <translation>无法下载文件 %1。</translation>
+    </message>
+    <message>
+        <location filename="../utility.cpp" line="168"/>
+        <source>Failed to open file %1.</source>
+        <translation>无法打开文件 %1。</translation>
+    </message>
+    <message>
+        <location filename="../utility.cpp" line="174"/>
+        <source>Failed to unzip file %1.</source>
+        <translation>无法解压文件 %1。</translation>
+    </message>
+</context>
+<context>
+    <name>V2RayCore</name>
+    <message>
+        <location filename="../v2raycore.cpp" line="44"/>
+        <source>Not Installed</source>
+        <translation>未安装</translation>
+    </message>
+    <message>
+        <location filename="../v2raycore.cpp" line="51"/>
+        <source>Unknown</source>
+        <translation>未知</translation>
     </message>
 </context>
 <context>
@@ -401,18 +458,59 @@
         <translation>V2Ray Desktop版本</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="46"/>
-        <location filename="../ui/about.qml" line="72"/>
-        <source>Check for Updates</source>
+        <location filename="../ui/about.qml" line="48"/>
+        <location filename="../ui/about.qml" line="100"/>
+        <location filename="../ui/about.qml" line="191"/>
+        <location filename="../ui/about.qml" line="206"/>
+        <source>Check for updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="60"/>
+        <location filename="../ui/about.qml" line="58"/>
+        <location filename="../ui/about.qml" line="110"/>
+        <source>Checking updates ...</source>
+        <translation>检查更新中 …</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="66"/>
+        <location filename="../ui/about.qml" line="118"/>
+        <location filename="../ui/about.qml" line="222"/>
+        <location filename="../ui/about.qml" line="239"/>
+        <source>Upgrade</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="79"/>
+        <location filename="../ui/about.qml" line="131"/>
+        <source>Upgrading ...</source>
+        <translation>更新中 …</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="183"/>
+        <source>Already the latest verion</source>
+        <translation>已是最新版本</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="186"/>
+        <source>Newer verion available: </source>
+        <translation>新版本可用：</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="220"/>
+        <source>Upgrade completed. Please restart V2Ray-Desktop.</source>
+        <translation>更新完成，请重启V2Ray-Desktop。</translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <translation type="vanished">检查更新</translation>
+    </message>
+    <message>
+        <location filename="../ui/about.qml" line="86"/>
         <source>V2Ray Core Version</source>
         <translation>V2Ray Core版本</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="86"/>
+        <location filename="../ui/about.qml" line="138"/>
         <source>Project Page</source>
         <translation>项目主页</translation>
     </message>

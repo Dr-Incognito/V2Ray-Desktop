@@ -38,6 +38,8 @@ class Utility : public QObject {
                                   const QString &fileExtension,
                                   const QString &outputFolderPath,
                                   const QNetworkProxy *proxy);
+  static bool replaceV2RayCoreFiles(const QString &srcFolderPath,
+                                    const QString &dstFolderPath);
 };
 
 #endif  // UTILITY_H

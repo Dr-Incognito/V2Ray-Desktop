@@ -1,5 +1,8 @@
 #include "zipfile.h"
 
+#include <QDebug>
+#include <QDir>
+
 #include "3rdparty/quazip/quazip/quazip.h"
 #include "3rdparty/quazip/quazip/quazipfile.h"
 
@@ -31,12 +34,17 @@ bool ZipFile::unzipFile(QString zipFilePath, QString destFolder) {
     }
 
     name = QString("%1/%2").arg(destFolder).arg(file.getActualFileName());
+    if (!QDir(destFolder).exists()) {
+      if (!QDir(destFolder).mkpath(".")) {
+        qWarning() << QString("Failed to create folder: %1").arg(destFolder);
+        return false;
+      }
+    }
 
     if (file.getZipError() != UNZ_OK) {
       qWarning("testRead(): file.getFileName(): %d", file.getZipError());
       return false;
     }
-
     // out.setFileName("out/" + name);
     out.setFileName(name);
 
@@ -45,8 +53,9 @@ bool ZipFile::unzipFile(QString zipFilePath, QString destFolder) {
     // Slow like hell (on GNU/Linux at least), but it is not my fault.
     // Not ZIP/UNZIP package's fault either.
     // The slowest thing here is out.putChar(c).
-    while (file.getChar(&c)) out.putChar(c);
-
+    while (file.getChar(&c)) {
+      out.putChar(c);
+    }
     out.close();
 
     if (file.getZipError() != UNZ_OK) {
@@ -58,7 +67,6 @@ bool ZipFile::unzipFile(QString zipFilePath, QString destFolder) {
       qWarning("testRead(): read all but not EOF");
       return false;
     }
-
     file.close();
 
     if (file.getZipError() != UNZ_OK) {
@@ -66,13 +74,11 @@ bool ZipFile::unzipFile(QString zipFilePath, QString destFolder) {
       return false;
     }
   }
-
   zip.close();
 
   if (zip.getZipError() != UNZ_OK) {
     qWarning("testRead(): zip.close(): %d", zip.getZipError());
     return false;
   }
-
   return true;
 }
