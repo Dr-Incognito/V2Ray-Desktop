@@ -269,6 +269,10 @@ void AppProxy::setAutoStart(bool autoStart) {
       fileContent = srcFile.readAll();
       srcFile.close();
     }
+    QFileInfo dstFileInfo(dstFile);
+    if (!dstFileInfo.dir().exists()) {
+      dstFileInfo.dir().mkpath(".");
+    }
     if (dstFile.open(QIODevice::WriteOnly)) {
       dstFile.write(fileContent.arg(APP_PATH).toUtf8());
       dstFile.close();
@@ -712,7 +716,6 @@ void AppProxy::returnLatestRelease(QString name, QString version) {
   }
   latestVersion[name]["checkTime"]     = QDateTime::currentDateTime();
   latestVersion[name]["latestVersion"] = version;
-  qDebug() << version;
   emit latestReleaseReady(name, version);
 }
 
