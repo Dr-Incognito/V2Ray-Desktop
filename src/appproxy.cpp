@@ -76,9 +76,7 @@ void AppProxy::getAppVersion() {
 }
 
 void AppProxy::getV2RayCoreVersion() {
-  QJsonObject appConfig    = configurator.getAppConfig();
-  QString v2RayCoreVersion = appConfig["v2rayCoreVersion"].toString();
-  emit v2RayCoreVersionReady(v2RayCoreVersion);
+  emit v2RayCoreVersionReady(QString("v%1").arg(v2ray.getVersion()));
 }
 
 void AppProxy::getOperatingSystem() {
@@ -222,7 +220,7 @@ bool AppProxy::retranslate(QString language) {
 void AppProxy::setAutoStart(bool autoStart) {
   const QString APP_NAME = "V2Ray Desktop";
   const QString APP_PATH =
-    QDir::toNativeSeparators(QGuiApplication::applicationFilePath());
+    QDir::toNativeSeparators(Configurator::getAppFilePath());
 #if defined(Q_OS_WIN)
   QSettings settings(
     "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",

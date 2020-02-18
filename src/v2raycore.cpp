@@ -40,6 +40,22 @@ V2RayCore::~V2RayCore() {
   delete v2rayProcess;
 }
 
+QString V2RayCore::getVersion() {
+  if (!isInstalled()) {
+    return tr("Not Installed");
+  }
+  QProcess _v2rayProcess;
+  _v2rayProcess.start(v2RayExecFilePath, {"-version"});
+  _v2rayProcess.waitForFinished();
+  QString v2RayVersion = _v2rayProcess.readAllStandardOutput();
+  if (v2RayVersion.isEmpty()) {
+    return tr("Unknown");
+  }
+  int sIndex = v2RayVersion.indexOf(' ');
+  int pIndex = v2RayVersion.indexOf('(');
+  return v2RayVersion.mid(sIndex + 1, pIndex - sIndex - 1);
+}
+
 bool V2RayCore::start() {
   if (!isInstalled()) {
     return false;
@@ -82,10 +98,17 @@ bool V2RayCore::isRunning() {
   return v2rayProcess->state() == QProcess::Running;
 }
 
+bool V2RayCore::isUpgradable() {
+  return V2RAY_USE_LOCAL_INSTALL;
+}
+
 bool V2RayCore::isInstalled() { return QFile(v2RayExecFilePath).exists(); }
 
 bool V2RayCore::install() {
   QString latestVersion = getLatestVersion();
+  if (latestVersion.isEmpty()) {
+    return false;
+  }
 #if defined(Q_OS_WIN)
   QString operatingSystem = "windows-64";
 #elif defined(Q_OS_LINUX)
@@ -119,11 +142,6 @@ bool V2RayCore::install() {
     .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
                     QFileDevice::ExeUser);
 
-  // Save current V2Ray version to config.json
-  Configurator& configurator(Configurator::getInstance());
-  QJsonObject v2RayVersionConfig{{"v2rayCoreVersion", latestVersion}};
-  configurator.setAppConfig(v2RayVersionConfig);
-
   return true;
 }
 
@@ -144,11 +162,6 @@ QString V2RayCore::getLatestVersion() {
   QByteArray releaseJsonStr =
     NetworkRequest::getNetworkResponse(V2RAY_RELEASES_URL);
   QJsonObject latestRelease;
-
-  if (!releaseJsonStr.size()) {
-    return DEFAULT_V2RAY_CORE_VERSION;
-  }
-
   QJsonDocument releaseJsonDoc = QJsonDocument::fromJson(releaseJsonStr);
   QJsonArray releases          = releaseJsonDoc.array();
   for (int i = 0; i < releases.size(); ++i) {
@@ -158,6 +171,5 @@ QString V2RayCore::getLatestVersion() {
       break;
     }
   }
-  return latestRelease.empty() ? DEFAULT_V2RAY_CORE_VERSION
-                               : latestRelease["name"].toString();
+  return latestRelease.empty() ? "" : latestRelease["name"].toString();
 }
