@@ -3,6 +3,7 @@
 
 #include <QJsonObject>
 #include <QList>
+#include <QNetworkProxy>
 #include <QObject>
 #include <QString>
 
@@ -27,6 +28,16 @@ class Utility : public QObject {
   static bool isUrlValid(const QString &url);
   static bool isFileExists(const QString &filePath);
   static bool isServerNameNotUsed(const QString &serverName);
+  static QString getLatestRelease(const QString &releaseUrl,
+                                  const QNetworkProxy *proxy);
+  static bool isVersionNewer(const QString &currentVersion,
+                             const QString &version);
+  static QList<int> getVersion(QString version);
+  static QString getReleaseAssets(const QString &assetsUrl,
+                                  const QString &fileName,
+                                  const QString &fileExtension,
+                                  const QString &outputFolderPath,
+                                  const QNetworkProxy *proxy);
 };
 
 #endif  // UTILITY_H

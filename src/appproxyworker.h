@@ -20,6 +20,11 @@ class AppProxyWorker : public QObject {
   void getUrlAccessibility(QMap<QString, bool> urls, QNetworkProxy proxy);
   void getSubscriptionServers(QString url, QNetworkProxy proxy);
   void getLogs(QString appLogFilePath, QString v2RayLogFilePath);
+  void getLatestRelease(QString name, QString releaseUrl, QNetworkProxy proxy);
+  void upgradeDependency(QString name,
+                         QString assetsUrl,
+                         QString outputFolderPath,
+                         QNetworkProxy proxy);
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
@@ -28,6 +33,8 @@ class AppProxyWorker : public QObject {
   void subscriptionServersReady(QString subscriptionServers,
                                 QString subscriptionUrl);
   void logsReady(QString logs);
+  void latestReleaseReady(QString name, QString version);
+  void upgradeFinished(QString name, QString outputFilePath, QString errorMsg);
 
  private:
   QString getServerAddr(QJsonObject server);

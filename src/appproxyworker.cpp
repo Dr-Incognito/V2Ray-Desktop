@@ -2,9 +2,11 @@
 #include "networkrequest.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 
 #include "constants.h"
+#include "utility.h"
 
 AppProxyWorker::AppProxyWorker(QObject* parent) : QObject(parent) {}
 
@@ -101,4 +103,27 @@ void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
   std::reverse(logs.begin(), logs.end());
 
   emit logsReady(logs.join('\n'));
+}
+
+void AppProxyWorker::getLatestRelease(QString name,
+                                      QString releaseUrl,
+                                      QNetworkProxy proxy) {
+  QNetworkProxy* p =
+    proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
+  QString latestRelease = Utility::getLatestRelease(releaseUrl, p);
+
+  emit latestReleaseReady(name, latestRelease);
+}
+
+void AppProxyWorker::upgradeDependency(QString name,
+                                       QString assetsUrl,
+                                       QString outputFolderPath,
+                                       QNetworkProxy proxy) {
+  QString fileName      = assetsUrl.mid(assetsUrl.lastIndexOf('/') + 1);
+  QString fileExtension = fileName.mid(fileName.lastIndexOf('.'));
+  QNetworkProxy* p =
+    proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
+  QString errorMsg = Utility::getReleaseAssets(
+    assetsUrl, fileName, fileExtension, outputFolderPath, p);
+  emit upgradeFinished(name, outputFolderPath, errorMsg);
 }

@@ -4,10 +4,14 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QJsonDocument>
 #include <QList>
 #include <QRegularExpression>
 
 #include "configurator.h"
+#include "constants.h"
+#include "networkrequest.h"
+#include "zipfile.h"
 
 QString Utility::getNumericConfigError(const QJsonObject& config,
                                        const QString& key,
@@ -103,4 +107,71 @@ bool Utility::isServerNameNotUsed(const QString& serverName) {
     }
   }
   return true;
+}
+
+QString Utility::getLatestRelease(const QString& releaseUrl,
+                                  const QNetworkProxy* proxy) {
+  QByteArray releaseJsonStr =
+    NetworkRequest::getNetworkResponse(releaseUrl, proxy, HTTP_GET_TIMEOUT);
+  QJsonObject latestRelease;
+  QJsonDocument releaseJsonDoc = QJsonDocument::fromJson(releaseJsonStr);
+  QJsonArray releases          = releaseJsonDoc.array();
+  for (int i = 0; i < releases.size(); ++i) {
+    QJsonObject release = releases[i].toObject();
+    if (release.contains("prerelease") && !release["prerelease"].toBool()) {
+      latestRelease = release;
+      break;
+    }
+  }
+  return latestRelease.empty() ? "" : latestRelease["name"].toString();
+}
+
+bool Utility::isVersionNewer(const QString& currentVersion,
+                             const QString& version) {
+  QList<int> _currentVersion = getVersion(currentVersion);
+  QList<int> _version        = getVersion(version);
+
+  for (int i = 0; i < _version.size() && i < _currentVersion.size(); ++i) {
+    if (_version.at(i) > _currentVersion.at(i)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+QList<int> Utility::getVersion(QString version) {
+  QList<int> _version;
+  if (version.startsWith('v') || version.startsWith('v')) {
+    version = version.mid(1);
+  }
+  for (QString v : version.split('.')) {
+    _version.append(v.toInt());
+  }
+  return _version;
+}
+
+QString Utility::getReleaseAssets(const QString& assetsUrl,
+                                  const QString& fileName,
+                                  const QString& fileExtension,
+                                  const QString& outputFolderPath,
+                                  const QNetworkProxy* proxy) {
+  QByteArray assetsBytes = NetworkRequest::getNetworkResponse(assetsUrl, proxy);
+  QString assetsFilePath = QDir(Configurator::getAppTempDir())
+                             .filePath(QString("Upgrade-%1").arg(fileName));
+
+  if (assetsBytes.size() == 0) {
+    return QString(tr("Failed to download the file %1.")).arg(fileName);
+  }
+  QFile assetsFile(assetsFilePath);
+  if (!assetsFile.open(QIODevice::WriteOnly)) {
+    assetsFile.remove();
+    return QString(tr("Failed to open file %1.")).arg(fileName);
+  }
+  assetsFile.write(assetsBytes);
+  assetsFile.close();
+
+  if (fileExtension.endsWith(".zip")) {
+    ZipFile::unzipFile(assetsFilePath, outputFolderPath);
+  }
+  return "";
 }

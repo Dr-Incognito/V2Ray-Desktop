@@ -10,8 +10,8 @@ class NetworkRequest : public QObject {
  public:
   NetworkRequest();
   static QByteArray getNetworkResponse(QString url,
-                                       QNetworkProxy* proxy = nullptr,
-                                       int timeout          = 0);
+                                       const QNetworkProxy* proxy = nullptr,
+                                       int timeout                = 0);
   static int getLatency(QString host, int port);
 };
 
