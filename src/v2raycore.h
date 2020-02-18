@@ -11,16 +11,18 @@ class V2RayCore : public QObject {
   V2RayCore(V2RayCore const&) = delete;
   void operator=(V2RayCore const&) = delete;
   ~V2RayCore();
+  QString getVersion();
+  bool isRunning();
+  bool isUpgradable();
   bool start();
   bool stop();
   bool restart();
-  bool isRunning();
-  bool isInstalled();
+  bool upgrade();
 
  private:
   V2RayCore();
   bool install();
-  bool upgrade();
+  bool isInstalled();
   QString getLatestVersion();
   QProcess* v2rayProcess;
   QString v2RayExecFilePath;

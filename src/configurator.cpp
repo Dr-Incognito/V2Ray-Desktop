@@ -3,8 +3,10 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
+#include <QGuiApplication>
 #include <QJsonDocument>
 #include <QLocale>
+#include <QProcessEnvironment>
 #include <QStandardPaths>
 
 #include "constants.h"
@@ -22,9 +24,7 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"dns", DEFAULT_DNS_SERVER},
   {"proxyMode", DEFAULT_PROXY_MODE},
   {"gfwListUrl", DEFAULT_GFW_LIST_URL},
-  {"gfwListLastUpdated", "Never"},
-  {"v2rayCoreVersion", DEFAULT_V2RAY_CORE_VERSION},
-};
+  {"gfwListLastUpdated", "Never"}};
 
 QString Configurator::getDefaultLanguage() {
   const static QMap<QLocale::Language, QString> LANGUAGES{
@@ -52,18 +52,6 @@ Configurator &Configurator::getInstance() {
   return configuratorInstance;
 }
 
-QString Configurator::getV2RayInstallDirPath() {
-  if (QDir(V2RAY_CORE_INSTALL_DIR).exists()) {
-    return V2RAY_CORE_INSTALL_DIR;
-  }
-  return QDir(QCoreApplication::applicationDirPath())
-    .filePath(V2RAY_CORE_INSTALL_DIR);
-}
-
-QString Configurator::getLocaleDirPath() {
-  return QDir(QCoreApplication::applicationDirPath()).filePath(LOCALE_DIR);
-}
-
 QDir Configurator::getAppConfigDir() {
   QDir appConfigDir =
     QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
@@ -72,6 +60,33 @@ QDir Configurator::getAppConfigDir() {
     appConfigDir.mkpath(".");
   }
   return appConfigDir;
+}
+
+QString Configurator::getV2RayInstallDirPath() {
+  if (!V2RAY_USE_LOCAL_INSTALL) {
+    return V2RAY_SYS_INSTALL_DIR;
+  }
+  return QDir(QCoreApplication::applicationDirPath())
+    .filePath(V2RAY_LOCAL_INSTALL_DIR);
+}
+
+QString Configurator::getLocaleDirPath() {
+  return QDir(QCoreApplication::applicationDirPath()).filePath(LOCALE_DIR);
+}
+
+
+QString Configurator::getAppFilePath() {
+  if (QProcessEnvironment::systemEnvironment().contains("APPIMAGE")) {
+    return QProcessEnvironment::systemEnvironment().value("APPIMAGE");
+  }
+  return QGuiApplication::applicationFilePath();
+}
+
+QString Configurator::getAppWorkingDirPath() {
+  if (QProcessEnvironment::systemEnvironment().contains("OWD")) {
+    return QProcessEnvironment::systemEnvironment().value("OWD");
+  }
+  return QCoreApplication::applicationDirPath();
 }
 
 QString Configurator::getAppLogFilePath() {

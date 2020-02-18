@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import com.v2ray.desktop.AppProxy 1.4
+import com.v2ray.desktop.AppProxy 1.5
 
 ColumnLayout {
     id: layoutDashboard
@@ -104,7 +104,7 @@ ColumnLayout {
     }
 
     Timer {
-        interval: 3000
+        interval: 6000
         running: true
         repeat: true
         onTriggered: function() {

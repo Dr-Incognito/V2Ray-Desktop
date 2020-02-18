@@ -13,6 +13,8 @@ class Configurator : public QObject {
   Configurator(Configurator const&) = delete;
   void operator=(Configurator const&) = delete;
   static QDir getAppConfigDir();
+  static QString getAppFilePath();
+  static QString getAppWorkingDirPath();
   static QString getV2RayInstallDirPath();
   static QString getLocaleDirPath();
   static QString getAppLogFilePath();
