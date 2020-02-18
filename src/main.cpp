@@ -21,6 +21,11 @@ void messageHandler(QtMsgType msgType,
                     const QMessageLogContext &context,
                     const QString &msg) {
   Q_UNUSED(context);
+  static QString lastMsg;
+  if (lastMsg == msg) {
+    return;
+  }
+  lastMsg = msg;
 
   QString dt = QDateTime::currentDateTime().toString("yyyy/MM/dd hh:mm:ss");
   QString logMessage("%1 %2 v2ray-desktop: %3");
@@ -60,7 +65,8 @@ int main(int argc, char *argv[]) {
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Icon::Critical);
     msgBox.setText(
-      QString("There is another %1 instance running!\n").arg(APP_NAME));
+      QString(QObject::tr("There is another %1 instance running!\n"))
+        .arg(APP_NAME));
     msgBox.exec();
     return 127;
   }

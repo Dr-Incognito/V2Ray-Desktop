@@ -169,9 +169,33 @@ QString Utility::getReleaseAssets(const QString& assetsUrl,
   }
   assetsFile.write(assetsBytes);
   assetsFile.close();
-
   if (fileExtension.endsWith(".zip")) {
-    ZipFile::unzipFile(assetsFilePath, outputFolderPath);
+    if (!ZipFile::unzipFile(assetsFilePath, outputFolderPath)) {
+      return QString(tr("Failed to unzip file %1.")).arg(fileName);
+    }
   }
   return "";
+}
+
+bool Utility::replaceV2RayCoreFiles(const QString& srcFolderPath,
+                                    const QString& dstFolderPath) {
+#if defined(Q_OS_WIN)
+  QString v2RayExecFilePath    = QDir(dstFolderPath).filePath("v2ray.exe");
+  QString v2RayCtlExecFilePath = QDir(dstFolderPath).filePath("v2ctl.exe");
+#elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
+  QString v2RayExecFilePath    = QDir(dstFolderPath).filePath("v2ray");
+  QString v2RayCtlExecFilePath = QDir(dstFolderPath).filePath("v2ctl");
+#endif
+  QFile(v2RayExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
+  QFile(v2RayCtlExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
+
+  QDir srcFolder(srcFolderPath);
+  if (srcFolder.exists() && !srcFolder.removeRecursively()) {
+    return false;
+  }
+  return QDir().rename(dstFolderPath, srcFolderPath);
 }

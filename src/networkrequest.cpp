@@ -41,7 +41,7 @@ QByteArray NetworkRequest::getNetworkResponse(QString url,
   eventLoop.exec();
 
   // Timeout handler
-  if (!timer.isActive()) {
+  if (timeout > 0 && !timer.isActive()) {
     disconnect(networkReply, &QNetworkReply::finished, &eventLoop,
                &QEventLoop::quit);
     networkReply->abort();
