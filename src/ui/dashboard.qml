@@ -108,7 +108,9 @@ ColumnLayout {
         running: true
         repeat: true
         onTriggered: function() {
-            AppProxy.getNetworkStatus()
+            if (appWindow.visible) {
+                AppProxy.getNetworkStatus()
+            }
         }
     }
 
