@@ -110,16 +110,6 @@ ColumnLayout {
         onTriggered: function() {
             if (appWindow.visible) {
                 AppProxy.getNetworkStatus()
-            }
-        }
-    }
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: function() {
-            if (appWindow.visible) {
                 AppProxy.getProxySettings()
             }
         }
