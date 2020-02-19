@@ -104,7 +104,7 @@ ColumnLayout {
     }
 
     Timer {
-        interval: 6000
+        interval: 5000
         running: true
         repeat: true
         onTriggered: function() {
@@ -119,7 +119,9 @@ ColumnLayout {
         running: true
         repeat: true
         onTriggered: function() {
-            AppProxy.getProxySettings()
+            if (appWindow.visible) {
+                AppProxy.getProxySettings()
+            }
         }
     }
 
