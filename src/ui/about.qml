@@ -76,9 +76,9 @@ ColumnLayout {
                 radius: 4
             }
             onClicked: function() {
-                buttonAppUpgrade.text = qsTr("Upgrading ...")
-                buttonAppUpgrade.enabled = false
-                AppProxy.upgradeDependency("v2ray-desktop", buttonAppUpgrade.value)
+                Qt.openUrlExternally(
+                    "https://github.com/Dr-Incognito/V2Ray-Desktop/releases/tag/" +
+                    buttonAppUpgrade.value.substr(1))
             }
         }
 

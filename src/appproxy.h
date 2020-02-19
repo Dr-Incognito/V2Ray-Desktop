@@ -122,6 +122,8 @@ class AppProxy : public QObject {
   QNetworkProxy getQProxy();
   void setAutoStart(bool autoStart);
   QStringList getAppConfigErrors(const QJsonObject& appConfig);
+  bool replaceV2RayCoreFiles(const QString& srcFolderPath,
+                             const QString& dstFolderPath);
 };
 
 #endif  // APPPROXY_H
