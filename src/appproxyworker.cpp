@@ -60,7 +60,7 @@ void AppProxyWorker::getUrlAccessibility(QMap<QString, bool> urls,
     bool useProxy       = l.second;
     QNetworkProxy* p    = useProxy ? &proxy : nullptr;
     QByteArray response = NetworkRequest::getNetworkResponse(
-      QString("https://www.%1").arg(url), p, HTTP_GET_TIMEOUT);
+      QString("http://www.%1").arg(url), p, HTTP_GET_TIMEOUT);
     accessible[url] = response.size() > 0;
   }
   emit urlAccessibilityReady(accessible);
