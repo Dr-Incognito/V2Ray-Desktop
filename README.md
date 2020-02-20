@@ -20,9 +20,7 @@ You can get the latest release at [Releases Page](https://github.com/Dr-Incognit
 
 For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
 
-**Notes:** 
-- The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.     
-- You need Qt >= 5.14 to compile the source code.
+**Note:** The AppImage for Linux is built in Ubuntu 16.04.5. Linux with GLIBC (Version < 2.23) may have problems using this AppImage. Please consider building it from source with Qt >= 5.14.
 
 ## Features
 
