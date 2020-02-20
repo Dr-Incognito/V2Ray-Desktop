@@ -18,9 +18,10 @@ before_install:
     sudo ln -s `which clang-format-9` /usr/bin/clang-format;
   fi
 
-# Remove the retranslate() API because it is not supported below Qt 5.10
+# Remove the quickcontrols2 and retranslate() because it is not supported in Qt 5.9
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sed -i "/QQmlEngine::contextForObject/d" src/appproxy.cpp;
+    sed -i "s/quickcontrols2//" src/V2Ray-Desktop.pro;
   fi
 
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
