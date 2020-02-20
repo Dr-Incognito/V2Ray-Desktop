@@ -52,13 +52,15 @@ void messageHandler(QtMsgType msgType,
 int main(int argc, char *argv[]) {
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
-  QApplication::setApplicationName(APP_NAME);
-  QApplication::setApplicationVersion(
-    QString("v%1.%2.%3")
-      .arg(QString::number(APP_VERSION_MAJOR),
-           QString::number(APP_VERSION_MINOR),
-           QString::number(APP_VERSION_PATCH)));
-  QApplication::setWindowIcon(QIcon(":/images/v2ray.ico"));
+  app.setApplicationName(APP_NAME);
+  app.setApplicationVersion(QString("v%1.%2.%3")
+                              .arg(QString::number(APP_VERSION_MAJOR),
+                                   QString::number(APP_VERSION_MINOR),
+                                   QString::number(APP_VERSION_PATCH)));
+  app.setWindowIcon(QIcon(":/images/v2ray.ico"));
+  app.setOrganizationName("V2Ray");
+  app.setOrganizationDomain("v2ray.com");
+
   // Make sure there is no other instance running
   RunGuard runGuard(APP_NAME);
   if (!runGuard.tryToRun()) {
