@@ -779,12 +779,13 @@ void AppProxy::replaceDependency(QString name,
   if (errorMsg.isEmpty()) {
     if (name == "v2ray-core") {
       v2ray.stop();
-      if (!Utility::replaceV2RayCoreFiles(
-            Configurator::getV2RayInstallDirPath(), outputFilePath)) {
+      if (!replaceV2RayCoreFiles(Configurator::getV2RayInstallDirPath(),
+                                 outputFilePath)) {
         errorMsg = tr("Failed to replace V2Ray Core files.");
       }
       v2ray.start();
     } else if (name == "v2ray-desktop") {
+      // TODO: Upgrade the app itself with an external upgrader
     }
   }
   if (!errorMsg.isEmpty()) {
@@ -792,4 +793,28 @@ void AppProxy::replaceDependency(QString name,
   } else {
     emit upgradeCompleted(name);
   }
+}
+
+bool AppProxy::replaceV2RayCoreFiles(const QString& srcFolderPath,
+                                     const QString& dstFolderPath) {
+#if defined(Q_OS_WIN)
+  QString v2RayExecFilePath    = QDir(dstFolderPath).filePath("v2ray.exe");
+  QString v2RayCtlExecFilePath = QDir(dstFolderPath).filePath("v2ctl.exe");
+#elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
+  QString v2RayExecFilePath    = QDir(dstFolderPath).filePath("v2ray");
+  QString v2RayCtlExecFilePath = QDir(dstFolderPath).filePath("v2ctl");
+#endif
+  QFile(v2RayExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
+  QFile(v2RayCtlExecFilePath)
+    .setPermissions(QFileDevice::ReadUser | QFileDevice::WriteOwner |
+                    QFileDevice::ExeUser);
+
+  QDir srcFolder(srcFolderPath);
+  if (srcFolder.exists() && !srcFolder.removeRecursively()) {
+    // TODO: fallback if errors occurred
+    return false;
+  }
+  return QDir().rename(dstFolderPath, srcFolderPath);
 }

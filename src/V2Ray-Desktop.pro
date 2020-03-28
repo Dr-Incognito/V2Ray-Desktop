@@ -1,4 +1,4 @@
-QT += quick widgets svg
+QT += quick quickcontrols2 widgets svg
 
 CONFIG += c++11
 

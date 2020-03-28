@@ -4,10 +4,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/0t07jpv22tf7xpn9?svg=true)](https://ci.appveyor.com/project/Dr-Incognito/V2Ray-Desktop)
 [![LGTM grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/context:cpp)
 [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/alerts/)
-![Downloads Count](https://get-badge.herokuapp.com/Dr-Incognito/V2Ray-Desktop/total)
-
-**Note:** The issues for this project is **temporarily closed** because it is still under development.
-If you want to contribute to this project, please open a pull request.
 
 ## Introduction
 
@@ -18,11 +14,11 @@ Compared to [V2Ray](http://v2ray.com/), V2Ray Desktop provides more advanced fea
 
 You can get the latest release at [Releases Page](https://github.com/Dr-Incognito/V2Ray-Desktop/releases). If you are using Arch Linux, you can install it from [AUR](https://aur.archlinux.org/packages/v2ray-desktop/).
 
-For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
-
 **Notes:** 
-- The AppImage for Linux is built in Ubuntu 18.04. Linux with GLIBC (Version < 2.27) may have problems using this AppImage. Please consider building it from source.     
-- You need Qt >= 5.14 to compile the source code.
+- Some functions (*e.g.,* server subscription) in the prebuilt binary packages require OpenSSL >= 1.1.0. If you are using Windows or Ubuntu<=18.04, please install OpenSSL manually. You can refer to [Installation Guide](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki/Installation) ([安装指南](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki/安装指南)) in the Wiki page for the detailed information.
+- The AppImage for Linux is built in Ubuntu 16.04. Linux with GLIBC< 2.23 (*e.g.,* Ubuntu<=16.04) may have problems using this AppImage. Please consider building it from source with Qt >= 5.14.
+
+For more information, please visit the [project's Wiki page](https://github.com/Dr-Incognito/V2Ray-Desktop/wiki).
 
 ## Features
 
