@@ -86,6 +86,7 @@ class AppProxy : public QObject {
   void addShadowsocksServer(QString configString);
   void addServerConfigFile(QString configFilePath, QString configFileType);
   void editServer(QString serverName, QString protocol, QString configString);
+  void addServerUrl(QString serverUrl);
   void addSubscriptionUrl(QString subsriptionUrl);
   void updateSubscriptionServers(QString subsriptionUrl = "");
   void removeServer(QString serverName);

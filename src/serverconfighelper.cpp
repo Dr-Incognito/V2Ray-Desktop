@@ -258,6 +258,12 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
   QString serverAddr =
     rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : "";
+  int alterId = rawServerConfig.contains("aid")
+                  ? (rawServerConfig["aid"].isString()
+                       ? rawServerConfig["aid"].toString().toInt()
+                       : rawServerConfig["aid"].toInt())
+                  : 0;
+
   QJsonObject serverConfig{
     {"autoConnect", false},
     {"serverName", rawServerConfig.contains("ps")
@@ -270,8 +276,7 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"subscription", subscriptionUrl},
     {"id",
      rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
-    {"alterId",
-     rawServerConfig.contains("aid") ? rawServerConfig["aid"].toString() : 0},
+    {"alterId", alterId},
     {"mux", -1},
     {"security", "auto"},
     {"network",
@@ -286,6 +291,9 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
                         ? rawServerConfig["type"].toString()
                         : ""},
     {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
+
+  qDebug() << rawServerConfig;
+  qDebug() << serverConfig;
   return serverConfig;
 }
 

@@ -1117,7 +1117,7 @@ ColumnLayout {
                         id: textSubsriptionUrl
                         color: "white"
                         Layout.fillWidth: true
-                        placeholderText: qsTr("Example: https://url/to/subscription")
+                        placeholderText: qsTr("Example: https://url/to/subscription or vmess://abcdefg")
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1137,7 +1137,7 @@ ColumnLayout {
                         }
                         onClicked: function() {
                             buttonSubscriptionAddServer.enabled = false
-                            AppProxy.addSubscriptionUrl(textSubsriptionUrl.text)
+                            AppProxy.addServerUrl(textSubsriptionUrl.text)
                         }
                     }
                 }
