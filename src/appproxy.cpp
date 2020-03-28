@@ -479,6 +479,14 @@ void AppProxy::addShadowsocksServer(QString configString) {
                     serverConfig["serverAddr"].toString());
 }
 
+void AppProxy::addServerUrl(QString serverUrl) {
+  if (serverUrl.startsWith("vmess://") || serverUrl.startsWith("ss://")) {
+    addSubscriptionServers(serverUrl);
+  } else {
+    addSubscriptionUrl(serverUrl);
+  }
+}
+
 void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
   QString error = Utility::getStringConfigError(
     {{"subsriptionUrl", subsriptionUrl}}, "subsriptionUrl",
@@ -494,8 +502,10 @@ void AppProxy::addSubscriptionUrl(QString subsriptionUrl) {
 void AppProxy::updateSubscriptionServers(QString subsriptionUrl) {
   QStringList subscriptionUrls;
   if (subsriptionUrl.isEmpty()) {
+    // Sync servers from subscription
     subscriptionUrls = configurator.getSubscriptionUrls();
   } else {
+    // Add a new server subscription
     subscriptionUrls.append(subsriptionUrl);
   }
   for (QString su : subscriptionUrls) {

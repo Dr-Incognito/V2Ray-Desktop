@@ -43,42 +43,42 @@
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="505"/>
+        <location filename="../appproxy.cpp" line="519"/>
         <source>Failed to get subscription servers from URLs.</source>
         <translation>无法从指定的URL获取订阅服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="550"/>
+        <location filename="../appproxy.cpp" line="564"/>
         <source>No supported servers added from the URL.</source>
         <translation>未能从该URL中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="558"/>
+        <location filename="../appproxy.cpp" line="572"/>
         <source>The config file does not exist.</source>
         <translation>配置文件不存在。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="600"/>
+        <location filename="../appproxy.cpp" line="614"/>
         <source>No supported servers added from the config file.</source>
         <translation>未能从该配置文件中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="706"/>
+        <location filename="../appproxy.cpp" line="720"/>
         <source>Failed to check updates</source>
         <translation>检查更新失败</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="721"/>
+        <location filename="../appproxy.cpp" line="734"/>
         <source>Please upgrade from the package manager</source>
         <translation>请使用包管理器更新</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="726"/>
+        <location filename="../appproxy.cpp" line="739"/>
         <source>The V2Ray Core in AppImage is not upgradable.</source>
         <translation>无法更新AppImage中的V2Ray Core。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="771"/>
+        <location filename="../appproxy.cpp" line="784"/>
         <source>Failed to replace V2Ray Core files.</source>
         <translation>无法替换V2Ray Core的文件。</translation>
     </message>
@@ -87,7 +87,7 @@
         <translation type="vanished">缺失值：&apos;DNS服务器&apos;。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="355"/>
+        <location filename="../appproxy.cpp" line="359"/>
         <source>GFW List URL</source>
         <translation>GFW List URL</translation>
     </message>
@@ -196,12 +196,12 @@
         <translation type="vanished">密码</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="481"/>
+        <location filename="../appproxy.cpp" line="493"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="382"/>
+        <location filename="../appproxy.cpp" line="386"/>
         <source>Failed to update GFW List.</source>
         <translation>更新GFW List失败。</translation>
     </message>
@@ -274,13 +274,13 @@
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="37"/>
-        <location filename="../serverconfighelper.cpp" line="297"/>
+        <location filename="../serverconfighelper.cpp" line="305"/>
         <source>Server Address</source>
         <translation>服务器地址</translation>
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="43"/>
-        <location filename="../serverconfighelper.cpp" line="303"/>
+        <location filename="../serverconfighelper.cpp" line="311"/>
         <source>Server Port</source>
         <translation>服务器端口</translation>
     </message>
@@ -296,7 +296,7 @@
     </message>
     <message>
         <location filename="../serverconfighelper.cpp" line="48"/>
-        <location filename="../serverconfighelper.cpp" line="305"/>
+        <location filename="../serverconfighelper.cpp" line="313"/>
         <source>Security</source>
         <translation>加密方式</translation>
     </message>
@@ -377,17 +377,17 @@
         <translation>QUIC 密钥</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="307"/>
+        <location filename="../serverconfighelper.cpp" line="315"/>
         <source>Password</source>
         <translation>密码</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="309"/>
+        <location filename="../serverconfighelper.cpp" line="317"/>
         <source>The Shadowsocks plugins are currently not supported.</source>
         <translation>Shadowsocks插件目前暂不支持。</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="413"/>
+        <location filename="../serverconfighelper.cpp" line="421"/>
         <source>Unknown Server protocol</source>
         <translation>未知的服务器协议</translation>
     </message>
@@ -557,53 +557,53 @@
         <translation>V2Ray Core版本</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="142"/>
+        <location filename="../ui/dashboard.qml" line="144"/>
         <source>Everything works fine.
 You can access the free Internet.</source>
         <translation>所有功能都已正常工作。
 您可以自由地访问互联网了。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="144"/>
+        <location filename="../ui/dashboard.qml" line="146"/>
         <source>Please check your proxy settings.</source>
         <translation>请检查您的代理设置。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="146"/>
+        <location filename="../ui/dashboard.qml" line="148"/>
         <source>You&apos;re offline.
 Please check the network connection.</source>
         <translation>您已离线。
 请检查您的网络连接。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="153"/>
+        <location filename="../ui/dashboard.qml" line="155"/>
         <source>System Proxy: </source>
         <translation>系统代理：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="154"/>
+        <location filename="../ui/dashboard.qml" line="156"/>
         <source>PAC Server: </source>
         <translation>PAC服务器：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="154"/>
-        <location filename="../ui/dashboard.qml" line="155"/>
+        <location filename="../ui/dashboard.qml" line="156"/>
+        <location filename="../ui/dashboard.qml" line="157"/>
         <source>Running</source>
         <translation>正在运行</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="154"/>
-        <location filename="../ui/dashboard.qml" line="155"/>
+        <location filename="../ui/dashboard.qml" line="156"/>
+        <location filename="../ui/dashboard.qml" line="157"/>
         <source>Not running</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="155"/>
+        <location filename="../ui/dashboard.qml" line="157"/>
         <source>V2Ray Core: </source>
         <translation>V2Ray Core：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="157"/>
+        <location filename="../ui/dashboard.qml" line="159"/>
         <source>Connected Servers: </source>
         <translation>已连接的服务器：</translation>
     </message>
@@ -783,6 +783,12 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="1256"/>
         <source>Server Subscriptions</source>
         <translation>服务器订阅</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="1120"/>
+        <source>Example: https://url/to/subscription or vmess://abcdefg</source>
+        <translation type="vanished"></translation>
+        <translation>例如：https://url/to/subscription 或 vmess://abcdefg</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="1271"/>
@@ -1124,11 +1130,6 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="1058"/>
         <source>Password</source>
         <translation>密码</translation>
-    </message>
-    <message>
-        <location filename="../ui/servers.qml" line="1120"/>
-        <source>Example: https://url/to/subscription</source>
-        <translation>例如：https://url/to/subscription</translation>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="1129"/>
