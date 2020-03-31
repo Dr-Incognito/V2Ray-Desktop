@@ -21,6 +21,7 @@ class Utility : public QObject {
     const QString &key,
     const QString &name,
     const QList<std::function<bool(const QString &)>> &checkpoints = {},
+    bool allowEmpty                                                = false,
     const QString &notPassedMsg = tr("The value of '%1' seems invalid."));
   static bool isIpAddrValid(const QString &ipAddr);
   static bool isIpAddrListValid(const QString &ipAddrList);
@@ -28,6 +29,8 @@ class Utility : public QObject {
   static bool isUrlValid(const QString &url);
   static bool isFileExists(const QString &filePath);
   static bool isServerNameNotUsed(const QString &serverName);
+  static QStringList getAlpn(const QString &alpn);
+  static bool isAlpnValid(const QString &alpn);
   static QString getLatestRelease(const QString &releaseUrl,
                                   const QNetworkProxy *proxy);
   static bool isVersionNewer(const QString &currentVersion,

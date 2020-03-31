@@ -82,8 +82,7 @@ class AppProxy : public QObject {
   void getServer(QString serverName, bool forDuplicate = false);
   void getServerLatency(QString serverName = "");
   void setServerConnection(QString serverName, bool connected);
-  void addV2RayServer(QString configString);
-  void addShadowsocksServer(QString configString);
+  void addServer(QString protocol, QString configString);
   void addServerConfigFile(QString configFilePath, QString configFileType);
   void editServer(QString serverName, QString protocol, QString configString);
   void addServerUrl(QString serverUrl);

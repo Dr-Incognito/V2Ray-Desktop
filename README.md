@@ -23,10 +23,10 @@ For more information, please visit the [project's Wiki page](https://github.com/
 ## Features
 
 - Support Windows, Linux, and macOS.
-- Support both Shadowsocks (without plugins) and V2Ray servers.
+- Support both Shadowsocks, V2Ray, and Trojan servers.
 - Support connecting to multiple servers.
 - Support adding/updating servers from subscription URLs.
-- Support adding servers by importing [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) config.
+- Support adding servers by importing [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) configuration.
 - Support adding servers by scanning QR codes.
 - Support PAC proxy mode, Global proxy mode, and Manual proxy mode.
 - Support getting and setting system proxies for Windows, Linux (GNOME), and macOS.
