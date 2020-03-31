@@ -476,19 +476,13 @@ ColumnLayout {
                     }
 
                     Label {
-                        text: qsTr("MUX")
+                        text: qsTr("Enable UDP")
                         color: "white"
                     }
 
-                    TextField {
-                        id: textMux
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Example: 8 (-1 for disabled)")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
+                    CheckBox {
+                        id: checkboxEnableUdp
+                        leftPadding: -3
                     }
 
                     Label {
@@ -504,11 +498,7 @@ ColumnLayout {
                         valueRole: "value"
                         model: ListModel{
                             ListElement { text: "TCP"; value: "tcp" }
-                            ListElement { text: "KCP"; value: "kcp" }
                             ListElement { text: "Websocket"; value: "ws" }
-                            ListElement { text: "HTTP/2"; value: "http" }
-                            ListElement { text: "Domain Socket"; value: "domainsocket" }
-                            ListElement { text: "QUIC"; value: "quic" }
                         }
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -521,71 +511,16 @@ ColumnLayout {
                             verticalAlignment: Text.AlignVCenter
                         }
                         onCurrentTextChanged: function() {
-                            labelV2RayTcpHeaderType.visible = false
-                            comboV2RayTcpHeaderType.visible = false
-                            labelV2RayKcpMtu.visible = false
-                            textV2RayKcpMtu.visible = false
-                            labelV2RayKcpTti.visible = false
-                            textV2RayKcpTti.visible = false
-                            labelV2RayKcpUplinkCapacity.visible = false
-                            textV2RayKcpUplinkCapacity.visible = false
-                            labelV2RayKcpDownlinkCapacity.visible = false
-                            textV2RayKcpDownlinkCapacity.visible = false
-                            labelV2RayReadBufferSize.visible = false
-                            textV2RayKcpReadBufferSize.visible = false
-                            labelV2RayKcpWriteBufferSize.visible = false
-                            textV2RayKcpWriteBufferSize.visible = false
-                            labelV2RayKcpCongestion.visible = false
-                            checkboxV2RayKcpCongestion.visible = false
                             labelV2RayNetworkHost.visible = false
                             textV2RayNetworktHost.visible = false
                             labelV2RayNetworkPath.visible = false
                             textV2RayNetworkPath.visible = false
-                            labelV2RayDomainSocketFilePath.visible = false
-                            textV2RayDomainSocketFilePath.visible = false
-                            labelV2RayQuicSecurity.visible = false
-                            comboV2RayQuicSecurity.visible = false
-                            labelV2RayPacketHeader.visible = false
-                            comboV2RayPacketHeader.visible = false
-                            labelV2RayQuicKey.visible = false
-                            textV2RayQuicKey.visible = false
 
-                            if ( comboV2RayNetwork.currentText === "TCP" ) {
-                                labelV2RayTcpHeaderType.visible = true
-                                comboV2RayTcpHeaderType.visible = true
-                            } else if ( comboV2RayNetwork.currentText === "KCP" ) {
-                                labelV2RayKcpMtu.visible = true
-                                textV2RayKcpMtu.visible = true
-                                labelV2RayKcpTti.visible = true
-                                textV2RayKcpTti.visible = true
-                                labelV2RayKcpUplinkCapacity.visible = true
-                                textV2RayKcpUplinkCapacity.visible = true
-                                labelV2RayKcpDownlinkCapacity.visible = true
-                                textV2RayKcpDownlinkCapacity.visible = true
-                                labelV2RayReadBufferSize.visible = true
-                                textV2RayKcpReadBufferSize.visible = true
-                                labelV2RayKcpWriteBufferSize.visible = true
-                                textV2RayKcpWriteBufferSize.visible = true
-                                labelV2RayKcpCongestion.visible = true
-                                checkboxV2RayKcpCongestion.visible = true
-                                labelV2RayPacketHeader.visible = true
-                                comboV2RayPacketHeader.visible = true
-                            } else if ( comboV2RayNetwork.currentText === "Websocket" ||
-                                        comboV2RayNetwork.currentText === "HTTP/2" ) {
+                            if ( comboV2RayNetwork.currentText === "Websocket" ) {
                                 labelV2RayNetworkHost.visible = true
                                 textV2RayNetworktHost.visible = true
                                 labelV2RayNetworkPath.visible = true
                                 textV2RayNetworkPath.visible = true
-                            } else if ( comboV2RayNetwork.currentText === "Domain Socket" ) {
-                                labelV2RayDomainSocketFilePath.visible = true
-                                textV2RayDomainSocketFilePath.visible = true
-                            } else if ( comboV2RayNetwork.currentText === "QUIC" ) {
-                                labelV2RayQuicSecurity.visible = true
-                                comboV2RayQuicSecurity.visible = true
-                                labelV2RayPacketHeader.visible = true
-                                comboV2RayPacketHeader.visible = true
-                                labelV2RayQuicKey.visible = true
-                                textV2RayQuicKey.visible = true
                             }
                         }
                     }
@@ -627,147 +562,6 @@ ColumnLayout {
                     }
 
                     Label {
-                        id: labelV2RayTcpHeaderType
-                        text: qsTr("TCP Header")
-                        color: "white"
-                    }
-
-                    ComboBox {
-                        id: comboV2RayTcpHeaderType
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        textRole: "text"
-                        valueRole: "value"
-                        model: ListModel{
-                            ListElement { text: "None"; value: "none" }
-                            ListElement { text: "HTTP"; value: "http" }
-                        }
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                        contentItem: Text {
-                            text: comboV2RayTcpHeaderType.displayText
-                            color: "white"
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpMtu
-                        text: qsTr("MTU")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpMtu
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Maximum transmission unit. Default value: 1350.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpTti
-                        text: qsTr("TTI")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpTti
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Transmission time interval. Default value: 50.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpUplinkCapacity
-                        text: qsTr("Uplink Capacity")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpUplinkCapacity
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Default value: 5.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpDownlinkCapacity
-                        text: qsTr("Downlink Capacity")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpDownlinkCapacity
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Default value: 5.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayReadBufferSize
-                        text: qsTr("Read Buffer Size")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpReadBufferSize
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Default value: 2.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpWriteBufferSize
-                        text: qsTr("Write Buffer Size")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayKcpWriteBufferSize
-                        color: "white"
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Default value: 2.")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayKcpCongestion
-                        text: qsTr("Congestion")
-                        color: "white"
-                    }
-
-                    CheckBox {
-                        id: checkboxV2RayKcpCongestion
-                        leftPadding: -2
-                    }
-
-                    Label {
                         id: labelV2RayNetworkHost
                         text: qsTr("Host")
                         color: "white"
@@ -801,98 +595,6 @@ ColumnLayout {
                         }
                     }
 
-                    Label {
-                        id: labelV2RayDomainSocketFilePath
-                        text: qsTr("Socket File Path")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayDomainSocketFilePath
-                        color: "white"
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Example: /path/to/domain/socket/file")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayQuicSecurity
-                        text: qsTr("QUIC Security")
-                        color: "white"
-                    }
-
-                    ComboBox {
-                        id: comboV2RayQuicSecurity
-                        Layout.fillWidth: true
-                        textRole: "text"
-                        valueRole: "value"
-                        model: ListModel{
-                            ListElement { text: "None"; value: "none" }
-                            ListElement { text: "AES-128-GCM"; value: "aes-128-gcm" }
-                            ListElement { text: "CHACHA20-POLY1305"; value: "chacha20-poly1305" }
-                        }
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                        contentItem: Text {
-                            text: comboV2RayQuicSecurity.displayText
-                            color: "white"
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayPacketHeader
-                        text: qsTr("Packet Header")
-                        color: "white"
-                    }
-
-                    ComboBox {
-                        id: comboV2RayPacketHeader
-                        Layout.fillWidth: true
-                        model: ListModel{
-                            ListElement { text: "srtp" }
-                            ListElement { text: "utp" }
-                            ListElement { text: "wechat-video" }
-                            ListElement { text: "dtls" }
-                            ListElement { text: "wireguard" }
-                        }
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                        contentItem: Text {
-                            text: comboV2RayPacketHeader.displayText
-                            color: "white"
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-
-                    Label {
-                        id: labelV2RayQuicKey
-                        text: qsTr("QUIC Key")
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: textV2RayQuicKey
-                        color: "white"
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        placeholderText: qsTr("Example: Any String")
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                    }
-
                     Button {
                         id: buttonV2RayAddServer
                         text: qsTr("Add Server")
@@ -914,24 +616,12 @@ ColumnLayout {
                                 "id": textV2RayId.text,
                                 "alterId": textV2RayAlterId.text,
                                 "security": comboV2RaySecurity.currentText,
-                                "mux": textMux.text,
+                                "udp": checkboxEnableUdp.checked,
                                 "network": comboV2RayNetwork.currentValue,
                                 "networkSecurity": comboV2RayNetworkSecurity.currentText,
                                 "allowInsecure": checkboxV2RayAllowInsecure.checked,
-                                "tcpHeaderType": comboV2RayTcpHeaderType.currentText,
-                                "kcpMtu": textV2RayKcpMtu.text,
-                                "kcpTti": textV2RayKcpTti.text,
-                                "kcpUpLink": textV2RayKcpUplinkCapacity.text,
-                                "kcpDownLink": textV2RayKcpDownlinkCapacity.text,
-                                "kcpReadBuffer": textV2RayKcpReadBufferSize.text,
-                                "kcpWriteBuffer": textV2RayKcpWriteBufferSize.text,
-                                "kcpCongestion": checkboxV2RayKcpCongestion.checked,
                                 "networkHost": textV2RayNetworktHost.text,
-                                "networkPath": textV2RayNetworkPath.text,
-                                "domainSocketFilePath": textV2RayDomainSocketFilePath.text,
-                                "quicSecurity": comboV2RayQuicSecurity.currentText,
-                                "packetHeader": comboV2RayPacketHeader.currentText,
-                                "quicKey": textV2RayQuicKey.text
+                                "networkPath": textV2RayNetworkPath.text
                             }
                             if (buttonV2RayAddServer.text === qsTr("Add Server")) {
                                 AppProxy.addV2RayServer(JSON.stringify(server))
@@ -1484,7 +1174,6 @@ ColumnLayout {
             } else if (server["type"] === "trojan") {
                 protocol = "Trojan"
             }
-
             return [
                 {value: serverName},
                 {value: serverAddress + ":" + serverPort},
@@ -1608,58 +1297,27 @@ ColumnLayout {
 
         onServerDInfoReady: function(server) {
             server = JSON.parse(server)
-            layoutServer.resetPopUpServerFields("serverName" in server ? "edit" : "add")
+            layoutServer.resetPopUpServerFields("name" in server ? "edit" : "add")
 
             // Set correct form in pop up window
             var protocol = server["type"]
+            console.log(protocol)
             if (protocol === "vmess") {
                 comboAddServerMethod.currentIndex = 0
-                textV2RayServerName.text = server["serverName"] || ""
-                textV2RayServerAddr.text = server["settings"]["vnext"][0]["address"]
-                textV2RayServerPort.text = server["settings"]["vnext"][0]["port"]
+                textV2RayServerName.text = server["name"] || ""
+                textV2RayServerAddr.text = server["server"]
+                textV2RayServerPort.text = server["port"]
                 checkboxV2RayAutoConnect.checked = server["autoConnect"]
-                textV2RayId.text = server["settings"]["vnext"][0]["users"][0]["id"]
-                textV2RayAlterId.text = server["settings"]["vnext"][0]["users"][0]["alterId"]
-                comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(
-                        server["settings"]["vnext"][0]["users"][0]["security"])
-                textMux.text = server["mux"]["enabled"] ? server["mux"]["concurrency"] : -1
-                comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(
-                        server["streamSettings"]["network"])
-                comboV2RayNetworkSecurity.currentIndex =
-                    comboV2RayNetworkSecurity.indexOfValue(
-                        server["streamSettings"]["security"])
-                checkboxV2RayAllowInsecure.checked = server["streamSettings"]["tlsSettings"]["allowInsecure"]
-
-                if (server["streamSettings"]["network"] === "tcp") {
-                    comboV2RayTcpHeaderType.currentIndex =
-                        comboV2RayTcpHeaderType.indexOfValue(
-                            server["streamSettings"]["tcpSettings"]["type"])
-                } else if (server["streamSettings"]["network"] === "kcp") {
-                    textV2RayKcpMtu.text = server["streamSettings"]["kcpSettings"]["mtu"]
-                    textV2RayKcpTti.text = server["streamSettings"]["kcpSettings"]["tti"]
-                    textV2RayKcpUplinkCapacity.text = server["streamSettings"]["kcpSettings"]["uplinkCapacity"]
-                    textV2RayKcpDownlinkCapacity.text = server["streamSettings"]["kcpSettings"]["downlinkCapacity"]
-                    textV2RayKcpReadBufferSize.text = server["streamSettings"]["kcpSettings"]["readBufferSize"]
-                    textV2RayKcpWriteBufferSize.text = server["streamSettings"]["kcpSettings"]["writeBufferSize"]
-                    checkboxV2RayKcpCongestion.checked = server["streamSettings"]["kcpSettings"]["congestion"]
-                    comboV2RayPacketHeader.currentIndex = comboV2RayPacketHeader.indexOfValue(
-                        server["streamSettings"]["kcpSettings"]["header"]["type"])
-                } else if (server["streamSettings"]["network"] === "ws") {
-                    textV2RayNetworktHost.text =
-                        server["streamSettings"]["wsSettings"]["headers"]["host"]
-                    textV2RayNetworkPath.text = server["streamSettings"]["wsSettings"]["path"]
-                } else if (server["streamSettings"]["network"] === "http") {
-                    textV2RayNetworktHost.text =
-                        server["streamSettings"]["wsSettings"]["headers"]["host"][0]
-                    textV2RayNetworkPath.text = server["streamSettings"]["wsSettings"]["path"]
-                } else if (server["streamSettings"]["network"] === "domainsocket") {
-                    textV2RayQuicKey.text = server["streamSettings"]["dsSettings"]["path"]
-                } else if (server["streamSettings"]["network"] === "quic") {
-                    comboV2RayQuicSecurity.currentIndex = comboV2RayQuicSecurity.indexOfValue(
-                        server["streamSettings"]["quicSettings"]["security"])
-                    comboV2RayPacketHeader.currentIndex = comboV2RayPacketHeader.indexOfValue(
-                        server["streamSettings"]["quicSettings"]["header"])
-                    textV2RayQuicKey.text = server["streamSettings"]["quicSettings"]["key"]
+                textV2RayId.text = server["uuid"]
+                textV2RayAlterId.text = server["alterId"]
+                comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(server["cipher"])
+                checkboxEnableUdp.checked = server["udp"]
+                comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(server["network"])
+                comboV2RayNetworkSecurity.currentIndex = server["tls"] ? 1 : 0
+                checkboxV2RayAllowInsecure.checked = server["skip-cert-verify"]
+                if (server["network"] === "ws") {
+                    textV2RayNetworktHost.text = server["ws-headers"]["Host"]
+                    textV2RayNetworkPath.text = server["ws-path"]
                 }
             } else if (protocol === "ss") {
                 comboAddServerMethod.currentIndex = 1
@@ -1692,24 +1350,13 @@ ColumnLayout {
         checkboxV2RayAutoConnect.checked = false
         textV2RayId.text = ""
         textV2RayAlterId.text = ""
+        checkboxEnableUdp.checked = false
         comboV2RaySecurity.currentIndex = 0
         comboV2RayNetwork.currentIndex = 0
         comboV2RayNetworkSecurity.currentIndex = 0
         checkboxV2RayAllowInsecure.checked = false
-        comboV2RayTcpHeaderType.currentIndex = 0
-        textV2RayKcpMtu.text = ""
-        textV2RayKcpTti.text = ""
-        textV2RayKcpUplinkCapacity.text = ""
-        textV2RayKcpDownlinkCapacity.text = ""
-        textV2RayKcpReadBufferSize.text = ""
-        textV2RayKcpWriteBufferSize.text = ""
-        checkboxV2RayKcpCongestion.checked = false
         textV2RayNetworktHost.text = ""
         textV2RayNetworkPath.text = ""
-        textV2RayDomainSocketFilePath.text = ""
-        comboV2RayQuicSecurity.currentIndex = 0
-        comboV2RayPacketHeader.currentIndex = 0
-        textV2RayQuicKey.text = ""
         // Clear text fields for Shadowsocks
         textShadowsocksServerName.text = ""
         textShadowsocksServerAddr.text = ""
