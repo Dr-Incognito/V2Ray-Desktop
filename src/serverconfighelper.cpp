@@ -47,8 +47,6 @@ QStringList ServerConfigHelper::getV2RayServerConfigErrors(
   errors.append(
     Utility::getStringConfigError(serverConfig, "security", tr("Security")));
   errors.append(
-    Utility::getNumericConfigError(serverConfig, "mux", tr("MUX"), -1, 1024));
-  errors.append(
     Utility::getStringConfigError(serverConfig, "network", tr("Network")));
   errors.append(Utility::getStringConfigError(serverConfig, "networkSecurity",
                                               tr("Network Security")));
@@ -64,38 +62,16 @@ QStringList ServerConfigHelper::getV2RayServerConfigErrors(
 QStringList ServerConfigHelper::getV2RayStreamSettingsErrors(
   const QJsonObject& serverConfig, const QString& network) {
   QStringList errors;
-  if (network == "kcp") {
-    errors.append(Utility::getNumericConfigError(serverConfig, "kcpMtu",
-                                                 tr("MTU"), 576, 1460));
-    errors.append(Utility::getNumericConfigError(serverConfig, "kcpTti",
-                                                 tr("TTI"), 10, 100));
-    errors.append(Utility::getNumericConfigError(
-      serverConfig, "kcpUpLink", tr("Uplink Capacity"), 0, -127));
-    errors.append(Utility::getNumericConfigError(
-      serverConfig, "kcpDownLink", tr("Downlink Capacity"), 0, -127));
-    errors.append(Utility::getNumericConfigError(
-      serverConfig, "kcpReadBuffer", tr("Read Buffer Size"), 0, -127));
-    errors.append(Utility::getNumericConfigError(
-      serverConfig, "kcpWriteBuffer", tr("Write Buffer Size"), 0, -127));
-    errors.append(Utility::getStringConfigError(serverConfig, "packetHeader",
-                                                tr("Packet Header")));
-  } else if (network == "ws" || network == "http") {
+  if (network != "tcp" && network != "ws") {
+    // Clash only supports tcp and ws :(
+    errors.append(QString(tr("Unspoorted 'Network': %1.")).arg(network));
+  }
+  if (network == "ws") {
     errors.append(Utility::getStringConfigError(
       serverConfig, "networkHost", tr("Host"),
       {std::bind(&Utility::isDomainNameValid, std::placeholders::_1)}));
     errors.append(
       Utility::getStringConfigError(serverConfig, "networkPath", tr("Path")));
-  } else if (network == "domainsocket") {
-    errors.append(Utility::getStringConfigError(
-      serverConfig, "domainSocketFilePath", tr("Socket File Path"),
-      {std::bind(&Utility::isFileExists, std::placeholders::_1)}));
-  } else if (network == "quic") {
-    errors.append(Utility::getStringConfigError(serverConfig, "quicSecurity",
-                                                tr("QUIC Security")));
-    errors.append(Utility::getStringConfigError(serverConfig, "packetHeader",
-                                                tr("Packet Header")));
-    errors.append(
-      Utility::getStringConfigError(serverConfig, "quicKey", tr("QUIC Key")));
   }
   return errors;
 }
@@ -104,143 +80,28 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
   const QJsonObject& serverConfig) {
   QJsonObject v2RayConfig{
     {"autoConnect", serverConfig["autoConnect"].toBool()},
-    {"serverName", serverConfig["serverName"].toString()},
     {"subscription", serverConfig.contains("subscription")
                        ? serverConfig["subscription"].toString()
                        : ""},
-    {"protocol", "vmess"},
-    {"mux",
-     QJsonObject{
-       {"enabled", serverConfig["mux"].toVariant().toInt() != -1},
-       {"concurrency", serverConfig["mux"].toVariant().toInt()},
-     }},
-    {"settings",
-     QJsonObject{
-       {"vnext",
-        QJsonArray{QJsonObject{
-          {"address", serverConfig["serverAddr"].toString()},
-          {"port", serverConfig["serverPort"].toVariant().toInt()},
-          {"users",
-           QJsonArray{QJsonObject{
-             {"id", serverConfig["id"].toString()},
-             {"alterId", serverConfig["alterId"].toVariant().toInt()},
-             {"security", serverConfig["security"].toString().toLower()},
-           }}}}}}}},
-    {"tag", "proxy-vmess"}};
-
-  QJsonObject streamSettings = getV2RayStreamSettingsConfig(serverConfig);
-  v2RayConfig.insert("streamSettings", streamSettings);
-  return v2RayConfig;
-}
-
-QJsonObject ServerConfigHelper::getV2RayStreamSettingsConfig(
-  const QJsonObject& serverConfig) {
-  QString network = serverConfig["network"].toString();
-  QJsonObject streamSettings{
-    {"network", serverConfig["network"]},
-    {"security", serverConfig["networkSecurity"].toString().toLower()},
-    {"tlsSettings",
-     QJsonObject{{"allowInsecure", serverConfig["allowInsecure"].toBool()}}},
+    {"name", serverConfig["serverName"].toString()},
+    {"type", "vmess"},
+    {"udp", serverConfig["udp"].toBool()},
+    {"server", serverConfig["serverAddr"].toString()},
+    {"port", serverConfig["serverPort"].toVariant().toInt()},
+    {"uuid", serverConfig["id"].toString()},
+    {"alterId", serverConfig["alterId"].toVariant().toInt()},
+    {"cipher", serverConfig["security"].toString().toLower()},
+    {"tls", serverConfig["networkSecurity"].toString().toLower() == "tls"},
+    {"skip-cert-verify", serverConfig["allowInsecure"].toBool()}
   };
 
-  if (network == "tcp") {
-    QString tcpHeaderType = serverConfig["tcpHeaderType"].toString().toLower();
-    QJsonObject tcpSettings{{"type", tcpHeaderType}};
-    if (tcpHeaderType == "http") {
-      tcpSettings.insert(
-        "request",
-        QJsonObject{
-          {"version", "1.1"},
-          {"method", "GET"},
-          {"path", QJsonArray{"/"}},
-          {"headers",
-           QJsonObject{
-             {"host",
-              QJsonArray{"www.baidu.com", "www.bing.com", "www.163.com",
-                         "www.netease.com", "www.qq.com", "www.tencent.com",
-                         "www.taobao.com", "www.tmall.com",
-                         "www.alibaba-inc.com", "www.aliyun.com",
-                         "www.sensetime.com", "www.megvii.com"}},
-             {"User-Agent", getRandomUserAgents(24)},
-             {"Accept-Encoding", QJsonArray{"gzip, deflate"}},
-             {"Connection", QJsonArray{"keep-alive"}},
-             {"Pragma", "no-cache"},
-           }},
-        });
-      tcpSettings.insert(
-        "response",
-        QJsonObject{
-          {"version", "1.1"},
-          {"status", "200"},
-          {"reason", "OK"},
-          {"headers",
-           QJsonObject{{"Content-Type", QJsonArray{"text/html;charset=utf-8"}},
-                       {"Transfer-Encoding", QJsonArray{"chunked"}},
-                       {"Connection", QJsonArray{"keep-alive"}},
-                       {"Pragma", "no-cache"}}}});
-    }
-    streamSettings.insert("tcpSettings", tcpSettings);
-  } else if (network == "kcp") {
-    streamSettings.insert(
-      "kcpSettings",
-      QJsonObject{
-        {"mtu", serverConfig["kcpMtu"].toVariant().toInt()},
-        {"tti", serverConfig["kcpTti"].toVariant().toInt()},
-        {"uplinkCapacity", serverConfig["kcpUpLink"].toVariant().toInt()},
-        {"downlinkCapacity", serverConfig["kcpDownLink"].toVariant().toInt()},
-        {"congestion", serverConfig["kcpCongestion"].toBool()},
-        {"readBufferSize", serverConfig["kcpReadBuffer"].toVariant().toInt()},
-        {"writeBufferSize", serverConfig["kcpWriteBuffer"].toVariant().toInt()},
-        {"header",
-         QJsonObject{
-           {"type", serverConfig["packetHeader"].toString().toLower()}}}});
-  } else if (network == "ws") {
-    streamSettings.insert(
-      "wsSettings",
-      QJsonObject{
-        {"path", serverConfig["networkPath"].toString()},
-        {"headers", QJsonObject{{"host", serverConfig["networkHost"]}}}});
-  } else if (network == "http") {
-    streamSettings.insert(
-      "httpSettings",
-      QJsonObject{
-        {"host", QJsonArray{serverConfig["networkHost"].toString()}},
-        {"path", QJsonArray{serverConfig["networkPath"].toString()}}});
-  } else if (network == "domainsocket") {
-    streamSettings.insert(
-      "dsSettings",
-      QJsonObject{{"path", serverConfig["domainSocketFilePath"].toString()}});
-  } else if (network == "quic") {
-    streamSettings.insert(
-      "quicSettings",
-      QJsonObject{
-        {"security", serverConfig["quicSecurity"].toString().toLower()},
-        {"key", serverConfig["quicKey"].toString()},
-        {"header",
-         QJsonObject{
-           {"type", serverConfig["packetHeader"].toString().toLower()}}}});
+  QString network = serverConfig["network"].toString();
+  if (network == "ws") {
+    v2RayConfig["network"] = "ws";
+    v2RayConfig["ws-path"] = serverConfig["networkPath"].toString();
+    v2RayConfig["ws-headers"] = QJsonObject {{"Host", serverConfig["networkHost"].toString()}};
   }
-  return streamSettings;
-}
-
-QJsonArray ServerConfigHelper::getRandomUserAgents(int n) {
-  QStringList OPERATING_SYSTEMS{"Macintosh; Intel Mac OS X 10_15",
-                                "X11; Linux x86_64",
-                                "Windows NT 10.0; Win64; x64"};
-  QJsonArray userAgents;
-  for (int i = 0; i < n; ++i) {
-    int osIndex            = std::rand() % 3;
-    int chromeMajorVersion = std::rand() % 30 + 50;
-    int chromeBuildVersion = std::rand() % 4000 + 1000;
-    int chromePatchVersion = std::rand() % 100;
-    userAgents.append(QString("Mozilla/5.0 (%1) AppleWebKit/537.36 (KHTML, "
-                              "like Gecko) Chrome/%2.0.%3.%4 Safari/537.36")
-                        .arg(OPERATING_SYSTEMS[osIndex],
-                             QString::number(chromeMajorVersion),
-                             QString::number(chromeBuildVersion),
-                             QString::number(chromePatchVersion)));
-  }
-  return userAgents;
+  return v2RayConfig;
 }
 
 QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
@@ -277,7 +138,7 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"id",
      rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
     {"alterId", alterId},
-    {"mux", -1},
+    {"udp", false},
     {"security", "auto"},
     {"network",
      NETWORK_MAPPER.contains(network) ? NETWORK_MAPPER[network] : "tcp"},
@@ -287,13 +148,8 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"networkPath", rawServerConfig.contains("path")
                       ? rawServerConfig["path"].toString()
                       : ""},
-    {"tcpHeaderType", rawServerConfig.contains("type")
-                        ? rawServerConfig["type"].toString()
-                        : ""},
     {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
 
-  qDebug() << rawServerConfig;
-  qDebug() << serverConfig;
   return serverConfig;
 }
 
@@ -409,7 +265,7 @@ QJsonObject ServerConfigHelper::getShadowsocksPlugins(
 ServerConfigHelper::Protocol ServerConfigHelper::getProtocol(QString protocol) {
   if (protocol == "vmess" || protocol == "v2ray") {
     return Protocol::VMESS;
-  } else if (protocol == "shadowsocks") {
+  } else if (protocol == "shadowsocks" || protocol == "ss") {
     return Protocol::SHADOWSOCKS;
   } else {
     return Protocol::UNKNOWN;

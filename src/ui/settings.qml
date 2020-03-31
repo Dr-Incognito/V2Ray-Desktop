@@ -63,26 +63,6 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("Check for Updates Automatically")
-            color: "white"
-        }
-
-        CheckBox {
-            id: checkboxAutoUpdate
-            leftPadding: -3
-        }
-
-        Label {
-            text: qsTr("Enable UDP")
-            color: "white"
-        }
-
-        CheckBox {
-            id: checkboxEnableUdp
-            leftPadding: -3
-        }
-
-        Label {
             text: qsTr("Language")
             color: "white"
         }
@@ -206,7 +186,6 @@ ColumnLayout {
                     "autoStart": checkboxAutoStart.checked,
                     "hideWindow": checkboxHideWindow.checked,
                     "autoUpdate": checkboxAutoUpdate.checked,
-                    "enableUdp": checkboxEnableUdp.checked,
                     "language": comboLanguage.currentValue,
                     "serverIp": textServerIpAddr.text,
                     "httpPort": textHttpPort.text,
@@ -245,7 +224,6 @@ ColumnLayout {
             checkboxAutoStart.checked = config["autoStart"]
             checkboxHideWindow.checked = config["hideWindow"]
             checkboxAutoUpdate.checked = config["autoUpdate"]
-            checkboxEnableUdp.checked = config["enableUdp"]
             comboLanguage.currentIndex = comboLanguage.indexOfValue(config["language"])
             textServerIpAddr.text = config["serverIp"]
             textSocksPort.text = config["socksPort"]
