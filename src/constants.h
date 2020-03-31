@@ -40,16 +40,16 @@ static const int DEFAULT_V2RAY_KCP_DOWN_CAPACITY  = 20;
 static const int DEFAULT_V2RAY_KCP_READ_BUF_SIZE  = 2;
 static const int DEFAULT_V2RAY_KCP_WRITE_BUF_SIZE = 2;
 
-static const bool DEFAULT_AUTO_START         = true;
-static const bool DEFAULT_HIDE_WINDOW        = false;
-static const bool DEFAULT_AUTO_UPDATE        = true;
-static const bool DEFAULT_ENABLE_UDP         = false;
-static const QString DEFAULT_SERVER_IP       = "127.0.0.1";
-static const int DEFAULT_SOCKS_PORT          = 1080;
-static const int DEFAULT_HTTP_PORT           = 1087;
-static const int DEFAULT_PAC_PORT            = 1085;
-static const QString DEFAULT_DNS_SERVER      = "8.8.8.8,8.8.4.4";
-static const QString DEFAULT_PROXY_MODE      = "pac";
+static const bool DEFAULT_AUTO_START    = true;
+static const bool DEFAULT_HIDE_WINDOW   = false;
+static const bool DEFAULT_AUTO_UPDATE   = true;
+static const bool DEFAULT_ENABLE_UDP    = false;
+static const QString DEFAULT_SERVER_IP  = "127.0.0.1";
+static const int DEFAULT_SOCKS_PORT     = 1080;
+static const int DEFAULT_HTTP_PORT      = 1087;
+static const int DEFAULT_PAC_PORT       = 1085;
+static const QString DEFAULT_DNS_SERVER = "8.8.8.8,8.8.4.4";
+static const QString DEFAULT_PROXY_MODE = "pac";
 static const QString DEFAULT_GFW_LIST_URL =
   "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt";
 

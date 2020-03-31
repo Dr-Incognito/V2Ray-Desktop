@@ -111,12 +111,12 @@ void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
   bool isSuccessful = false;
   if (expectedRunning) {
     isSuccessful = v2ray.start();
-    qInfo() << QString("Start Clash ... %1")
-                 .arg(isSuccessful ? "success" : "failed");
+    qInfo()
+      << QString("Start Clash ... %1").arg(isSuccessful ? "success" : "failed");
   } else {
     isSuccessful = v2ray.stop();
-    qInfo() << QString("Stop Clash ... %1")
-                 .arg(isSuccessful ? "success" : "failed");
+    qInfo()
+      << QString("Stop Clash ... %1").arg(isSuccessful ? "success" : "failed");
   }
   if (isSuccessful) {
     emit v2RayCoreStatusReady(expectedRunning);
@@ -136,9 +136,9 @@ QNetworkProxy AppProxy::getQProxy() {
     return QNetworkProxy::NoProxy;
   }
 
-  QJsonObject appConfig = configurator.getAppConfig();
+  QJsonObject appConfig              = configurator.getAppConfig();
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::Socks5Proxy;
-  int socksPort = appConfig["socksPort"].toInt();
+  int socksPort                      = appConfig["socksPort"].toInt();
   QNetworkProxy proxy;
   proxy.setType(proxyType);
   proxy.setHostName("127.0.0.1");
@@ -208,8 +208,8 @@ QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   if (appConfig["httpPort"].toString() == appConfig["socksPort"].toString() ||
       appConfig["httpPort"].toString() == appConfig["pacPort"].toString() ||
       appConfig["socksPort"].toString() == appConfig["pacPort"].toString()) {
-    errors.append(
-      tr("'HTTP Port', 'SOCKS Port', and 'PAC Server Port' can not be the same."));
+    errors.append(tr(
+      "'HTTP Port', 'SOCKS Port', and 'PAC Server Port' can not be the same."));
   }
   errors.append(Utility::getStringConfigError(
     appConfig, "dns", tr("DNS Server"),
@@ -393,7 +393,7 @@ void AppProxy::getServers() {
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
     QString serverName =
-      server.contains("serverName") ? server["serverName"].toString() : "";
+      server.contains("name") ? server["name"].toString() : "";
     server["connected"] = connectedServerNames.contains(serverName);
     if (serverLatency.contains(serverName)) {
       server["latency"] = serverLatency[serverName].toInt();
@@ -406,7 +406,7 @@ void AppProxy::getServers() {
 void AppProxy::getServer(QString serverName, bool forDuplicate) {
   QJsonObject server = configurator.getServer(serverName);
   if (forDuplicate) {
-    server.remove("serverName");
+    server.remove("name");
   }
   emit serverDInfoReady(QJsonDocument(server).toJson());
 }
@@ -544,9 +544,8 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
       continue;
     }
     // Recover auto connect option for the server
-    QString serverName = serverConfig.contains("serverName")
-                           ? serverConfig["serverName"].toString()
-                           : "";
+    QString serverName =
+      serverConfig.contains("name") ? serverConfig["name"].toString() : "";
     serverConfig["autoConnect"] =
       removedServers.contains(serverName)
         ? removedServers[serverName]["autoConnect"].toBool()
@@ -593,7 +592,7 @@ void AppProxy::addServerConfigFile(QString configFilePath,
     if (!serverConfigErrors.empty()) {
       qWarning() << QString(
                       "Error occurred for the server[Name=%1]. Errors: %2")
-                      .arg(server["serverName"].toString(),
+                      .arg(server["name"].toString(),
                            serverConfigErrors.join(" "));
       continue;
     } else {
@@ -602,7 +601,7 @@ void AppProxy::addServerConfigFile(QString configFilePath,
       qInfo()
         << QString(
              "Add a new server[Name=%1] from Shadowsocks-Qt5 config file.")
-             .arg(server["serverName"].toString());
+             .arg(server["name"].toString());
       ++nAddServers;
     }
   }
@@ -631,7 +630,7 @@ void AppProxy::editServer(QString serverName,
     ServerConfigHelper::getPrettyServerConfig(_protocol, serverConfig);
 
   if (configurator.editServer(serverName, serverConfig)) {
-    QString newServerName = serverConfig["serverName"].toString();
+    QString newServerName = serverConfig["name"].toString();
     // Update the information of server connectivity
     QStringList connectedServerNames = configurator.getConnectedServerNames();
     serverConfig["connected"] = connectedServerNames.contains(newServerName);
@@ -749,9 +748,9 @@ void AppProxy::upgradeDependency(QString name, QString version) {
     QString operatingSystem = "unknown";
 #endif
     // TODO
-    emit upgradeStarted(name, V2RAY_ASSETS_URL.arg(version, operatingSystem, version),
-                        Configurator::getAppTempDir().filePath(name),
-                        getQProxy());
+    emit upgradeStarted(
+      name, V2RAY_ASSETS_URL.arg(version, operatingSystem, version),
+      Configurator::getAppTempDir().filePath(name), getQProxy());
   } else if (name == "v2ray-desktop") {
 #if defined(Q_OS_WIN)
     QString operatingSystem = "win64";

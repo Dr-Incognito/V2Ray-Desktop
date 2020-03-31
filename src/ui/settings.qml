@@ -185,7 +185,6 @@ ColumnLayout {
                 var config = {
                     "autoStart": checkboxAutoStart.checked,
                     "hideWindow": checkboxHideWindow.checked,
-                    "autoUpdate": checkboxAutoUpdate.checked,
                     "language": comboLanguage.currentValue,
                     "serverIp": textServerIpAddr.text,
                     "httpPort": textHttpPort.text,
@@ -223,7 +222,6 @@ ColumnLayout {
             config = JSON.parse(config)
             checkboxAutoStart.checked = config["autoStart"]
             checkboxHideWindow.checked = config["hideWindow"]
-            checkboxAutoUpdate.checked = config["autoUpdate"]
             comboLanguage.currentIndex = comboLanguage.indexOfValue(config["language"])
             textServerIpAddr.text = config["serverIp"]
             textSocksPort.text = config["socksPort"]

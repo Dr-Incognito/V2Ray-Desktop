@@ -14,7 +14,7 @@ void AppProxyWorker::getServerLatency(QJsonArray servers) {
   QMap<QString, QVariant> serverLatency;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
-    QString serverName = server["serverName"].toString();
+    QString serverName = server["name"].toString();
     int latency =
       NetworkRequest::getLatency(getServerAddr(server), getServerPort(server));
     serverLatency[serverName] = latency;

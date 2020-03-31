@@ -92,14 +92,14 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
     {"alterId", serverConfig["alterId"].toVariant().toInt()},
     {"cipher", serverConfig["security"].toString().toLower()},
     {"tls", serverConfig["networkSecurity"].toString().toLower() == "tls"},
-    {"skip-cert-verify", serverConfig["allowInsecure"].toBool()}
-  };
+    {"skip-cert-verify", serverConfig["allowInsecure"].toBool()}};
 
   QString network = serverConfig["network"].toString();
   if (network == "ws") {
     v2RayConfig["network"] = "ws";
     v2RayConfig["ws-path"] = serverConfig["networkPath"].toString();
-    v2RayConfig["ws-headers"] = QJsonObject {{"Host", serverConfig["networkHost"].toString()}};
+    v2RayConfig["ws-headers"] =
+      QJsonObject{{"Host", serverConfig["networkHost"].toString()}};
   }
   return v2RayConfig;
 }

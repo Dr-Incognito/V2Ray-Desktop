@@ -176,34 +176,28 @@ QJsonObject Configurator::getV2RayConfig() {
     connectedServerNames.append(csn);
   }
 
-  QJsonObject v2RayConfig {
+  QJsonObject v2RayConfig{
     {"port", appConfig["httpPort"].toInt()},
     {"socks-port", appConfig["socksPort"].toInt()},
     {"allow-lan", true},
     {"bind-address", appConfig["serverIp"].toString()},
     {"mode", "Rule"},
     {"log-level", "info"},
-    {"dns", QJsonObject {
-      {"enable", false},
-      {"listen", "0.0.0.0:53"},
-      {"nameserver", getPrettyDnsServers(appConfig["dns"].toString())}}
-    },
+    {"dns", QJsonObject{{"enable", false},
+                        {"listen", "0.0.0.0:53"},
+                        {"nameserver",
+                         getPrettyDnsServers(appConfig["dns"].toString())}}},
     {"proxies", getConnectedServers()},
-    {"proxy-groups", QJsonArray {
-      {QJsonObject {
-        {"name", "PROXY"},
-        {"type", "load-balance"},
-        {"proxies", connectedServerNames},
-        {"url", "http://www.gstatic.com/generate_204"},
-        {"interval", 300}
-      }}
-    }},
+    {"proxy-groups",
+     QJsonArray{{QJsonObject{{"name", "PROXY"},
+                             {"type", "load-balance"},
+                             {"proxies", connectedServerNames},
+                             {"url", "http://www.gstatic.com/generate_204"},
+                             {"interval", 300}}}}},
     {"rules", getRules()}};
 
   return v2RayConfig;
 }
-
-
 
 QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
   QJsonArray dnsServers;
@@ -227,8 +221,7 @@ QJsonObject Configurator::getServer(QString serverName) {
   QJsonObject server;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject _server = (*itr).toObject();
-    if (_server.contains("name") &&
-        _server["name"].toString() == serverName) {
+    if (_server.contains("name") && _server["name"].toString() == serverName) {
       server = (*itr).toObject();
       break;
     }
@@ -263,8 +256,7 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
   bool isEdited      = false;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
-    if (server.contains("name") &&
-        server["name"].toString() == serverName) {
+    if (server.contains("name") && server["name"].toString() == serverName) {
       serverConfig["subscription"] = server.contains("subscription")
                                        ? server["subscription"].toString()
                                        : "";
@@ -287,8 +279,7 @@ int Configurator::removeServer(QString serverName) {
   int serverIndex    = -1;
   for (int i = 0; i < servers.size(); ++i) {
     QJsonObject server = servers[i].toObject();
-    if (server.contains("name") &&
-        server["name"].toString() == serverName) {
+    if (server.contains("name") && server["name"].toString() == serverName) {
       serverIndex = i;
       break;
     }
