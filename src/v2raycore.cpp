@@ -14,11 +14,9 @@
 V2RayCore::V2RayCore() {
   QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
 #if defined(Q_OS_WIN)
-  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray.exe");
-  v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl.exe");
+  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("clash.exe");
 #elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
-  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("v2ray");
-  v2RayCtlExecFilePath = QDir(v2RayInstallFolderPath).filePath("v2ctl");
+  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("clash");
 #endif
   QDir v2RayInstallFolder(v2RayInstallFolderPath);
   // Create the install folder if not exists
@@ -44,14 +42,14 @@ QString V2RayCore::getVersion() {
     return tr("Not Installed");
   }
   QProcess _v2rayProcess;
-  _v2rayProcess.start(v2RayExecFilePath, {"-version"});
+  _v2rayProcess.start(v2RayExecFilePath, {"-v"});
   _v2rayProcess.waitForFinished();
   QString v2RayVersion = _v2rayProcess.readAllStandardOutput();
   if (v2RayVersion.isEmpty()) {
     return tr("Unknown");
   }
-  int sIndex = v2RayVersion.indexOf(' ');
-  int pIndex = v2RayVersion.indexOf('(');
+  int sIndex = v2RayVersion.indexOf('v');
+  int pIndex = v2RayVersion.indexOf(' ', sIndex);
   return v2RayVersion.mid(sIndex + 1, pIndex - sIndex - 1);
 }
 
@@ -59,25 +57,30 @@ bool V2RayCore::start() {
   if (!isInstalled()) {
     return false;
   }
-  // Get latest configuration for V2Ray Core
+  // Get latest configuration for Clash
   Configurator& configurator(Configurator::getInstance());
   QJsonObject v2RayConfig = configurator.getV2RayConfig();
   QString configFilePath  = Configurator::getV2RayConfigFilePath();
   QFile configFile(Configurator::getV2RayConfigFilePath());
-  configFile.open(QFile::WriteOnly);
-  configFile.write(QJsonDocument(v2RayConfig).toJson());
-  configFile.flush();
+  // TODO: JSON -> YAML
+  // configFile.open(QFile::WriteOnly);
+  // configFile.write();
+  // configFile.flush();
 
-  // Start V2Ray Core
+  // Start Clash
   QStringList arguments;
-  arguments << "-config" << configFilePath;
+  QFileInfo configFileInfo(configFilePath);
+  arguments << "-d" << configFileInfo.dir().absolutePath();
   v2rayProcess->start(v2RayExecFilePath, arguments);
   v2rayProcess->waitForFinished(500);
   int exitCode = v2rayProcess->exitCode();
   if (exitCode != 0) {
-    qCritical() << "Failed to start V2Ray Core.";
-    qCritical() << v2rayProcess->readAllStandardOutput();
+    qCritical() << "Failed to start Clash.";
+    qCritical() << v2rayProcess->readAll();
   }
+  // TODO: Fix Log Redirection
+  v2rayProcess->setStandardErrorFile(Configurator::getV2RayLogFilePath());
+  v2rayProcess->setStandardOutputFile(Configurator::getV2RayLogFilePath());
   return exitCode == 0;
 }
 

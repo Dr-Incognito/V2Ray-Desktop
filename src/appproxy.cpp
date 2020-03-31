@@ -111,11 +111,11 @@ void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
   bool isSuccessful = false;
   if (expectedRunning) {
     isSuccessful = v2ray.start();
-    qInfo() << QString("Start V2Ray Core ... %1")
+    qInfo() << QString("Start Clash ... %1")
                  .arg(isSuccessful ? "success" : "failed");
   } else {
     isSuccessful = v2ray.stop();
-    qInfo() << QString("Stop V2Ray Core ... %1")
+    qInfo() << QString("Stop Clash ... %1")
                  .arg(isSuccessful ? "success" : "failed");
   }
   if (isSuccessful) {
@@ -131,21 +131,18 @@ void AppProxy::getNetworkStatus() {
 }
 
 QNetworkProxy AppProxy::getQProxy() {
-  QJsonArray connectedServers = configurator.getConnectedServers();
-  if (connectedServers.size() == 0) {
+  QStringList connectedServerNames = configurator.getConnectedServerNames();
+  if (connectedServerNames.size() == 0) {
     return QNetworkProxy::NoProxy;
   }
 
   QJsonObject appConfig = configurator.getAppConfig();
-  QNetworkProxy::ProxyType proxyType =
-    appConfig["serverProtocol"].toString() == "SOCKS"
-      ? QNetworkProxy::Socks5Proxy
-      : QNetworkProxy::HttpProxy;
-  int serverPort = appConfig["serverPort"].toInt();
+  QNetworkProxy::ProxyType proxyType = QNetworkProxy::Socks5Proxy;
+  int socksPort = appConfig["socksPort"].toInt();
   QNetworkProxy proxy;
   proxy.setType(proxyType);
   proxy.setHostName("127.0.0.1");
-  proxy.setPort(serverPort);
+  proxy.setPort(socksPort);
   return proxy;
 }
 
@@ -181,8 +178,9 @@ void AppProxy::setAppConfig(QString configString) {
   setAutoStart(appConfig["autoStart"].toBool());
   retranslate(appConfig["language"].toString());
   // Save app config
-  appConfig["serverPort"] = appConfig["serverPort"].toString().toInt();
-  appConfig["pacPort"]    = appConfig["pacPort"].toString().toInt();
+  appConfig["httpPort"]  = appConfig["httpPort"].toString().toInt();
+  appConfig["socksPort"] = appConfig["socksPort"].toString().toInt();
+  appConfig["pacPort"]   = appConfig["pacPort"].toString().toInt();
   configurator.setAppConfig(appConfig);
   qInfo() << "Application config updated. Restarting V2Ray ...";
   // Restart V2Ray Core
@@ -195,20 +193,23 @@ QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   QStringList errors;
   errors.append(
     Utility::getStringConfigError(appConfig, "language", tr("Language")));
-  errors.append(Utility::getStringConfigError(appConfig, "serverProtocol",
-                                              tr("Local Server Protocol")));
   errors.append(Utility::getStringConfigError(
     appConfig, "serverIp", tr("Listening IP Address"),
     {
       std::bind(&Utility::isIpAddrValid, std::placeholders::_1),
     }));
-  errors.append(Utility::getNumericConfigError(appConfig, "serverPort",
-                                               tr("Listening Port"), 1, 65535));
+  errors.append(Utility::getNumericConfigError(appConfig, "httpPort",
+                                               tr("HTTP Port"), 1, 65535));
+  errors.append(Utility::getNumericConfigError(appConfig, "socksPort",
+                                               tr("SOCKS Port"), 1, 65535));
   errors.append(Utility::getNumericConfigError(
     appConfig, "pacPort", tr("PAC Server Port"), 1, 65535));
-  if (appConfig["pacPort"].toString() == appConfig["serverPort"].toString()) {
+
+  if (appConfig["httpPort"].toString() == appConfig["socksPort"].toString() ||
+      appConfig["httpPort"].toString() == appConfig["pacPort"].toString() ||
+      appConfig["socksPort"].toString() == appConfig["pacPort"].toString()) {
     errors.append(
-      tr("'PAC Server Port' can not be the same as 'Listening Port'."));
+      tr("'HTTP Port', 'SOCKS Port', and 'PAC Server Port' can not be the same."));
   }
   errors.append(Utility::getStringConfigError(
     appConfig, "dns", tr("DNS Server"),
@@ -333,10 +334,8 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
     pacServer.stop();
   }
   if (proxyMode == "global") {
-    QString protocol = appConfig["serverProtocol"].toString();
-    proxy.port       = appConfig["serverPort"].toInt();
-    proxy.type       = protocol == "SOCKS" ? NetworkProxyType::SOCKS_PROXY
-                                     : NetworkProxyType::HTTP_PROXY;
+    proxy.port = appConfig["serverPort"].toInt();
+    proxy.type = NetworkProxyType::SOCKS_PROXY;
   } else if (proxyMode == "pac") {
     proxy.port = appConfig["pacPort"].toInt();
     proxy.type = NetworkProxyType::PAC_PROXY;
@@ -741,15 +740,16 @@ void AppProxy::upgradeDependency(QString name, QString version) {
   }
   if (name == "v2ray-core") {
 #if defined(Q_OS_WIN)
-    QString operatingSystem = "windows-64";
+    QString operatingSystem = "windows-amd64";
 #elif defined(Q_OS_LINUX)
-    QString operatingSystem = "linux-64";
+    QString operatingSystem = "linux-amd64";
 #elif defined(Q_OS_MAC)
-    QString operatingSystem = "macos";
+    QString operatingSystem = "darwin-amd64";
 #else
     QString operatingSystem = "unknown";
 #endif
-    emit upgradeStarted(name, V2RAY_ASSETS_URL.arg(version, operatingSystem),
+    // TODO
+    emit upgradeStarted(name, V2RAY_ASSETS_URL.arg(version, operatingSystem, version),
                         Configurator::getAppTempDir().filePath(name),
                         getQProxy());
   } else if (name == "v2ray-desktop") {

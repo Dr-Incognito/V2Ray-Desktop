@@ -3,7 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 1.5
+import com.v2ray.desktop.AppProxy 2.0
 
 ColumnLayout {
     anchors.fill: parent
@@ -109,30 +109,6 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("Local Server Protocol")
-            color: "white"
-        }
-
-        ComboBox {
-            id: comboServerProtocol
-            Layout.fillWidth: true
-            model: ListModel{
-                ListElement { text: "SOCKS" }
-                ListElement { text: "HTTP" }
-            }
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-            contentItem: Text {
-                text: comboServerProtocol.displayText
-                color: "white"
-                leftPadding: 10
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
-
-        Label {
             text: qsTr("Listening IP Address")
             color: "white"
         }
@@ -149,16 +125,33 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("Listening Port")
+            text: qsTr("SOCKS Port")
             color: "white"
         }
 
         TextField {
-            id: textServerPort
+            id: textSocksPort
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1080")
             text: "1080"
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+        }
+
+        Label {
+            text: qsTr("HTTP Port")
+            color: "white"
+        }
+
+        TextField {
+            id: textHttpPort
+            color: "white"
+            Layout.fillWidth: true
+            placeholderText: qsTr("Example: 1087")
+            text: "1087"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -215,9 +208,9 @@ ColumnLayout {
                     "autoUpdate": checkboxAutoUpdate.checked,
                     "enableUdp": checkboxEnableUdp.checked,
                     "language": comboLanguage.currentValue,
-                    "serverProtocol": comboServerProtocol.currentText,
                     "serverIp": textServerIpAddr.text,
-                    "serverPort": textServerPort.text,
+                    "httpPort": textHttpPort.text,
+                    "socksPort": textSocksPort.text,
                     "pacPort": textPacServerPort.text,
                     "dns": textDnsServers.text
                 }
@@ -254,9 +247,9 @@ ColumnLayout {
             checkboxAutoUpdate.checked = config["autoUpdate"]
             checkboxEnableUdp.checked = config["enableUdp"]
             comboLanguage.currentIndex = comboLanguage.indexOfValue(config["language"])
-            comboServerProtocol.currentIndex = comboServerProtocol.find(config["serverProtocol"])
             textServerIpAddr.text = config["serverIp"]
-            textServerPort.text = config["serverPort"]
+            textSocksPort.text = config["socksPort"]
+            textHttpPort.text = config["httpPort"]
             textPacServerPort.text = config["pacPort"]
             textDnsServers.text = config["dns"]
         }

@@ -45,6 +45,7 @@ SOURCES += \
 
 include(3rdparty/quazip/quazip/quazip.pri)
 include(3rdparty/qzxing/src/QZXing.pri)
+include(3rdparty/yaml-cpp/yaml-cpp.pri)
 LIBS += -lz
 
 RESOURCES += qml.qrc
