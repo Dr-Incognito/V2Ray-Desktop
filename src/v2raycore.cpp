@@ -14,9 +14,9 @@
 V2RayCore::V2RayCore() {
   QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
 #if defined(Q_OS_WIN)
-  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("clash.exe");
+  v2RayExecFilePath = QDir(v2RayInstallFolderPath).filePath("clash.exe");
 #elif defined(Q_OS_LINUX) or defined(Q_OS_MAC)
-  v2RayExecFilePath    = QDir(v2RayInstallFolderPath).filePath("clash");
+  v2RayExecFilePath = QDir(v2RayInstallFolderPath).filePath("clash");
 #endif
   QDir v2RayInstallFolder(v2RayInstallFolderPath);
   // Create the install folder if not exists

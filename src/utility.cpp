@@ -101,7 +101,7 @@ bool Utility::isServerNameNotUsed(const QString& serverName) {
 
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server  = (*itr).toObject();
-    QString _serverName = server["serverName"].toString();
+    QString _serverName = server["name"].toString();
     if (serverName == _serverName) {
       return false;
     }
