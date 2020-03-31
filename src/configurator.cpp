@@ -17,9 +17,9 @@ QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"autoUpdate", DEFAULT_AUTO_UPDATE},
   {"enableUdp", DEFAULT_ENABLE_UDP},
   {"language", ""},
-  {"serverProtocol", DEFAULT_SERVER_PROTOCOL},
   {"serverIp", DEFAULT_SERVER_IP},
-  {"serverPort", DEFAULT_SERVER_PORT},
+  {"httpPort", DEFAULT_HTTP_PORT},
+  {"socksPort", DEFAULT_SOCKS_PORT},
   {"pacPort", DEFAULT_PAC_PORT},
   {"dns", DEFAULT_DNS_SERVER},
   {"proxyMode", DEFAULT_PROXY_MODE},
@@ -171,25 +171,39 @@ void Configurator::setAppConfig(QJsonObject config) {
 
 QJsonObject Configurator::getV2RayConfig() {
   QJsonObject appConfig = getAppConfig();
-  QJsonObject v2RayConfig{
-    {"log",
-     QJsonObject{{"loglevel", "info"}, {"error", getV2RayLogFilePath()}}},
-    {"inbounds",
-     QJsonArray{QJsonObject{
-       {"listen", appConfig["serverIp"].toString()},
-       {"protocol", appConfig["serverProtocol"].toString().toLower()},
-       {"port", appConfig["serverPort"].toInt()},
-       {"settings", QJsonObject{{"udp", appConfig["enableUdp"].toBool()}}},
-     }}},
-    {"outbounds", getConnectedServers()},
-    {"dns", QJsonObject{{"servers",
-                         getPrettyDnsServers(appConfig["dns"].toString())}}},
-    {"routing",
-     QJsonObject{{"strategy", "rules"},
-                 {"settings", QJsonObject{{"domainStrategy", "IPIfNonMatch"},
-                                          {"rules", getRules()}}}}}};
+  QJsonArray connectedServerNames;
+  for (QString csn : getConnectedServerNames()) {
+    connectedServerNames.append(csn);
+  }
+
+  QJsonObject v2RayConfig {
+    {"port", appConfig["httpPort"].toInt()},
+    {"socks-port", appConfig["socksPort"].toInt()},
+    {"allow-lan", true},
+    {"bind-address", appConfig["serverIp"].toString()},
+    {"mode", "Rule"},
+    {"log-level", "info"},
+    {"dns", QJsonObject {
+      {"enable", true},
+      {"listen", "0.0.0.0:53"},
+      {"nameserver", getPrettyDnsServers(appConfig["dns"].toString())}}
+    },
+    {"proxies", getConnectedServers()},
+    {"proxy-groups", QJsonArray {
+      {QJsonObject {
+        {"name", "PROXY"},
+        {"type", "load-balance"},
+        {"proxies", connectedServerNames},
+        {"url", "http://www.gstatic.com/generate_204"},
+        {"interval", 300}
+      }}
+    }},
+    {"rules", getRules()}};
+
   return v2RayConfig;
 }
+
+
 
 QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
   QJsonArray dnsServers;
@@ -331,8 +345,6 @@ QJsonArray Configurator::getConnectedServers() {
       connectedServers.append(server);
     }
   }
-  connectedServers.append(
-    QJsonObject{{"tag", "direct"}, {"protocol", "freedom"}});
   return connectedServers;
 }
 
@@ -350,12 +362,12 @@ void Configurator::setServerConnection(QString serverName, bool connected) {
 }
 
 QJsonArray Configurator::getRules() {
-  // Ref: https://v2ray.com/chapter_02/03_routing.html
   QJsonArray rules;
-  rules.append(
-    QJsonObject{{"outboundTag", "direct"},
-                {"type", "field"},
-                {"ip", QJsonArray{"geoip:cn", "geoip:private"}},
-                {"domain", QJsonArray{"geosite:cn", "geosite:speedtest"}}});
+  rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
+  rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
+  rules.append("IP-CIDR, 172.16.0.0/12, DIRECT");
+  rules.append("IP-CIDR, 192.168.0.0/16, DIRECT");
+  rules.append("GEOIP, CN, DIRECT");
+  rules.append("FINAL, , PROXY");
   return rules;
 }

@@ -4,3 +4,6 @@
 [submodule "src/3rdparty/qzxing"]
 	path = src/3rdparty/qzxing
 	url = https://github.com/ftylitak/qzxing.git
+[submodule "src/3rdparty/yaml-cpp"]
+	path = src/3rdparty/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

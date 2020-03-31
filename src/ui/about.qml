@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import com.v2ray.desktop.AppProxy 1.5
+import com.v2ray.desktop.AppProxy 2.0
 
 ColumnLayout {
     anchors.fill: parent
@@ -83,7 +83,7 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("V2Ray Core Version")
+            text: qsTr("Clash Version")
             color: "white"
             font.bold: true
         }
