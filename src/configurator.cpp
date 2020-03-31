@@ -40,8 +40,8 @@ QStringList Configurator::getAutoConnectServers() {
   QJsonArray servers = getServers();
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
-    if (server["autoConnect"].toBool() && server.contains("serverName")) {
-      autoConnectedServers.append(server["serverName"].toString());
+    if (server["autoConnect"].toBool() && server.contains("name")) {
+      autoConnectedServers.append(server["name"].toString());
     }
   }
   return autoConnectedServers;
@@ -184,7 +184,7 @@ QJsonObject Configurator::getV2RayConfig() {
     {"mode", "Rule"},
     {"log-level", "info"},
     {"dns", QJsonObject {
-      {"enable", true},
+      {"enable", false},
       {"listen", "0.0.0.0:53"},
       {"nameserver", getPrettyDnsServers(appConfig["dns"].toString())}}
     },
@@ -227,8 +227,8 @@ QJsonObject Configurator::getServer(QString serverName) {
   QJsonObject server;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject _server = (*itr).toObject();
-    if (_server.contains("serverName") &&
-        _server["serverName"].toString() == serverName) {
+    if (_server.contains("name") &&
+        _server["name"].toString() == serverName) {
       server = (*itr).toObject();
       break;
     }
@@ -263,8 +263,8 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
   bool isEdited      = false;
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
-    if (server.contains("serverName") &&
-        server["serverName"].toString() == serverName) {
+    if (server.contains("name") &&
+        server["name"].toString() == serverName) {
       serverConfig["subscription"] = server.contains("subscription")
                                        ? server["subscription"].toString()
                                        : "";
@@ -275,7 +275,7 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
   // Update the server in connected servers
   if (connectedServerNames.contains(serverName)) {
     connectedServerNames.removeAt(connectedServerNames.indexOf(serverName));
-    connectedServerNames.append(serverConfig["serverName"].toString());
+    connectedServerNames.append(serverConfig["name"].toString());
   }
   // Update servers in the config
   setAppConfig(QJsonObject{{"servers", servers}});
@@ -287,8 +287,8 @@ int Configurator::removeServer(QString serverName) {
   int serverIndex    = -1;
   for (int i = 0; i < servers.size(); ++i) {
     QJsonObject server = servers[i].toObject();
-    if (server.contains("serverName") &&
-        server["serverName"].toString() == serverName) {
+    if (server.contains("name") &&
+        server["name"].toString() == serverName) {
       serverIndex = i;
       break;
     }
@@ -312,7 +312,7 @@ QMap<QString, QJsonObject> Configurator::removeSubscriptionServers(
   for (int i = 0; i < servers.size(); ++i) {
     QJsonObject server = servers[i].toObject();
     QString serverName =
-      server.contains("serverName") ? server["serverName"].toString() : "";
+      server.contains("name") ? server["name"].toString() : "";
 
     if (server.contains("subscription") &&
         server["subscription"].toString() == subscriptionUrl) {
@@ -338,7 +338,7 @@ QJsonArray Configurator::getConnectedServers() {
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
     QString serverName =
-      server.contains("serverName") ? server["serverName"].toString() : "";
+      server.contains("name") ? server["name"].toString() : "";
 
     if (connectedServerNames.contains(serverName)) {
       server.remove("autoConnect");

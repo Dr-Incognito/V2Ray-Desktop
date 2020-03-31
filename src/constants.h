@@ -30,7 +30,7 @@ static const QString LOCALE_DIR               = "locales";
 static const QString V2RAY_CORE_LOG_FILE_NAME = "clash.log";
 static const QString V2RAY_CORE_CFG_FILE_NAME = "config.yaml";
 static const QString APP_LOG_FILE_NAME        = "v2ray-desktop.log";
-static const QString APP_CFG_FILE_NAME        = "v2ray-desktop-config.json";
+static const QString APP_CFG_FILE_NAME        = "config.json";
 static const QString GFW_LIST_FILE_NAME       = "gfwlist.txt";
 
 static const int DEFAULT_V2RAY_KCP_MTU            = 1350;

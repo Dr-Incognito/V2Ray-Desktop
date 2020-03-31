@@ -1069,6 +1069,48 @@ ColumnLayout {
                         }
                     }
 
+                    Label {
+                        text: qsTr("Obfuscate Mode")
+                        color: "white"
+                    }
+
+                    ComboBox {
+                        id: comboObfsMode
+                        Layout.fillWidth: true
+                        textRole: "text"
+                        valueRole: "value"
+                        model: ListModel{
+                            ListElement { text: "Disabled"; value: "" }
+                            ListElement { text: "TLS"; value: "tls" }
+                            ListElement { text: "HTTP"; value: "http" }
+                        }
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                        contentItem: Text {
+                            text: comboObfsMode.displayText
+                            color: "white"
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("Obfuscate Host")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textObfsHost
+                        color: "white"
+                        Layout.fillWidth: true
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
                     Button {
                         id: buttonShadowsocksAddServer
                         text: qsTr("Add Server")
@@ -1088,7 +1130,11 @@ ColumnLayout {
                                 "serverPort": textShadowsocksServerPort.text,
                                 "autoConnect": checkboxShadowsocksAutoConnect.checked,
                                 "encryption": comboShadowsocksEncryptionMethod.currentText,
-                                "password": textShadowsocksPassword.text
+                                "password": textShadowsocksPassword.text,
+                                "plugins": {
+                                    "obfs": comboObfsMode.currentValue,
+                                    "host": textObfsHost.text
+                                }
                             }
                             if (buttonShadowsocksAddServer.text === qsTr("Add Server")) {
                                 AppProxy.addShadowsocksServer(JSON.stringify(server))
@@ -1422,39 +1468,30 @@ ColumnLayout {
         target: AppProxy
 
         function getServerPrettyInformation(server) {
-            var serverAddress, serverPort, serverName, status, latency
-            if (server["protocol"] === "vmess") {
-                serverAddress = server["settings"]["vnext"][0]["address"]
-                serverPort = server["settings"]["vnext"][0]["port"]
-                serverName = server["serverName"] || serverAddress
-                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
+            var serverAddress = server["server"],
+                serverPort = server["port"],
+                serverName = server["name"] || serverAddress,
+                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected"),
                 latency = "latency" in server ?
                             (server["latency"] === -1 ?
                                  qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
 
-                return [
-                    {value: serverName},
-                    {value: serverAddress + ":" + serverPort},
-                    {value: "V2Ray"},
-                    {value: status},
-                    {value: latency}
-                ]
-            } else if (server["protocol"] === "shadowsocks") {
-                serverAddress = server["settings"]["servers"][0]["address"]
-                serverPort = server["settings"]["servers"][0]["port"]
-                serverName = server["serverName"] || serverAddress
-                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected")
-                latency = "latency" in server ?
-                            (server["latency"] === -1 ?
-                                 qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
-                return [
-                    {value: serverName},
-                    {value: serverAddress + ":" + serverPort},
-                    {value: "Shadowsocks"},
-                    {value: status},
-                    {value: latency}
-                ]
+            var protocol = ""
+            if (server["type"] === "ss") {
+                protocol = "Shadowsocks"
+            } else if (server["type"] === "vmess") {
+                protocol = "V2Ray"
+            } else if (server["type"] === "trojan") {
+                protocol = "Trojan"
             }
+
+            return [
+                {value: serverName},
+                {value: serverAddress + ":" + serverPort},
+                {value: protocol},
+                {value: status},
+                {value: latency}
+            ]
         }
 
         function getSubscriptionUrls(servers) {
@@ -1574,7 +1611,7 @@ ColumnLayout {
             layoutServer.resetPopUpServerFields("serverName" in server ? "edit" : "add")
 
             // Set correct form in pop up window
-            var protocol = server["protocol"]
+            var protocol = server["type"]
             if (protocol === "vmess") {
                 comboAddServerMethod.currentIndex = 0
                 textV2RayServerName.text = server["serverName"] || ""
@@ -1624,18 +1661,21 @@ ColumnLayout {
                         server["streamSettings"]["quicSettings"]["header"])
                     textV2RayQuicKey.text = server["streamSettings"]["quicSettings"]["key"]
                 }
-            } else if (protocol === "shadowsocks") {
+            } else if (protocol === "ss") {
                 comboAddServerMethod.currentIndex = 1
-                textShadowsocksServerName.text = server["serverName"] || ""
-                textShadowsocksServerAddr.text = server["settings"]["servers"][0]["address"]
-                textShadowsocksServerPort.text = server["settings"]["servers"][0]["port"]
+                textShadowsocksServerName.text = server["name"] || ""
+                textShadowsocksServerAddr.text = server["server"]
+                textShadowsocksServerPort.text = server["port"]
                 checkboxShadowsocksAutoConnect.checked = server["autoConnect"]
                 comboShadowsocksEncryptionMethod.currentIndex =
                     comboShadowsocksEncryptionMethod.find(
-                        server["settings"]["servers"][0]["method"].toUpperCase())
-                textShadowsocksPassword.text = server["settings"]["servers"][0]["password"]
+                        server["cipher"].toUpperCase())
+                textShadowsocksPassword.text = server["password"]
+                comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
+                    server["plugin-opts"]["mode"])
+                textObfsHost.text = server["plugin-opts"]["host"]
             }
-            popUpServer.editServerName = server["serverName"] || ""
+            popUpServer.editServerName = server["name"] || ""
             popUpServer.open()
         }
     }
@@ -1677,6 +1717,8 @@ ColumnLayout {
         checkboxShadowsocksAutoConnect.checked = false
         comboShadowsocksEncryptionMethod.currentIndex = 0
         textShadowsocksPassword.text = ""
+        comboObfsMode.currentIndex = 0
+        textObfsHost.text = ""
         // Clear text fields for subscrption
         textSubsriptionUrl.text = ""
         // Clear text fields for config files
