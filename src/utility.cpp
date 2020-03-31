@@ -42,7 +42,11 @@ QString Utility::getStringConfigError(
   const QString& key,
   const QString& name,
   const QList<std::function<bool(const QString&)>>& checkpoints,
+  bool allowEmpty,
   const QString& notPassedMsg) {
+  if (allowEmpty && config[key].toString().isEmpty()) {
+    return "";
+  }
   if (!config.contains(key) || config[key].toString().isEmpty()) {
     return QString(tr("Missing the value of '%1'.")).arg(name);
   }
@@ -103,6 +107,28 @@ bool Utility::isServerNameNotUsed(const QString& serverName) {
     QJsonObject server  = (*itr).toObject();
     QString _serverName = server["name"].toString();
     if (serverName == _serverName) {
+      return false;
+    }
+  }
+  return true;
+}
+
+QStringList Utility::getAlpn(const QString& alpn) {
+  QStringList alpns;
+  for (QString a : alpn.split(";")) {
+    if (a.isEmpty()) {
+      continue;
+    }
+    alpns.append(a.trimmed());
+  }
+  return alpns;
+}
+
+bool Utility::isAlpnValid(const QString& alpn) {
+  static const QStringList ALPN_CANDIDATES = {"h2", "http/1.1"};
+  QStringList alpns                        = getAlpn(alpn);
+  for (QString a : alpns) {
+    if (!ALPN_CANDIDATES.contains(a)) {
       return false;
     }
   }

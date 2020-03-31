@@ -14,8 +14,6 @@
 QJsonObject Configurator::DEFAULT_APP_CONFIG = {
   {"autoStart", DEFAULT_AUTO_START},
   {"hideWindow", DEFAULT_HIDE_WINDOW},
-  {"autoUpdate", DEFAULT_AUTO_UPDATE},
-  {"enableUdp", DEFAULT_ENABLE_UDP},
   {"language", ""},
   {"serverIp", DEFAULT_SERVER_IP},
   {"httpPort", DEFAULT_HTTP_PORT},

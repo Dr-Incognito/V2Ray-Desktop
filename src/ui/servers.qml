@@ -292,6 +292,10 @@ ColumnLayout {
                                 value: "shadowsocks-manual"
                             }
                             ListElement {
+                                text: qsTr("Manually setting up a Trojan server");
+                                value: "trojan-manual"
+                            }
+                            ListElement {
                                 text: qsTr("Subscription URL");
                                 value: "subscription"
                             }
@@ -317,6 +321,7 @@ ColumnLayout {
                         onCurrentValueChanged: function() {
                             layoutServerV2rayManually.visible = false
                             layoutServerShadowsocksManually.visible = false
+                            layoutServerTrojanManually.visible = false
                             layoutServerSubscriptionUrl.visible = false
                             layoutServerJsonFiles.visible = false
                             labelServerConfigErrorMsg.visible = false
@@ -325,6 +330,8 @@ ColumnLayout {
                                 layoutServerV2rayManually.visible = true
                             } else if ( comboAddServerMethod.currentValue === "shadowsocks-manual" ) {
                                 layoutServerShadowsocksManually.visible = true
+                            } else if ( comboAddServerMethod.currentValue === "trojan-manual" ) {
+                                layoutServerTrojanManually.visible = true
                             } else if ( comboAddServerMethod.currentValue === "subscription" ) {
                                 layoutServerSubscriptionUrl.visible = true
                             } else {
@@ -481,7 +488,7 @@ ColumnLayout {
                     }
 
                     CheckBox {
-                        id: checkboxEnableUdp
+                        id: checkboxV2RayEnableUdp
                         leftPadding: -3
                     }
 
@@ -616,7 +623,7 @@ ColumnLayout {
                                 "id": textV2RayId.text,
                                 "alterId": textV2RayAlterId.text,
                                 "security": comboV2RaySecurity.currentText,
-                                "udp": checkboxEnableUdp.checked,
+                                "udp": checkboxV2RayEnableUdp.checked,
                                 "network": comboV2RayNetwork.currentValue,
                                 "networkSecurity": comboV2RayNetworkSecurity.currentText,
                                 "allowInsecure": checkboxV2RayAllowInsecure.checked,
@@ -624,9 +631,9 @@ ColumnLayout {
                                 "networkPath": textV2RayNetworkPath.text
                             }
                             if (buttonV2RayAddServer.text === qsTr("Add Server")) {
-                                AppProxy.addV2RayServer(JSON.stringify(server))
+                                AppProxy.addServer("V2Ray", JSON.stringify(server))
                             } else {
-                                AppProxy.editServer(popUpServer.editServerName, "vmess", JSON.stringify(server))
+                                AppProxy.editServer(popUpServer.editServerName, "V2Ray", JSON.stringify(server))
                             }
                         }
                     }
@@ -827,9 +834,176 @@ ColumnLayout {
                                 }
                             }
                             if (buttonShadowsocksAddServer.text === qsTr("Add Server")) {
-                                AppProxy.addShadowsocksServer(JSON.stringify(server))
+                                AppProxy.addServer("Shadowsocks", JSON.stringify(server))
                             } else {
-                                AppProxy.editServer(popUpServer.editServerName, "shadowsocks", JSON.stringify(server))
+                                AppProxy.editServer(popUpServer.editServerName, "Shadowsocks", JSON.stringify(server))
+                            }
+                        }
+                    }
+                }
+
+                GridLayout {
+                    id: layoutServerTrojanManually
+                    columns: 4
+                    flow: GridLayout.LeftToRight
+                    rowSpacing: 20
+                    columnSpacing: 20
+                    visible: false
+
+                    Label {
+                        text: qsTr("Server Name")
+                        color: "white"
+                        width: labelAddServerMethod.width
+                    }
+
+                    TextField {
+                        id: textTrojanServerName
+                        color: "white"
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Example: HongKong-Server-1")
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("Auto Connect")
+                        color: "white"
+                    }
+
+                    CheckBox {
+                        id: checkboxTrojanAutoConnect
+                        leftPadding: -2
+                    }
+
+                    Label {
+                        text: qsTr("Server Address")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textTrojanServerAddr
+                        color: "white"
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Example: hk.example.com")
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("Server Port")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textTrojanServerPort
+                        color: "white"
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Example: 443")
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("Password")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textTrojanPassword
+                        color: "white"
+                        Layout.fillWidth: true
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("UDP")
+                        color: "white"
+                    }
+
+                    CheckBox {
+                        id: checkboxTrojanEnableUdp
+                        leftPadding: -3
+                    }
+
+                    Label {
+                        text: qsTr("SNI")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textTrojanSni
+                        color: "white"
+                        Layout.fillWidth: true
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        text: qsTr("Allow Insecure")
+                        color: "white"
+                    }
+
+                    CheckBox {
+                        id: checkboxTrojanAllowInsecure
+                        leftPadding: -3
+                    }
+
+                    Label {
+                        text: qsTr("ALPN Protocols")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textTrojanAlpn
+                        color: "white"
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 3
+                        placeholderText: qsTr("Example: h2; http/1.1")
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Button {
+                        id: buttonTrojanAddServer
+                        text: qsTr("Add Server")
+                        contentItem: Text {
+                            text: parent.text
+                            color: "white"
+                        }
+                        background: Rectangle {
+                            color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
+                            radius: 4
+                        }
+                        onClicked: function() {
+                            buttonTrojanAddServer.enabled = false
+                            var server = {
+                                "serverName": textTrojanServerName.text,
+                                "serverAddr": textTrojanServerAddr.text,
+                                "serverPort": textTrojanServerPort.text,
+                                "autoConnect": checkboxTrojanAutoConnect.checked,
+                                "password": textTrojanPassword.text,
+                                "sni": textTrojanSni.text,
+                                "udp": checkboxTrojanEnableUdp.checked,
+                                "alpn": textTrojanAlpn.text,
+                                "allowInsecure": checkboxTrojanAllowInsecure.checked
+                            }
+                            if (buttonTrojanAddServer.text === qsTr("Add Server")) {
+                                AppProxy.addServer("Trojan", JSON.stringify(server))
+                            } else {
+                                AppProxy.editServer(popUpServer.editServerName, "Trojan", JSON.stringify(server))
                             }
                         }
                     }
@@ -1207,7 +1381,9 @@ ColumnLayout {
             var i = 0,
                 subscriptionUrls = getSubscriptionUrls(servers)
             for (i = 0; i < servers.length; ++ i) {
-                listModelServers.append({values: getServerPrettyInformation(servers[i])})
+                if ('name' in servers[i]) {
+                  listModelServers.append({values: getServerPrettyInformation(servers[i])})
+                }
             }
             for (i = 0; i < subscriptionUrls.length; ++ i) {
                 listModelSubscriptions.append({values: [
@@ -1236,7 +1412,7 @@ ColumnLayout {
 
         onServerConfigError: function(errorMsg) {
             var popUpButtons = [
-                buttonV2RayAddServer, buttonShadowsocksAddServer,
+                buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
                 buttonSubscriptionAddServer, buttonConfigAddServer,
                 buttonSyncServers, menuItemSyncServers
             ]
@@ -1311,7 +1487,7 @@ ColumnLayout {
                 textV2RayId.text = server["uuid"]
                 textV2RayAlterId.text = server["alterId"]
                 comboV2RaySecurity.currentIndex = comboV2RaySecurity.indexOfValue(server["cipher"])
-                checkboxEnableUdp.checked = server["udp"]
+                checkboxV2RayEnableUdp.checked = server["udp"]
                 comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(server["network"])
                 comboV2RayNetworkSecurity.currentIndex = server["tls"] ? 1 : 0
                 checkboxV2RayAllowInsecure.checked = server["skip-cert-verify"]
@@ -1332,6 +1508,7 @@ ColumnLayout {
                 comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
                     server["plugin-opts"]["mode"])
                 textObfsHost.text = server["plugin-opts"]["host"]
+            } else if (protocol === "trojan") {
             }
             popUpServer.editServerName = server["name"] || ""
             popUpServer.open()
@@ -1350,7 +1527,7 @@ ColumnLayout {
         checkboxV2RayAutoConnect.checked = false
         textV2RayId.text = ""
         textV2RayAlterId.text = ""
-        checkboxEnableUdp.checked = false
+        checkboxV2RayEnableUdp.checked = false
         comboV2RaySecurity.currentIndex = 0
         comboV2RayNetwork.currentIndex = 0
         comboV2RayNetworkSecurity.currentIndex = 0
@@ -1366,6 +1543,16 @@ ColumnLayout {
         textShadowsocksPassword.text = ""
         comboObfsMode.currentIndex = 0
         textObfsHost.text = ""
+        // Clear text fields for Trojan
+        textTrojanServerName.text = ""
+        checkboxTrojanAutoConnect.checked = false
+        textTrojanServerAddr.text = ""
+        textTrojanServerPort.text = ""
+        textTrojanPassword.text = ""
+        textTrojanSni.text = ""
+        checkboxTrojanEnableUdp.checked = false
+        textTrojanAlpn.text = ""
+        checkboxTrojanAllowInsecure.checked = false
         // Clear text fields for subscrption
         textSubsriptionUrl.text = ""
         // Clear text fields for config files
@@ -1373,7 +1560,7 @@ ColumnLayout {
         // Initialize controls for editing or creating
         var i = 0,
             popUpButtons = [
-                buttonV2RayAddServer, buttonShadowsocksAddServer,
+                buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
                 buttonSubscriptionAddServer, buttonConfigAddServer
             ]
         for (i = 0; i < popUpButtons.length; ++ i) {

@@ -440,46 +440,30 @@ void AppProxy::setServerConnection(QString serverName, bool connected) {
   emit serverConnectivityChanged(serverName, connected);
 }
 
-void AppProxy::addV2RayServer(QString configString) {
+void AppProxy::addServer(QString protocol, QString configString) {
+  ServerConfigHelper::Protocol _protocol =
+    ServerConfigHelper::getProtocol(protocol);
   QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
   QJsonObject serverConfig = configDoc.object();
   // Check server config before saving
-  QStringList serverConfigErrors = ServerConfigHelper::getServerConfigErrors(
-    ServerConfigHelper::Protocol::VMESS, serverConfig);
+  QStringList serverConfigErrors =
+    ServerConfigHelper::getServerConfigErrors(_protocol, serverConfig);
   if (serverConfigErrors.size() > 0) {
     emit serverConfigError(serverConfigErrors.join('\n'));
     return;
   }
   // Save server config
-  configurator.addServer(ServerConfigHelper::getPrettyServerConfig(
-    ServerConfigHelper::Protocol::VMESS, serverConfig));
+  configurator.addServer(
+    ServerConfigHelper::getPrettyServerConfig(_protocol, serverConfig));
   emit serversChanged();
-  qInfo() << QString("Add new V2Ray server [Name=%1, Addr=%2].")
-               .arg(serverConfig["serverName"].toString(),
-                    serverConfig["serverAddr"].toString());
-}
-
-void AppProxy::addShadowsocksServer(QString configString) {
-  QJsonDocument configDoc  = QJsonDocument::fromJson(configString.toUtf8());
-  QJsonObject serverConfig = configDoc.object();
-  // Check server config before saving
-  QStringList serverConfigErrors = ServerConfigHelper::getServerConfigErrors(
-    ServerConfigHelper::Protocol::SHADOWSOCKS, serverConfig);
-  if (serverConfigErrors.size() > 0) {
-    emit serverConfigError(serverConfigErrors.join('\n'));
-    return;
-  }
-  // Save server config
-  configurator.addServer(ServerConfigHelper::getPrettyServerConfig(
-    ServerConfigHelper::Protocol::SHADOWSOCKS, serverConfig));
-  emit serversChanged();
-  qInfo() << QString("Add new Shadowsocks server [Name=%1, Addr=%2].")
-               .arg(serverConfig["serverName"].toString(),
+  qInfo() << QString("Add new %1 server [Name=%2, Addr=%3].")
+               .arg(protocol, serverConfig["serverName"].toString(),
                     serverConfig["serverAddr"].toString());
 }
 
 void AppProxy::addServerUrl(QString serverUrl) {
-  if (serverUrl.startsWith("vmess://") || serverUrl.startsWith("ss://")) {
+  if (serverUrl.startsWith("vmess://") || serverUrl.startsWith("ss://") ||
+      serverUrl.startsWith("trojan://")) {
     addSubscriptionServers(serverUrl);
   } else {
     addSubscriptionUrl(serverUrl);
@@ -531,6 +515,8 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
       protocol = ServerConfigHelper::Protocol::SHADOWSOCKS;
     } else if (server.startsWith("vmess://")) {
       protocol = ServerConfigHelper::Protocol::VMESS;
+    } else if (server.startsWith("trojan://")) {
+      protocol = ServerConfigHelper::Protocol::TROJAN;
     }
     QJsonObject serverConfig = ServerConfigHelper::getServerConfigFromUrl(
       protocol, server, subsriptionUrl);
