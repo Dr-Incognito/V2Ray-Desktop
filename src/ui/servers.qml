@@ -1177,6 +1177,25 @@ ColumnLayout {
                 }
 
                 Button {
+                    text: qsTr("Add Subscription")
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                    }
+                    background: Rectangle {
+                        color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
+                        radius: 4
+                    }
+                    onClicked: function() {
+                        popUpSubscription.close()
+
+                        layoutServer.resetPopUpServerFields("add")
+                        comboAddServerMethod.currentIndex = 3
+                        popUpServer.open()
+                    }
+                }
+
+                Button {
                     id: buttonSyncServers
                     text: qsTr("Sync Servers")
                     contentItem: Text {
@@ -1511,6 +1530,16 @@ ColumnLayout {
                   textObfsHost.text = server["plugin-opts"]["host"] || ""
                 }
             } else if (protocol === "trojan") {
+                comboAddServerMethod.currentIndex = 2
+                textTrojanServerName.text = server["name"] || ""
+                textTrojanServerAddr.text = server["server"]
+                textTrojanServerPort.text = server["port"]
+                checkboxTrojanAutoConnect.checked = server["autoConnect"]
+                textTrojanPassword.text = server["password"]
+                textTrojanSni.text = server["sni"]
+                textTrojanAlpn.text = server["alpn"].join("; ")
+                checkboxTrojanEnableUdp.checked = server["udp"]
+                checkboxTrojanAllowInsecure.checked = server["skip-cert-verify"]
             }
             popUpServer.editServerName = server["name"] || ""
             popUpServer.open()

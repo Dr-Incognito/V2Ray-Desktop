@@ -506,8 +506,10 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
     return;
   }
   // Remove servers from the subscription if exists
-  QMap<QString, QJsonObject> removedServers =
+  QMap<QString, QJsonObject> removedServers;
+  if (!subsriptionUrl.isEmpty()) {
     configurator.removeSubscriptionServers(subsriptionUrl);
+  }
   // Add new servers
   int nImportedServers = 0;
   QStringList servers  = subsriptionServers.split('\n');
