@@ -830,7 +830,7 @@ ColumnLayout {
                                 "password": textShadowsocksPassword.text,
                                 "plugins": {
                                     "obfs": comboObfsMode.currentValue,
-                                    "host": textObfsHost.text
+                                    "obfs-host": textObfsHost.text
                                 }
                             }
                             if (buttonShadowsocksAddServer.text === qsTr("Add Server")) {
