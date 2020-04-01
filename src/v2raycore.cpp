@@ -10,6 +10,7 @@
 #include "configurator.h"
 #include "constants.h"
 #include "utility.h"
+#include "yamlhelper.h"
 
 V2RayCore::V2RayCore() {
   QString v2RayInstallFolderPath = Configurator::getV2RayInstallDirPath();
@@ -62,10 +63,9 @@ bool V2RayCore::start() {
   QJsonObject v2RayConfig = configurator.getV2RayConfig();
   QString configFilePath  = Configurator::getV2RayConfigFilePath();
   QFile configFile(Configurator::getV2RayConfigFilePath());
-  // TODO: JSON -> YAML
-  // configFile.open(QFile::WriteOnly);
-  // configFile.write();
-  // configFile.flush();
+  configFile.open(QFile::WriteOnly);
+  configFile.write(YamlHelper::fromJsonObject(v2RayConfig).toLocal8Bit());
+  configFile.flush();
 
   // Start Clash
   QStringList arguments;

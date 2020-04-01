@@ -180,7 +180,7 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
   QJsonObject serverConfig{
     {"autoConnect", false},
     {"serverName", rawServerConfig.contains("ps")
-                     ? rawServerConfig["ps"].toString()
+                     ? rawServerConfig["ps"].toString().trimmed()
                      : serverAddr},
     {"serverAddr", serverAddr},
     {"serverPort", rawServerConfig.contains("port")
@@ -275,7 +275,7 @@ QJsonObject ServerConfigHelper::getShadowsocksServerConfigFromUrl(
   QString plugins =
     serverUrl.mid(questionMarkIndex + 1, sharpIndex - questionMarkIndex - 1);
   QString serverName =
-    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8());
+    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8()).trimmed();
 
   colonIndex         = confidential.indexOf(':');
   QString encryption = confidential.left(colonIndex);
@@ -333,7 +333,8 @@ QStringList ServerConfigHelper::getTrojanServerConfigErrors(
     {
       std::bind(&Utility::isIpAddrValid, std::placeholders::_1),
       std::bind(&Utility::isDomainNameValid, std::placeholders::_1),
-    }, true));
+    },
+    true));
   errors.append(Utility::getStringConfigError(
     serverConfig, "alpn", tr("ALPN"),
     {
@@ -368,8 +369,6 @@ QJsonObject ServerConfigHelper::getPrettyTrojanConfig(
     {"alpn", alpn},
     {"skip-cert-verify", serverConfig["allowInsecure"].toString()}};
 
-  qDebug() << "serverConfig: " << serverConfig;
-  qDebug() << "prettyServerCfg: " << prettyServerCfg;
   return prettyServerCfg;
 }
 
@@ -385,7 +384,7 @@ QJsonObject ServerConfigHelper::getTrojanServerConfigFromUrl(
   QString serverPort =
     serverUrl.mid(colonIndex + 1, sharpIndex - colonIndex - 1);
   QString serverName =
-    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8());
+    QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8()).trimmed();
 
   return QJsonObject{{"serverName", serverName},
                      {"autoConnect", false},
@@ -549,7 +548,7 @@ QList<QJsonObject> ServerConfigHelper::getServerConfigFromShadowsocksQt5Config(
   for (auto itr = serversConfig.begin(); itr != serversConfig.end(); ++itr) {
     QJsonObject server       = (*itr).toObject();
     QJsonObject serverConfig = {
-      {"serverName", server["remarks"].toString()},
+      {"serverName", server["remarks"].toString().trimmed()},
       {"serverAddr", server["server"].toString()},
       {"serverPort", QString::number(server["server_port"].toInt())},
       {"encryption", server["method"].toString()},
