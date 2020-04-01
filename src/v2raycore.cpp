@@ -20,10 +20,19 @@ V2RayCore::V2RayCore() {
   v2RayExecFilePath = QDir(v2RayInstallFolderPath).filePath("clash");
 #endif
   QDir v2RayInstallFolder(v2RayInstallFolderPath);
-  // Create the install folder if not exists
+  // Create the install folder and copy the Country.mmdb file
   if (!v2RayInstallFolder.exists()) {
     v2RayInstallFolder.mkpath(".");
   }
+  QString configFilePath = Configurator::getV2RayConfigFilePath();
+  QString srcMmdbFilePath =
+    QDir(v2RayInstallFolderPath).filePath("Country.mmdb");
+  QString dstMmdbFilePath =
+    QFileInfo(configFilePath).dir().filePath("Country.mmdb");
+  if (QFile(srcMmdbFilePath).exists() && !QFile(dstMmdbFilePath).exists()) {
+    QFile::copy(srcMmdbFilePath, dstMmdbFilePath);
+  }
+
   // Initialize QProcess
   v2rayProcess = new QProcess();
 }
