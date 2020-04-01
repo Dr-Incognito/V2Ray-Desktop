@@ -15,29 +15,11 @@ void AppProxyWorker::getServerLatency(QJsonArray servers) {
   for (auto itr = servers.begin(); itr != servers.end(); ++itr) {
     QJsonObject server = (*itr).toObject();
     QString serverName = server["name"].toString();
-    int latency =
-      NetworkRequest::getLatency(getServerAddr(server), getServerPort(server));
+    int latency        = NetworkRequest::getLatency(server["server"].toString(),
+                                             server["port"].toInt());
     serverLatency[serverName] = latency;
   }
   emit serverLatencyReady(serverLatency);
-}
-
-QString AppProxyWorker::getServerAddr(QJsonObject server) {
-  QString protocol     = server["protocol"].toString();
-  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
-  QJsonObject settings = server["settings"].toObject();
-  QJsonArray servers   = settings[keyName].toArray();
-  QJsonObject _server  = servers.at(0).toObject();
-  return _server["address"].toString();
-}
-
-int AppProxyWorker::getServerPort(QJsonObject server) {
-  QString protocol     = server["protocol"].toString();
-  QString keyName      = protocol == "vmess" ? "vnext" : "servers";
-  QJsonObject settings = server["settings"].toObject();
-  QJsonArray servers   = settings[keyName].toArray();
-  QJsonObject _server  = servers.at(0).toObject();
-  return _server["port"].toInt();
 }
 
 void AppProxyWorker::getGfwList(QString gfwListUrl, QNetworkProxy proxy) {
@@ -94,7 +76,7 @@ void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
     int cnt                    = 0;
     for (auto itr = _logList.end() - 1;
          itr >= _logList.begin() && cnt <= MAX_N_LOGS; --itr, ++cnt) {
-      logs.append(*itr);
+      logs.append(formatV2RayLog(*itr));
     }
     v2RayLogFile.close();
   }
@@ -103,6 +85,22 @@ void AppProxyWorker::getLogs(QString appLogFilePath, QString v2RayLogFilePath) {
   std::reverse(logs.begin(), logs.end());
 
   emit logsReady(logs.join('\n'));
+}
+
+QString AppProxyWorker::formatV2RayLog(const QString& log) {
+  int timeStart  = log.indexOf("time=");
+  int levelStart = log.indexOf("level=");
+  int msgStart   = log.indexOf("msg=");
+
+  QString time = log.mid(timeStart + 6, levelStart - timeStart - 14)
+                   .replace('-', '/')
+                   .replace('T', ' ');
+  QString level = log.mid(levelStart + 6, msgStart - levelStart - 7);
+  QString msg   = log.mid(msgStart + 5, log.size() - msgStart - 6);
+  if (time.size() == 0) {
+    return "";
+  }
+  return QString("%1 [%2] clash: %3").arg(time, level, msg);
 }
 
 void AppProxyWorker::getLatestRelease(QString name,

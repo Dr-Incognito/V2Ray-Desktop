@@ -5,6 +5,10 @@
 [![LGTM grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/context:cpp)
 [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/alerts/)
 
+## What's New in 2.0?
+
+We use [Clash](https://github.com/Dreamacro/clash) as the backend proxy, which supports V2Ray, Shadowsocks, and Trojan protocols.
+
 ## Introduction
 
 V2Ray Desktop is a GUI client for [V2Ray](http://v2ray.com/), running on Windows, Linux, and macOS.
@@ -23,7 +27,7 @@ For more information, please visit the [project's Wiki page](https://github.com/
 ## Features
 
 - Support Windows, Linux, and macOS.
-- Support both Shadowsocks, V2Ray, and Trojan servers.
+- Support **V2Ray**, **Shadowsocks**, and **Trojan** servers.
 - Support connecting to multiple servers.
 - Support adding/updating servers from subscription URLs.
 - Support adding servers by importing [Shadowsocks-Qt5](https://github.com/shadowsocks/shadowsocks-qt5/) and [V2Ray Core](http://v2ray.com/) configuration.
@@ -37,7 +41,7 @@ For more information, please visit the [project's Wiki page](https://github.com/
 
 <img width="1072" alt="Dashboard" src="https://user-images.githubusercontent.com/17879520/73626391-acae8500-4683-11ea-952f-b14dae450e0b.png">
 
-<img width="1072" alt="Servers" src="https://user-images.githubusercontent.com/17879520/74507718-34c04480-4f38-11ea-89a3-8f2faea5ec0b.png">
+<img width="1072" alt="Servers" src="https://user-images.githubusercontent.com/17879520/78095141-d9bfaf80-7408-11ea-83dc-b4106741676c.png">
 
 ## License
 
