@@ -10,7 +10,7 @@
 class YamlHelper : public QObject {
   Q_OBJECT
  public:
-  explicit YamlHelper(QObject* parent = nullptr){};
+  explicit YamlHelper(QObject* parent = nullptr) : QObject(parent){};
   static QString fromJsonObject(const QJsonObject& cfg);
 
  private:
