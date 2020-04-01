@@ -60,37 +60,37 @@
         <translation>无法从指定的URL获取订阅服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="551"/>
+        <location filename="../appproxy.cpp" line="553"/>
         <source>No supported servers added from the URL.</source>
         <translation>未能从该URL中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="559"/>
+        <location filename="../appproxy.cpp" line="561"/>
         <source>The config file does not exist.</source>
         <translation>配置文件不存在。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="601"/>
+        <location filename="../appproxy.cpp" line="603"/>
         <source>No supported servers added from the config file.</source>
         <translation>未能从该配置文件中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="707"/>
+        <location filename="../appproxy.cpp" line="709"/>
         <source>Failed to check updates</source>
         <translation>检查更新失败</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="721"/>
+        <location filename="../appproxy.cpp" line="723"/>
         <source>Please upgrade from the package manager</source>
         <translation>请使用包管理器更新</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="726"/>
+        <location filename="../appproxy.cpp" line="728"/>
         <source>The V2Ray Core in AppImage is not upgradable.</source>
         <translation>无法更新AppImage中的V2Ray Core。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="772"/>
+        <location filename="../appproxy.cpp" line="774"/>
         <source>Failed to replace V2Ray Core files.</source>
         <translation>无法替换V2Ray Core的文件。</translation>
     </message>
@@ -452,12 +452,12 @@
 <context>
     <name>V2RayCore</name>
     <message>
-        <location filename="../v2raycore.cpp" line="43"/>
+        <location filename="../v2raycore.cpp" line="50"/>
         <source>Not Installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../v2raycore.cpp" line="50"/>
+        <location filename="../v2raycore.cpp" line="57"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -828,9 +828,9 @@ Please check the network connection.</source>
         <translation>例如：https://url/to/subscription 或 vmess://abcdefg</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1181"/>
-        <location filename="../ui/servers.qml" line="1314"/>
-        <location filename="../ui/servers.qml" line="1422"/>
+        <location filename="../ui/servers.qml" line="1200"/>
+        <location filename="../ui/servers.qml" line="1333"/>
+        <location filename="../ui/servers.qml" line="1441"/>
         <source>Sync Servers</source>
         <translation>同步服务器</translation>
     </message>
@@ -866,8 +866,8 @@ Please check the network connection.</source>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="143"/>
-        <location filename="../ui/servers.qml" line="1338"/>
-        <location filename="../ui/servers.qml" line="1436"/>
+        <location filename="../ui/servers.qml" line="1357"/>
+        <location filename="../ui/servers.qml" line="1455"/>
         <source>Connected</source>
         <translation>已连接</translation>
     </message>
@@ -1146,7 +1146,7 @@ Please check the network connection.</source>
         <location filename="../ui/servers.qml" line="836"/>
         <location filename="../ui/servers.qml" line="981"/>
         <location filename="../ui/servers.qml" line="1003"/>
-        <location filename="../ui/servers.qml" line="1583"/>
+        <location filename="../ui/servers.qml" line="1612"/>
         <source>Add Server</source>
         <translation>添加服务器</translation>
     </message>
@@ -1219,49 +1219,54 @@ Please check the network connection.</source>
         <translation>配置文件 (*.json)</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1193"/>
+        <location filename="../ui/servers.qml" line="1180"/>
+        <source>Add Subscription</source>
+        <translation>添加订阅</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="1212"/>
         <source>Please wait ...</source>
         <translation>请稍后…</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1242"/>
+        <location filename="../ui/servers.qml" line="1261"/>
         <source>#</source>
         <translation>#</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1242"/>
+        <location filename="../ui/servers.qml" line="1261"/>
         <source>URL</source>
         <translation>链接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1306"/>
+        <location filename="../ui/servers.qml" line="1325"/>
         <source>Copy URL</source>
         <translation>复制链接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1322"/>
+        <location filename="../ui/servers.qml" line="1341"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1338"/>
-        <location filename="../ui/servers.qml" line="1436"/>
+        <location filename="../ui/servers.qml" line="1357"/>
+        <location filename="../ui/servers.qml" line="1455"/>
         <source>Disconnected</source>
         <translation>未连接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1341"/>
-        <location filename="../ui/servers.qml" line="1405"/>
+        <location filename="../ui/servers.qml" line="1360"/>
+        <location filename="../ui/servers.qml" line="1424"/>
         <source>Timeout</source>
         <translation>超时</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1341"/>
+        <location filename="../ui/servers.qml" line="1360"/>
         <source>N/a</source>
         <translation>不可用</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1576"/>
+        <location filename="../ui/servers.qml" line="1605"/>
         <source>Edit Server</source>
         <translation>编辑服务器</translation>
     </message>
