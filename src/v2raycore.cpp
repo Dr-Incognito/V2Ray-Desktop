@@ -49,9 +49,9 @@ QString V2RayCore::getVersion() {
   if (v2RayVersion.isEmpty()) {
     return tr("Unknown");
   }
-  int sIndex = v2RayVersion.indexOf('v');
+  int sIndex = v2RayVersion.indexOf('.');
   int pIndex = v2RayVersion.indexOf(' ', sIndex);
-  return v2RayVersion.mid(sIndex + 1, pIndex - sIndex - 1).trimmed();
+  return v2RayVersion.mid(sIndex - 1, pIndex - sIndex + 1).trimmed();
 }
 
 bool V2RayCore::start() {
@@ -64,7 +64,7 @@ bool V2RayCore::start() {
   QString configFilePath  = Configurator::getV2RayConfigFilePath();
   QFile configFile(Configurator::getV2RayConfigFilePath());
   configFile.open(QFile::WriteOnly);
-  configFile.write(YamlHelper::fromJsonObject(v2RayConfig).toLocal8Bit());
+  configFile.write(YamlHelper::fromJsonObject(v2RayConfig).toUtf8());
   configFile.flush();
 
   // Start Clash
