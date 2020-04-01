@@ -309,13 +309,16 @@ void AppProxy::getProxySettings() {
   bool isPacServerRunning = pacServer.isRunning();
 
   QString proxyMode = NetworkProxyHelper::getSystemProxy().toString();
-  QStringList connectedServers = configurator.getConnectedServerNames();
+  QJsonArray connectedServers;
+  for (QString cs : configurator.getConnectedServerNames()) {
+    connectedServers.append(cs);
+  }
+
   emit proxySettingsReady(
-    QJsonDocument(
-      QJsonObject{{"isV2RayRunning", isV2RayRunning},
-                  {"isPacServerRunning", isPacServerRunning},
-                  {"proxyMode", proxyMode},
-                  {"connectedServers", connectedServers.join(", ")}})
+    QJsonDocument(QJsonObject{{"isV2RayRunning", isV2RayRunning},
+                              {"isPacServerRunning", isPacServerRunning},
+                              {"proxyMode", proxyMode},
+                              {"connectedServers", connectedServers}})
       .toJson());
 }
 

@@ -148,7 +148,10 @@ ColumnLayout {
             pSettings += qsTr("PAC Server: ") + (proxySettings["isPacServerRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             pSettings += qsTr("Clash: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             if (proxySettings["isV2RayRunning"]) {
-                pSettings += qsTr("Connected Servers: ") + proxySettings["connectedServers"] + "\n"
+                pSettings += qsTr("Connected Servers: \n")
+                for (var i = 0; i < proxySettings["connectedServers"].length; ++ i) {
+                  pSettings += "- " + proxySettings["connectedServers"][i] + "\n"
+                }
             }
             labelProxySettings.text = pSettings
         }

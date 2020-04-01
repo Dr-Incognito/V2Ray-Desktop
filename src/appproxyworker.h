@@ -12,7 +12,7 @@
 class AppProxyWorker : public QObject {
   Q_OBJECT
  public:
-  explicit AppProxyWorker(QObject *parent = nullptr);
+  explicit AppProxyWorker(QObject* parent = nullptr);
 
  public slots:
   void getServerLatency(QJsonArray servers);
@@ -37,8 +37,7 @@ class AppProxyWorker : public QObject {
   void upgradeFinished(QString name, QString outputFilePath, QString errorMsg);
 
  private:
-  QString getServerAddr(QJsonObject server);
-  int getServerPort(QJsonObject server);
+  QString formatV2RayLog(const QString& log);
 };
 
 #endif  // APPPROXYWORKER_H

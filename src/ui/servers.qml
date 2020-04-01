@@ -1477,7 +1477,6 @@ ColumnLayout {
 
             // Set correct form in pop up window
             var protocol = server["type"]
-            console.log(protocol)
             if (protocol === "vmess") {
                 comboAddServerMethod.currentIndex = 0
                 textV2RayServerName.text = server["name"] || ""
@@ -1505,9 +1504,12 @@ ColumnLayout {
                     comboShadowsocksEncryptionMethod.find(
                         server["cipher"].toUpperCase())
                 textShadowsocksPassword.text = server["password"]
-                comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
-                    server["plugin-opts"]["mode"])
-                textObfsHost.text = server["plugin-opts"]["host"]
+
+                if ("plugin-opts" in server) {
+                  comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
+                    server["plugin-opts"]["mode"] || "")
+                  textObfsHost.text = server["plugin-opts"]["host"] || ""
+                }
             } else if (protocol === "trojan") {
             }
             popUpServer.editServerName = server["name"] || ""
