@@ -4,81 +4,93 @@
 <context>
     <name>AppProxy</name>
     <message>
-        <location filename="../appproxy.cpp" line="211"/>
         <source>&apos;PAC Server Port&apos; can not be the same as &apos;Listening Port&apos;.</source>
-        <translation>&apos;PAC服务器端口&apos;不得于&apos;监听端口&apos;相同。</translation>
+        <translation type="vanished">&apos;PAC服务器端口&apos;不得于&apos;监听端口&apos;相同。</translation>
     </message>
     <message>
         <source>&apos;DNS Servers&apos; seems invalid.</source>
         <translation type="vanished">&apos;DNS服务器&apos;似乎是无效的。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="197"/>
+        <location filename="../appproxy.cpp" line="195"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="199"/>
         <source>Local Server Protocol</source>
-        <translation>本地服务器协议</translation>
+        <translation type="vanished">本地服务器协议</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="201"/>
+        <location filename="../appproxy.cpp" line="197"/>
         <source>Listening IP Address</source>
         <translation>监听IP地址</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="206"/>
         <source>Listening Port</source>
-        <translation>监听端口</translation>
+        <translation type="vanished">监听端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="208"/>
+        <location filename="../appproxy.cpp" line="202"/>
+        <source>HTTP Port</source>
+        <translation>HTTP端口</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="204"/>
+        <source>SOCKS Port</source>
+        <translation>SOCKS端口</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="206"/>
         <source>PAC Server Port</source>
         <translation>PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="214"/>
+        <location filename="../appproxy.cpp" line="211"/>
+        <source>&apos;HTTP Port&apos;, &apos;SOCKS Port&apos;, and &apos;PAC Server Port&apos; can not be the same.</source>
+        <translation>&apos;HTTP端口&apos;, &apos;SOCKS端口&apos;, 和&apos;PAC服务器端口&apos;不得相同。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="215"/>
         <source>DNS Server</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="519"/>
+        <location filename="../appproxy.cpp" line="505"/>
         <source>Failed to get subscription servers from URLs.</source>
         <translation>无法从指定的URL获取订阅服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="564"/>
+        <location filename="../appproxy.cpp" line="551"/>
         <source>No supported servers added from the URL.</source>
         <translation>未能从该URL中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="572"/>
+        <location filename="../appproxy.cpp" line="559"/>
         <source>The config file does not exist.</source>
         <translation>配置文件不存在。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="614"/>
+        <location filename="../appproxy.cpp" line="601"/>
         <source>No supported servers added from the config file.</source>
         <translation>未能从该配置文件中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="720"/>
+        <location filename="../appproxy.cpp" line="707"/>
         <source>Failed to check updates</source>
         <translation>检查更新失败</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="734"/>
+        <location filename="../appproxy.cpp" line="721"/>
         <source>Please upgrade from the package manager</source>
         <translation>请使用包管理器更新</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="739"/>
+        <location filename="../appproxy.cpp" line="726"/>
         <source>The V2Ray Core in AppImage is not upgradable.</source>
         <translation>无法更新AppImage中的V2Ray Core。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="784"/>
+        <location filename="../appproxy.cpp" line="772"/>
         <source>Failed to replace V2Ray Core files.</source>
         <translation>无法替换V2Ray Core的文件。</translation>
     </message>
@@ -87,7 +99,7 @@
         <translation type="vanished">缺失值：&apos;DNS服务器&apos;。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="359"/>
+        <location filename="../appproxy.cpp" line="361"/>
         <source>GFW List URL</source>
         <translation>GFW List URL</translation>
     </message>
@@ -196,12 +208,12 @@
         <translation type="vanished">密码</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="493"/>
+        <location filename="../appproxy.cpp" line="479"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="386"/>
+        <location filename="../appproxy.cpp" line="388"/>
         <source>Failed to update GFW List.</source>
         <translation>更新GFW List失败。</translation>
     </message>
@@ -209,7 +221,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
+        <location filename="../main.cpp" line="70"/>
         <source>There is another %1 instance running!
 </source>
         <translation>已有另一个%1的实例正在运行！</translation>
@@ -273,121 +285,126 @@
         <translation>&apos;%1&apos;已经被其他服务器使用。</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="37"/>
-        <location filename="../serverconfighelper.cpp" line="305"/>
+        <location filename="../serverconfighelper.cpp" line="89"/>
+        <location filename="../serverconfighelper.cpp" line="213"/>
+        <location filename="../serverconfighelper.cpp" line="322"/>
         <source>Server Address</source>
         <translation>服务器地址</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="43"/>
-        <location filename="../serverconfighelper.cpp" line="311"/>
+        <location filename="../serverconfighelper.cpp" line="95"/>
+        <location filename="../serverconfighelper.cpp" line="219"/>
+        <location filename="../serverconfighelper.cpp" line="328"/>
         <source>Server Port</source>
         <translation>服务器端口</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="44"/>
+        <location filename="../serverconfighelper.cpp" line="96"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="46"/>
+        <location filename="../serverconfighelper.cpp" line="98"/>
         <source>Alter ID</source>
         <translation>Alter ID</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="48"/>
-        <location filename="../serverconfighelper.cpp" line="313"/>
+        <location filename="../serverconfighelper.cpp" line="100"/>
+        <location filename="../serverconfighelper.cpp" line="221"/>
         <source>Security</source>
         <translation>加密方式</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="50"/>
-        <source>MUX</source>
-        <translation>MUX</translation>
+        <location filename="../serverconfighelper.cpp" line="119"/>
+        <source>Unspoorted &apos;Network&apos;: %1.</source>
+        <translation>不支持的传输协议：%1。</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="52"/>
+        <location filename="../serverconfighelper.cpp" line="332"/>
+        <source>SNI</source>
+        <translation>SNI</translation>
+    </message>
+    <message>
+        <location filename="../serverconfighelper.cpp" line="339"/>
+        <source>ALPN</source>
+        <translation>ALPN</translation>
+    </message>
+    <message>
+        <source>MUX</source>
+        <translation type="vanished">MUX</translation>
+    </message>
+    <message>
+        <location filename="../serverconfighelper.cpp" line="102"/>
         <source>Network</source>
         <translation>传输协议</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="54"/>
+        <location filename="../serverconfighelper.cpp" line="104"/>
         <source>Network Security</source>
         <translation>网络加密方式</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="69"/>
         <source>MTU</source>
-        <translation>MTU</translation>
+        <translation type="vanished">MTU</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="71"/>
         <source>TTI</source>
-        <translation>TTI</translation>
+        <translation type="vanished">TTI</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="73"/>
         <source>Uplink Capacity</source>
-        <translation>上行链路容量</translation>
+        <translation type="vanished">上行链路容量</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="75"/>
         <source>Downlink Capacity</source>
-        <translation>下行链路容量</translation>
+        <translation type="vanished">下行链路容量</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="77"/>
         <source>Read Buffer Size</source>
-        <translation>读取缓冲区大小</translation>
+        <translation type="vanished">读取缓冲区大小</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="79"/>
         <source>Write Buffer Size</source>
-        <translation>写入缓冲区大小</translation>
+        <translation type="vanished">写入缓冲区大小</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="81"/>
-        <location filename="../serverconfighelper.cpp" line="96"/>
         <source>Packet Header</source>
-        <translation>数据包头</translation>
+        <translation type="vanished">数据包头</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="84"/>
+        <location filename="../serverconfighelper.cpp" line="123"/>
         <source>Host</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="87"/>
+        <location filename="../serverconfighelper.cpp" line="126"/>
         <source>Path</source>
         <translation>Path</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="90"/>
         <source>Socket File Path</source>
-        <translation>Socket文件路径</translation>
+        <translation type="vanished">Socket文件路径</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="94"/>
         <source>QUIC Security</source>
-        <translation>QUIC加密方式</translation>
+        <translation type="vanished">QUIC加密方式</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="98"/>
         <source>QUIC Key</source>
-        <translation>QUIC 密钥</translation>
+        <translation type="vanished">QUIC 密钥</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="315"/>
+        <location filename="../serverconfighelper.cpp" line="223"/>
+        <location filename="../serverconfighelper.cpp" line="330"/>
         <source>Password</source>
         <translation>密码</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="317"/>
         <source>The Shadowsocks plugins are currently not supported.</source>
-        <translation>Shadowsocks插件目前暂不支持。</translation>
+        <translation type="vanished">Shadowsocks插件目前暂不支持。</translation>
     </message>
     <message>
-        <location filename="../serverconfighelper.cpp" line="421"/>
+        <location filename="../serverconfighelper.cpp" line="57"/>
         <source>Unknown Server protocol</source>
         <translation>未知的服务器协议</translation>
     </message>
@@ -396,13 +413,13 @@
     <name>Utility</name>
     <message>
         <location filename="../utility.cpp" line="23"/>
-        <location filename="../utility.cpp" line="47"/>
+        <location filename="../utility.cpp" line="51"/>
         <source>Missing the value of &apos;%1&apos;.</source>
         <translation>缺失值：&apos;%1&apos;。</translation>
     </message>
     <message>
         <location filename="../utility.cpp" line="28"/>
-        <location filename="../utility.h" line="24"/>
+        <location filename="../utility.h" line="25"/>
         <source>The value of &apos;%1&apos; seems invalid.</source>
         <translation>&apos;%1&apos;的值似乎是无效的。</translation>
     </message>
@@ -417,17 +434,17 @@
         <translation>&apos;%1&apos;的值应介于%2和%3之间。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="163"/>
+        <location filename="../utility.cpp" line="189"/>
         <source>Failed to download the file %1.</source>
         <translation>无法下载文件 %1。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="168"/>
+        <location filename="../utility.cpp" line="194"/>
         <source>Failed to open file %1.</source>
         <translation>无法打开文件 %1。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="174"/>
+        <location filename="../utility.cpp" line="200"/>
         <source>Failed to unzip file %1.</source>
         <translation>无法解压文件 %1。</translation>
     </message>
@@ -435,12 +452,12 @@
 <context>
     <name>V2RayCore</name>
     <message>
-        <location filename="../v2raycore.cpp" line="44"/>
+        <location filename="../v2raycore.cpp" line="43"/>
         <source>Not Installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../v2raycore.cpp" line="51"/>
+        <location filename="../v2raycore.cpp" line="50"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -480,7 +497,11 @@
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="79"/>
+        <location filename="../ui/about.qml" line="86"/>
+        <source>Clash Version</source>
+        <translation>Clash 版本</translation>
+    </message>
+    <message>
         <location filename="../ui/about.qml" line="131"/>
         <source>Upgrading ...</source>
         <translation>更新中 …</translation>
@@ -505,9 +526,8 @@
         <translation type="vanished">检查更新</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="86"/>
         <source>V2Ray Core Version</source>
-        <translation>V2Ray Core版本</translation>
+        <translation type="vanished">V2Ray Core版本</translation>
     </message>
     <message>
         <location filename="../ui/about.qml" line="138"/>
@@ -552,60 +572,73 @@
         <translation>V2Ray Desktop版本</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="85"/>
         <source>V2Ray Core Version</source>
-        <translation>V2Ray Core版本</translation>
+        <translation type="vanished">V2Ray Core版本</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="144"/>
+        <location filename="../ui/dashboard.qml" line="85"/>
+        <source>Clash Version</source>
+        <translation>Clash 版本</translation>
+    </message>
+    <message>
+        <location filename="../ui/dashboard.qml" line="136"/>
         <source>Everything works fine.
 You can access the free Internet.</source>
         <translation>所有功能都已正常工作。
 您可以自由地访问互联网了。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="146"/>
+        <location filename="../ui/dashboard.qml" line="138"/>
         <source>Please check your proxy settings.</source>
         <translation>请检查您的代理设置。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="148"/>
+        <location filename="../ui/dashboard.qml" line="140"/>
         <source>You&apos;re offline.
 Please check the network connection.</source>
         <translation>您已离线。
 请检查您的网络连接。</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="155"/>
+        <location filename="../ui/dashboard.qml" line="147"/>
         <source>System Proxy: </source>
         <translation>系统代理：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="156"/>
+        <location filename="../ui/dashboard.qml" line="148"/>
         <source>PAC Server: </source>
         <translation>PAC服务器：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="156"/>
-        <location filename="../ui/dashboard.qml" line="157"/>
+        <location filename="../ui/dashboard.qml" line="148"/>
+        <location filename="../ui/dashboard.qml" line="149"/>
         <source>Running</source>
         <translation>正在运行</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="156"/>
-        <location filename="../ui/dashboard.qml" line="157"/>
+        <location filename="../ui/dashboard.qml" line="148"/>
+        <location filename="../ui/dashboard.qml" line="149"/>
         <source>Not running</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="157"/>
-        <source>V2Ray Core: </source>
-        <translation>V2Ray Core：</translation>
+        <location filename="../ui/dashboard.qml" line="149"/>
+        <source>Clash: </source>
+        <translation>Clash：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="159"/>
-        <source>Connected Servers: </source>
+        <location filename="../ui/dashboard.qml" line="151"/>
+        <source>Connected Servers: 
+</source>
         <translation>已连接的服务器：</translation>
+    </message>
+    <message>
+        <source>V2Ray Core: </source>
+        <translation type="vanished">V2Ray Core：</translation>
+    </message>
+    <message>
+        <source>Connected Servers: </source>
+        <translation type="vanished">已连接的服务器：</translation>
     </message>
 </context>
 <context>
@@ -780,20 +813,24 @@ Please check the network connection.</source>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="36"/>
-        <location filename="../ui/servers.qml" line="1256"/>
+        <location filename="../ui/servers.qml" line="1166"/>
         <source>Server Subscriptions</source>
         <translation>服务器订阅</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1120"/>
+        <location filename="../ui/servers.qml" line="486"/>
+        <source>Enable UDP</source>
+        <translation>启用UDP</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="1030"/>
         <source>Example: https://url/to/subscription or vmess://abcdefg</source>
-        <translation type="vanished"></translation>
         <translation>例如：https://url/to/subscription 或 vmess://abcdefg</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1271"/>
-        <location filename="../ui/servers.qml" line="1404"/>
-        <location filename="../ui/servers.qml" line="1520"/>
+        <location filename="../ui/servers.qml" line="1181"/>
+        <location filename="../ui/servers.qml" line="1314"/>
+        <location filename="../ui/servers.qml" line="1422"/>
         <source>Sync Servers</source>
         <translation>同步服务器</translation>
     </message>
@@ -829,9 +866,8 @@ Please check the network connection.</source>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="143"/>
-        <location filename="../ui/servers.qml" line="1430"/>
-        <location filename="../ui/servers.qml" line="1446"/>
-        <location filename="../ui/servers.qml" line="1534"/>
+        <location filename="../ui/servers.qml" line="1338"/>
+        <location filename="../ui/servers.qml" line="1436"/>
         <source>Connected</source>
         <translation>已连接</translation>
     </message>
@@ -894,317 +930,338 @@ Please check the network connection.</source>
     </message>
     <message>
         <location filename="../ui/servers.qml" line="295"/>
-        <location filename="../ui/servers.qml" line="1111"/>
+        <source>Manually setting up a Trojan server</source>
+        <translation>手动设置Trojan服务器</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="299"/>
+        <location filename="../ui/servers.qml" line="1021"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="299"/>
+        <location filename="../ui/servers.qml" line="303"/>
         <source>V2Ray config files</source>
         <translation>V2Ray配置文件</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="359"/>
-        <location filename="../ui/servers.qml" line="954"/>
+        <location filename="../ui/servers.qml" line="366"/>
+        <location filename="../ui/servers.qml" line="651"/>
+        <location filename="../ui/servers.qml" line="854"/>
         <source>Server Name</source>
         <translation>服务器名称</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="367"/>
-        <location filename="../ui/servers.qml" line="963"/>
+        <location filename="../ui/servers.qml" line="374"/>
+        <location filename="../ui/servers.qml" line="660"/>
+        <location filename="../ui/servers.qml" line="863"/>
         <source>Example: HongKong-Server-1</source>
         <translation>例如：香港服务器-1</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="375"/>
-        <location filename="../ui/servers.qml" line="971"/>
+        <location filename="../ui/servers.qml" line="382"/>
+        <location filename="../ui/servers.qml" line="668"/>
+        <location filename="../ui/servers.qml" line="871"/>
         <source>Auto Connect</source>
         <translation>自动连接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="385"/>
-        <location filename="../ui/servers.qml" line="981"/>
+        <location filename="../ui/servers.qml" line="392"/>
+        <location filename="../ui/servers.qml" line="678"/>
+        <location filename="../ui/servers.qml" line="881"/>
         <source>Server Address</source>
         <translation>服务器地址</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="393"/>
-        <location filename="../ui/servers.qml" line="989"/>
+        <location filename="../ui/servers.qml" line="400"/>
+        <location filename="../ui/servers.qml" line="686"/>
+        <location filename="../ui/servers.qml" line="889"/>
         <source>Example: hk.example.com</source>
         <translation>例如：hk.example.com</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="401"/>
-        <location filename="../ui/servers.qml" line="997"/>
+        <location filename="../ui/servers.qml" line="408"/>
+        <location filename="../ui/servers.qml" line="694"/>
+        <location filename="../ui/servers.qml" line="897"/>
         <source>Server Port</source>
         <translation>服务器端口</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="409"/>
+        <location filename="../ui/servers.qml" line="416"/>
+        <location filename="../ui/servers.qml" line="905"/>
         <source>Example: 443</source>
         <translation>例如：443</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="417"/>
+        <location filename="../ui/servers.qml" line="424"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="426"/>
+        <location filename="../ui/servers.qml" line="433"/>
         <source>Example: 27848739-7e62-4138-9fd3-098a63964b6b</source>
         <translation>例如：27848739-7e62-4138-9fd3-098a63964b6b</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="434"/>
+        <location filename="../ui/servers.qml" line="441"/>
         <source>Alter ID</source>
         <translation>Alter ID</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="442"/>
+        <location filename="../ui/servers.qml" line="449"/>
         <source>Example: 4</source>
         <translation>例如：4</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="450"/>
-        <location filename="../ui/servers.qml" line="1013"/>
+        <location filename="../ui/servers.qml" line="457"/>
+        <location filename="../ui/servers.qml" line="710"/>
         <source>Security</source>
         <translation>加密方式</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="479"/>
         <source>MUX</source>
-        <translation>MUX</translation>
+        <translation type="vanished">MUX</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="487"/>
         <source>Example: 8 (-1 for disabled)</source>
-        <translation>例如：8（-1表示不启用）</translation>
+        <translation type="vanished">例如：8（-1表示不启用）</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="495"/>
+        <location filename="../ui/servers.qml" line="496"/>
         <source>Network</source>
         <translation>传输协议</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="594"/>
+        <location filename="../ui/servers.qml" line="536"/>
         <source>Network Security</source>
         <translation>网络加密方式</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="620"/>
+        <location filename="../ui/servers.qml" line="562"/>
+        <location filename="../ui/servers.qml" line="953"/>
         <source>Allow Insecure</source>
         <translation>允许非加密</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="631"/>
         <source>TCP Header</source>
-        <translation>TCP头</translation>
+        <translation type="vanished">TCP头</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="659"/>
         <source>MTU</source>
-        <translation>MTU</translation>
+        <translation type="vanished">MTU</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="667"/>
         <source>Maximum transmission unit. Default value: 1350.</source>
-        <translation>最大传输单元，默认值：1350。</translation>
+        <translation type="vanished">最大传输单元，默认值：1350。</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="676"/>
         <source>TTI</source>
-        <translation>TTI</translation>
+        <translation type="vanished">TTI</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="684"/>
         <source>Transmission time interval. Default value: 50.</source>
-        <translation>传输时间间隔，默认值：50。</translation>
+        <translation type="vanished">传输时间间隔，默认值：50。</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="701"/>
-        <location filename="../ui/servers.qml" line="718"/>
         <source>Default value: 5.</source>
-        <translation>默认值：5。</translation>
+        <translation type="vanished">默认值：5。</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="303"/>
+        <location filename="../ui/servers.qml" line="307"/>
         <source>Shadowsocks-Qt5 config files (gui-config.json)</source>
         <translation>Shadowsocks-Qt5配置文件 （gui-config.json）</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="693"/>
         <source>Uplink Capacity</source>
-        <translation>上行链路容量</translation>
+        <translation type="vanished">上行链路容量</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="710"/>
         <source>Downlink Capacity</source>
-        <translation>下行链路容量</translation>
+        <translation type="vanished">下行链路容量</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="727"/>
         <source>Read Buffer Size</source>
-        <translation>读取缓冲区大小</translation>
+        <translation type="vanished">读取缓冲区大小</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="735"/>
-        <location filename="../ui/servers.qml" line="752"/>
         <source>Default value: 2.</source>
-        <translation>默认值：2。</translation>
+        <translation type="vanished">默认值：2。</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="744"/>
         <source>Write Buffer Size</source>
-        <translation>写入缓冲区大小</translation>
+        <translation type="vanished">写入缓冲区大小</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="761"/>
         <source>Congestion</source>
-        <translation>启用拥塞控制</translation>
+        <translation type="vanished">启用拥塞控制</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="772"/>
+        <location filename="../ui/servers.qml" line="573"/>
         <source>Host</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="780"/>
+        <location filename="../ui/servers.qml" line="581"/>
         <source>Example: example.com</source>
         <translation>例如：example.com</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="789"/>
+        <location filename="../ui/servers.qml" line="590"/>
         <source>Path</source>
         <translation>Path</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="797"/>
+        <location filename="../ui/servers.qml" line="598"/>
         <source>Example: /ray</source>
         <translation>例如：/ray</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="806"/>
         <source>Socket File Path</source>
-        <translation>Socket文件路径</translation>
+        <translation type="vanished">Socket文件路径</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="815"/>
         <source>Example: /path/to/domain/socket/file</source>
-        <translation>例如：/path/to/domain/socket/file</translation>
+        <translation type="vanished">例如：/path/to/domain/socket/file</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="824"/>
         <source>QUIC Security</source>
-        <translation>QUIC加密方式</translation>
+        <translation type="vanished">QUIC加密方式</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="852"/>
         <source>Packet Header</source>
-        <translation>数据包头</translation>
+        <translation type="vanished">数据包头</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="880"/>
         <source>QUIC Key</source>
-        <translation>QUIC 密钥</translation>
+        <translation type="vanished">QUIC 密钥</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="889"/>
         <source>Example: Any String</source>
-        <translation>例如：Any String</translation>
+        <translation type="vanished">例如：Any String</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="898"/>
-        <location filename="../ui/servers.qml" line="936"/>
-        <location filename="../ui/servers.qml" line="1074"/>
-        <location filename="../ui/servers.qml" line="1093"/>
-        <location filename="../ui/servers.qml" line="1705"/>
+        <location filename="../ui/servers.qml" line="607"/>
+        <location filename="../ui/servers.qml" line="633"/>
+        <location filename="../ui/servers.qml" line="813"/>
+        <location filename="../ui/servers.qml" line="836"/>
+        <location filename="../ui/servers.qml" line="981"/>
+        <location filename="../ui/servers.qml" line="1003"/>
+        <location filename="../ui/servers.qml" line="1583"/>
         <source>Add Server</source>
         <translation>添加服务器</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1005"/>
+        <location filename="../ui/servers.qml" line="702"/>
         <source>Example: 8388</source>
         <translation>例如：8388</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1058"/>
+        <location filename="../ui/servers.qml" line="755"/>
+        <location filename="../ui/servers.qml" line="913"/>
         <source>Password</source>
         <translation>密码</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1129"/>
-        <location filename="../ui/servers.qml" line="1187"/>
+        <location filename="../ui/servers.qml" line="770"/>
+        <source>Obfuscate Mode</source>
+        <translation>混淆模式</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="797"/>
+        <source>Obfuscate Host</source>
+        <translation>混淆Host</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="928"/>
+        <source>UDP</source>
+        <translation>UDP</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="938"/>
+        <source>SNI</source>
+        <translation>SNI</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="963"/>
+        <source>ALPN Protocols</source>
+        <translation>ALPN 协议</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="972"/>
+        <source>Example: h2; http/1.1</source>
+        <translation>例如：h2; http/1.1</translation>
+    </message>
+    <message>
+        <location filename="../ui/servers.qml" line="1039"/>
+        <location filename="../ui/servers.qml" line="1097"/>
         <source>Add Servers</source>
         <translation>添加服务器</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1154"/>
+        <location filename="../ui/servers.qml" line="1064"/>
         <source>Config File Path</source>
         <translation>配置文件路径</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1162"/>
+        <location filename="../ui/servers.qml" line="1072"/>
         <source>Example: /path/to/config.json</source>
         <translation>例如：/path/to/config.json</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1171"/>
+        <location filename="../ui/servers.qml" line="1081"/>
         <source>Choose File</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1210"/>
-        <location filename="../ui/servers.qml" line="1211"/>
+        <location filename="../ui/servers.qml" line="1120"/>
+        <location filename="../ui/servers.qml" line="1121"/>
         <source>Config File (*.json)</source>
         <translation>配置文件 (*.json)</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1283"/>
+        <location filename="../ui/servers.qml" line="1193"/>
         <source>Please wait ...</source>
         <translation>请稍后…</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1332"/>
+        <location filename="../ui/servers.qml" line="1242"/>
         <source>#</source>
         <translation>#</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1332"/>
+        <location filename="../ui/servers.qml" line="1242"/>
         <source>URL</source>
         <translation>链接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1396"/>
+        <location filename="../ui/servers.qml" line="1306"/>
         <source>Copy URL</source>
         <translation>复制链接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1412"/>
+        <location filename="../ui/servers.qml" line="1322"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1430"/>
-        <location filename="../ui/servers.qml" line="1446"/>
-        <location filename="../ui/servers.qml" line="1534"/>
+        <location filename="../ui/servers.qml" line="1338"/>
+        <location filename="../ui/servers.qml" line="1436"/>
         <source>Disconnected</source>
         <translation>未连接</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1433"/>
-        <location filename="../ui/servers.qml" line="1449"/>
-        <location filename="../ui/servers.qml" line="1503"/>
+        <location filename="../ui/servers.qml" line="1341"/>
+        <location filename="../ui/servers.qml" line="1405"/>
         <source>Timeout</source>
         <translation>超时</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1433"/>
-        <location filename="../ui/servers.qml" line="1449"/>
+        <location filename="../ui/servers.qml" line="1341"/>
         <source>N/a</source>
         <translation>不可用</translation>
     </message>
     <message>
-        <location filename="../ui/servers.qml" line="1698"/>
+        <location filename="../ui/servers.qml" line="1576"/>
         <source>Edit Server</source>
         <translation>编辑服务器</translation>
     </message>
@@ -1232,77 +1289,88 @@ Please check the network connection.</source>
         <translation>在启动后最小化</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="66"/>
         <source>Check for Updates Automatically</source>
-        <translation>自动检查软件更新</translation>
+        <translation type="vanished">自动检查软件更新</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="76"/>
         <source>Enable UDP</source>
-        <translation>启用UDP</translation>
+        <translation type="vanished">启用UDP</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="86"/>
+        <location filename="../ui/settings.qml" line="66"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="112"/>
         <source>Local Server Protocol</source>
-        <translation>本地服务器协议</translation>
+        <translation type="vanished">本地服务器协议</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="136"/>
+        <location filename="../ui/settings.qml" line="92"/>
         <source>Listening IP Address</source>
         <translation>监听IP地址</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="144"/>
+        <location filename="../ui/settings.qml" line="100"/>
         <source>Example: 127.0.0.1</source>
         <translation>例如：127.0.0.1</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="152"/>
         <source>Listening Port</source>
-        <translation>监听端口</translation>
+        <translation type="vanished">监听端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="160"/>
+        <location filename="../ui/settings.qml" line="108"/>
+        <source>SOCKS Port</source>
+        <translation>SOCKS 端口</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="116"/>
         <source>Example: 1080</source>
         <translation>例如：1080</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="169"/>
+        <location filename="../ui/settings.qml" line="125"/>
+        <source>HTTP Port</source>
+        <translation>HTTP 端口</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="133"/>
+        <source>Example: 1087</source>
+        <translation>例如：1087</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="142"/>
         <source>PAC Server Port</source>
         <translation>PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="177"/>
+        <location filename="../ui/settings.qml" line="150"/>
         <source>Example: 1085</source>
         <translation>例如：1085</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="185"/>
+        <location filename="../ui/settings.qml" line="158"/>
         <source>DNS Servers</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="193"/>
+        <location filename="../ui/settings.qml" line="166"/>
         <source>Example: 8.8.8.8,8.8.4.4</source>
         <translation>例如：8.8.8.8,8.8.4.4</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="202"/>
+        <location filename="../ui/settings.qml" line="175"/>
         <source>Save Settings</source>
         <translation>保存设置</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="241"/>
+        <location filename="../ui/settings.qml" line="212"/>
         <source>Message from V2Ray Desktop</source>
         <translation>来自V2Ray Desktop的消息</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="243"/>
+        <location filename="../ui/settings.qml" line="214"/>
         <source>Settings saved.</source>
         <translation>设置已保存。</translation>
     </message>
