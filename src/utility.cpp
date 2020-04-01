@@ -144,10 +144,8 @@ QString Utility::getLatestRelease(const QString& releaseUrl,
   QJsonArray releases          = releaseJsonDoc.array();
   for (int i = 0; i < releases.size(); ++i) {
     QJsonObject release = releases[i].toObject();
-    if (release.contains("prerelease") && !release["prerelease"].toBool()) {
-      latestRelease = release;
-      break;
-    }
+    latestRelease       = release;
+    break;
   }
   return latestRelease.empty() ? "" : latestRelease["name"].toString();
 }
@@ -160,6 +158,8 @@ bool Utility::isVersionNewer(const QString& currentVersion,
   for (int i = 0; i < _version.size() && i < _currentVersion.size(); ++i) {
     if (_version.at(i) > _currentVersion.at(i)) {
       return true;
+    } else if (_version.at(i) < _currentVersion.at(i)) {
+      return false;
     }
   }
   return false;
