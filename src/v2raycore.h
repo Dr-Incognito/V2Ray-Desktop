@@ -4,6 +4,7 @@
 #include <QNetworkProxy>
 #include <QProcess>
 #include <QString>
+#include <QTextStream>
 
 class V2RayCore : public QObject {
   Q_OBJECT
@@ -23,7 +24,6 @@ class V2RayCore : public QObject {
   bool isInstalled();
   QProcess* v2rayProcess;
   QString v2RayExecFilePath;
-  QString v2RayCtlExecFilePath;
 };
 
 #endif  // V2RAYCORE_H

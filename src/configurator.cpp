@@ -331,6 +331,7 @@ QJsonArray Configurator::getConnectedServers() {
 
     if (connectedServerNames.contains(serverName)) {
       server.remove("autoConnect");
+      server.remove("subscription");
       connectedServers.append(server);
     }
   }
