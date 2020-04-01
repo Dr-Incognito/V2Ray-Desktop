@@ -51,7 +51,7 @@ QString V2RayCore::getVersion() {
   }
   int sIndex = v2RayVersion.indexOf('v');
   int pIndex = v2RayVersion.indexOf(' ', sIndex);
-  return v2RayVersion.mid(sIndex + 1, pIndex - sIndex - 1);
+  return v2RayVersion.mid(sIndex + 1, pIndex - sIndex - 1).trimmed();
 }
 
 bool V2RayCore::start() {
@@ -78,7 +78,6 @@ bool V2RayCore::start() {
     qCritical() << "Failed to start Clash.";
     qCritical() << v2rayProcess->readAll();
   }
-  // TODO: Fix Log Redirection
   v2rayProcess->setStandardErrorFile(Configurator::getV2RayLogFilePath());
   v2rayProcess->setStandardOutputFile(Configurator::getV2RayLogFilePath());
   return exitCode == 0;
