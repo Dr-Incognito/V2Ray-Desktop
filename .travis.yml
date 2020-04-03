@@ -12,7 +12,7 @@ branches:
 
 before_install:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo apt-get install -y build-essential libqt5svg5-dev qt5-default qtbase5-dev qtdeclarative5-dev;
+    sudo apt-get install -y build-essential libz-dev qt5-default libqt5svg5-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev;
     sudo apt-get install clang-format-9;
     sudo rm /usr/local/clang-7.0.0/bin/clang-format;
     sudo ln -s `which clang-format-9` /usr/bin/clang-format;
@@ -21,7 +21,6 @@ before_install:
 # Remove the quickcontrols2 and retranslate() because it is not supported in Qt 5.9
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sed -i "/QQmlEngine::contextForObject/d" src/appproxy.cpp;
-    sed -i "s/quickcontrols2//" src/V2Ray-Desktop.pro;
   fi
 
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
