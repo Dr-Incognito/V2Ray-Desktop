@@ -123,6 +123,11 @@ QJsonObject Configurator::getAppConfig() {
     }
     appCfgFile.close();
   }
+  // Replace old proxy mode with a newer value
+  QString proxyMode = config["proxyMode"].toString();
+  if (proxyMode == "pac" || proxyMode == "global" || proxyMode == "manual") {
+    config["proxyMode"] = "Rule";
+  }
   return config;
 }
 
