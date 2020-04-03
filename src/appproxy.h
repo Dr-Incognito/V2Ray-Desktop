@@ -11,7 +11,6 @@
 
 #include "appproxyworker.h"
 #include "configurator.h"
-#include "pacserver.h"
 #include "serverconfighelper.h"
 #include "v2raycore.h"
 
@@ -112,7 +111,6 @@ class AppProxy : public QObject {
   V2RayCore& v2ray;
   QJsonObject serverLatency;
   Configurator& configurator;
-  PacServer pacServer;
   QMap<QString, QMap<QString, QVariant>> latestVersion;
 
   AppProxyWorker* worker = new AppProxyWorker();

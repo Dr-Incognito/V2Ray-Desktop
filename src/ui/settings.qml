@@ -3,7 +3,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 2.0
+import com.v2ray.desktop.AppProxy 2.1
 
 ColumnLayout {
     anchors.fill: parent
@@ -139,22 +139,6 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("PAC Server Port")
-            color: "white"
-        }
-
-        TextField {
-            id: textPacServerPort
-            color: "white"
-            Layout.fillWidth: true
-            placeholderText: qsTr("Example: 1085")
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-        }
-
-        Label {
             text: qsTr("DNS Servers")
             color: "white"
         }
@@ -163,6 +147,7 @@ ColumnLayout {
             id: textDnsServers
             color: "white"
             Layout.fillWidth: true
+            Layout.columnSpan: 3
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
@@ -189,7 +174,6 @@ ColumnLayout {
                     "serverIp": textServerIpAddr.text,
                     "httpPort": textHttpPort.text,
                     "socksPort": textSocksPort.text,
-                    "pacPort": textPacServerPort.text,
                     "dns": textDnsServers.text
                 }
                 labelErrorMsg.visible = false
@@ -226,7 +210,6 @@ ColumnLayout {
             textServerIpAddr.text = config["serverIp"]
             textSocksPort.text = config["socksPort"]
             textHttpPort.text = config["httpPort"]
-            textPacServerPort.text = config["pacPort"]
             textDnsServers.text = config["dns"]
         }
 

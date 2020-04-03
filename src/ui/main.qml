@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 2.0
+import com.v2ray.desktop.AppProxy 2.1
 
 ApplicationWindow {
     id: appWindow
@@ -55,11 +55,11 @@ ApplicationWindow {
             MenuSeparator {}
 
             MenuItem {
-                id: menuItemPacMode
-                text: qsTr("PAC Mode")
+                id: menuItemRuleMode
+                text: qsTr("Rule Mode")
                 checkable: true
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("pac")
+                  AppProxy.setSystemProxyMode("Rule")
                 }
             }
 
@@ -68,16 +68,16 @@ ApplicationWindow {
                 text: qsTr("Global Mode")
                 checkable: true
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("global")
+                  AppProxy.setSystemProxyMode("Global")
                 }
             }
 
             MenuItem {
-                id: menuItemManualMode
-                text: qsTr("Manual Mode")
+                id: menuItemDirectMode
+                text: qsTr("Direct Mode")
                 checkable: true
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("manual")
+                  AppProxy.setSystemProxyMode("Direct")
                 }
             }
 
@@ -445,16 +445,16 @@ ApplicationWindow {
             target: AppProxy
 
             function updateProxyModeChecked(proxyMode) {
-                menuItemPacMode.checked = false
+                menuItemRuleMode.checked = false
                 menuItemGlobalMode.checked = false
-                menuItemManualMode.checked = false
+                menuItemDirectMode.checked = false
 
-                if (proxyMode === "pac") {
-                    menuItemPacMode.checked = true
-                } else if (proxyMode === "global") {
+                if (proxyMode === "Rule") {
+                    menuItemRuleMode.checked = true
+                } else if (proxyMode === "Global") {
                     menuItemGlobalMode.checked = true
-                } else if (proxyMode === "manual") {
-                    menuItemManualMode.checked = true
+                } else if (proxyMode === "Direct") {
+                    menuItemDirectMode.checked = true
                 }
             }
 

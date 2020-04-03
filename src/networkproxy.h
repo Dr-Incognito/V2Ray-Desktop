@@ -3,63 +3,95 @@
 
 #include <QObject>
 
-enum class NetworkProxyType { PAC_PROXY, HTTP_PROXY, SOCKS_PROXY, DISABLED };
+enum class NetworkProxyMode { PAC_MODE, GLOBAL_MODE, DIRECT_MODE };
 
 struct NetworkProxy {
-  NetworkProxyType type;
-  QString host;
-  int port;
-  QString url;
+ public:
+  NetworkProxy() { this->mode = NetworkProxyMode::DIRECT_MODE; }
 
-  NetworkProxy() { this->type = NetworkProxyType::DISABLED; }
-
-  NetworkProxy(QString host, int port, NetworkProxyType type) {
-    this->host = host;
-    this->port = port;
-    this->type = type;
+  NetworkProxy(QString protocol,
+               QString host,
+               int port,
+               NetworkProxyMode mode) {
+    this->protocol = protocol;
+    this->host     = host;
+    this->port     = port;
+    this->mode     = mode;
   }
 
-  NetworkProxy(QString url) {
-    this->url  = url;
-    this->type = NetworkProxyType::PAC_PROXY;
-  }
+  QString getProtocol() const { return this->protocol; }
+
+  void setProtocol(QString protocol) { this->protocol = protocol; }
+
+  QString getHost() const { return this->host; }
+
+  void setHost(QString host) { this->host = host; }
+
+  int getPort() const { return this->port; }
+
+  void setPort(int port) { this->port = port; }
+
+  NetworkProxyMode getMode() const { return this->mode; }
+
+  void setMode(NetworkProxyMode mode) { this->mode = mode; }
 
   inline QString toString() {
-    if (type == NetworkProxyType::PAC_PROXY) {
-      return url;
-    } else if (type == NetworkProxyType::HTTP_PROXY) {
-      return QString("http://%1:%2").arg(host, QString::number(port));
-    } else if (type == NetworkProxyType::SOCKS_PROXY) {
-      return QString("socks://%1:%2").arg(host, QString::number(port));
-    } else {
+    if (mode == NetworkProxyMode::DIRECT_MODE) {
       return "Disabled";
-    }
-  }
-
-  bool operator==(const NetworkProxy& other) {
-    return this->type == other.type;
-    if (type == NetworkProxyType::PAC_PROXY) {
-      return this->url == other.url;
-    } else if (type == NetworkProxyType::HTTP_PROXY ||
-               type == NetworkProxyType::SOCKS_PROXY) {
-      return this->host == other.host && this->port == other.port;
+    } else if (mode == NetworkProxyMode::PAC_MODE) {
+      // The host contains the URL to the PAC file.
+      // For example: http://127.0.0.1:1085/proxy.pac
+      return host;
     } else {
-      return true;
+      return QString("%1://%2:%3").arg(protocol, host, QString::number(port));
     }
   }
 
-  bool operator!=(const NetworkProxy& other) { return !(*this == other); }
+  bool operator==(const NetworkProxy &other) {
+    return this->mode == other.mode;
+    if (mode == NetworkProxyMode::DIRECT_MODE) {
+      return other.mode == NetworkProxyMode::DIRECT_MODE;
+    } else if (mode == NetworkProxyMode::PAC_MODE) {
+      return host == other.host;
+    } else {
+      return protocol == other.protocol && host == other.host &&
+             port == other.port;
+    }
+  }
+
+  // bool operator!=(const NetworkProxy& other) { return !(*this == other); }
+ private:
+  NetworkProxyMode mode;
+  QString protocol;
+  QString host;
+  int port;
 };
 
 class NetworkProxyHelper : public QObject {
   Q_OBJECT
  public:
   static NetworkProxy getSystemProxy();
-  static void setSystemProxy(NetworkProxy proxy);
+  static void setSystemProxy(const NetworkProxy &proxy);
   static void resetSystemProxy();
 
  private:
-  static QStringList NETWORK_INTERFACES;
+#if defined(Q_OS_WIN)
+  static NetworkProxy getSystemProxyWindows();
+  static void setSystemProxyWindows(const NetworkProxy &proxy);
+  static void resetSystemProxyWindows();
+#elif defined(Q_OS_MAC)
+  static const QStringList NETWORK_INTERFACES;
+  static NetworkProxy getSystemProxyMacOs();
+  static void setSystemProxyMacOs(const NetworkProxy &proxy);
+  static void resetSystemProxyMacOs();
+#elif defined(Q_OS_LINUX)
+  static NetworkProxy getSystemProxyLinuxGnome();
+  static NetworkProxy getSystemProxyLinuxKde();
+  static void setSystemProxyLinuxGnome(const NetworkProxy &proxy);
+  static void setSystemProxyLinuxKde(const NetworkProxy &proxy);
+  static void resetSystemProxyLinuxGnome();
+  static void resetSystemProxyLinuxKde();
+#endif
 };
 
 #endif  // NETWORKPROXY_H

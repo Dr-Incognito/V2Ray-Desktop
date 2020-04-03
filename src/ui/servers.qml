@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 2.0
+import com.v2ray.desktop.AppProxy 2.1
 
 ColumnLayout {
     id: layoutServer
