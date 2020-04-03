@@ -35,9 +35,6 @@ class AppProxyWorker : public QObject {
   void logsReady(QString logs);
   void latestReleaseReady(QString name, QString version);
   void upgradeFinished(QString name, QString outputFilePath, QString errorMsg);
-
- private:
-  QString formatV2RayLog(const QString& log);
 };
 
 #endif  // APPPROXYWORKER_H
