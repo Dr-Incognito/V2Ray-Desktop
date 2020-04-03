@@ -50,6 +50,7 @@ class ServerConfigHelper : public QObject {
   static QJsonObject getPrettyTrojanConfig(const QJsonObject &serverConfig);
   static QJsonObject getTrojanServerConfigFromUrl(
     QString serverUrl, const QString &subscriptionUrl);
+  static QJsonObject getTrojanOptions(const QString &optionString);
 };
 
 #endif  // SERVERCONFIGHELPER_H

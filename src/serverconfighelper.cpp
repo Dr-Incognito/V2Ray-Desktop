@@ -378,24 +378,42 @@ QJsonObject ServerConfigHelper::getTrojanServerConfigFromUrl(
   int atIndex    = serverUrl.indexOf('@');
   int colonIndex = serverUrl.indexOf(':');
   int sharpIndex = serverUrl.indexOf('#');
+  int questionMarkIndex =
+    serverUrl.indexOf('?') == -1 ? sharpIndex : serverUrl.indexOf('?');
 
   QString password   = serverUrl.left(atIndex);
   QString serverAddr = serverUrl.mid(atIndex + 1, colonIndex - atIndex - 1);
   QString serverPort =
-    serverUrl.mid(colonIndex + 1, sharpIndex - colonIndex - 1);
+    serverUrl.mid(colonIndex + 1, questionMarkIndex - colonIndex - 1);
+  QString options =
+    serverUrl.mid(questionMarkIndex + 1, sharpIndex - questionMarkIndex - 1);
   QString serverName =
     QUrl::fromPercentEncoding(serverUrl.mid(sharpIndex + 1).toUtf8()).trimmed();
 
-  return QJsonObject{{"serverName", serverName},
-                     {"autoConnect", false},
-                     {"subscription", subscriptionUrl},
-                     {"serverAddr", serverAddr},
-                     {"serverPort", serverPort},
-                     {"password", password},
-                     {"sni", DEFAULT_TROJRAN_SNI},
-                     {"udp", DEFAULT_TROJRAN_ENABLE_UDP},
-                     {"alpn", DEFAULT_TROJRAN_ALPN},
-                     {"allowInsecure", DEFAULT_TROJRAN_ALLOW_INSECURE}};
+  QJsonObject serverConfig{
+    {"serverName", serverName},        {"autoConnect", false},
+    {"subscription", subscriptionUrl}, {"serverAddr", serverAddr},
+    {"serverPort", serverPort},        {"password", password}};
+
+  QJsonObject serverOptions = getTrojanOptions(options);
+  for (auto itr = serverOptions.begin(); itr != serverOptions.end(); ++itr) {
+    serverConfig[itr.key()] = itr.value();
+  }
+  return serverConfig;
+}
+
+QJsonObject ServerConfigHelper::getTrojanOptions(const QString& optionString) {
+  QJsonObject options{{"sni", DEFAULT_TROJRAN_SNI},
+                      {"udp", DEFAULT_TROJRAN_ENABLE_UDP},
+                      {"alpn", DEFAULT_TROJRAN_ALPN},
+                      {"allowInsecure", DEFAULT_TROJRAN_ALLOW_INSECURE}};
+
+  for (QPair<QString, QString> p : QUrlQuery(optionString).queryItems()) {
+    if (options.contains(p.first)) {
+      options[p.first] = p.second;
+    }
+  }
+  return options;
 }
 
 QList<QJsonObject> ServerConfigHelper::getServerConfigFromV2RayConfig(
