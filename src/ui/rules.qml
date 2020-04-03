@@ -54,9 +54,9 @@ ColumnLayout {
             textRole: "text"
             valueRole: "value"
             model: ListModel{
-                ListElement { text: "PAC Mode"; value: "pac" }
-                ListElement { text: "Global Mode"; value: "global" }
-                ListElement { text: "Manual Mode"; value: "manual" }
+                ListElement { text: "Rule Mode"; value: "Rule" }
+                ListElement { text: "Global Mode"; value: "Global" }
+                ListElement { text: "Direct Mode"; value: "Direct" }
             }
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)

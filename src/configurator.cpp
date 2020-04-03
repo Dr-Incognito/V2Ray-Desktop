@@ -12,17 +12,11 @@
 #include "constants.h"
 
 QJsonObject Configurator::DEFAULT_APP_CONFIG = {
-  {"autoStart", DEFAULT_AUTO_START},
-  {"hideWindow", DEFAULT_HIDE_WINDOW},
-  {"language", ""},
-  {"serverIp", DEFAULT_SERVER_IP},
-  {"httpPort", DEFAULT_HTTP_PORT},
-  {"socksPort", DEFAULT_SOCKS_PORT},
-  {"pacPort", DEFAULT_PAC_PORT},
-  {"dns", DEFAULT_DNS_SERVER},
-  {"proxyMode", DEFAULT_PROXY_MODE},
-  {"gfwListUrl", DEFAULT_GFW_LIST_URL},
-  {"gfwListLastUpdated", "Never"}};
+  {"autoStart", DEFAULT_AUTO_START},    {"hideWindow", DEFAULT_HIDE_WINDOW},
+  {"language", DEFAULT_LANGUAGE},       {"serverIp", DEFAULT_SERVER_IP},
+  {"httpPort", DEFAULT_HTTP_PORT},      {"socksPort", DEFAULT_SOCKS_PORT},
+  {"dns", DEFAULT_DNS_SERVER},          {"proxyMode", DEFAULT_PROXY_MODE},
+  {"gfwListUrl", DEFAULT_GFW_LIST_URL}, {"gfwListLastUpdated", "Never"}};
 
 QString Configurator::getDefaultLanguage() {
   const static QMap<QLocale::Language, QString> LANGUAGES{
@@ -179,7 +173,7 @@ QJsonObject Configurator::getV2RayConfig() {
     {"socks-port", appConfig["socksPort"].toInt()},
     {"allow-lan", true},
     {"bind-address", appConfig["serverIp"].toString()},
-    {"mode", "Rule"},
+    {"mode", appConfig["proxyMode"].toString()},
     {"log-level", "info"},
     {"dns", QJsonObject{{"enable", false},
                         {"listen", "0.0.0.0:53"},
@@ -199,7 +193,7 @@ QJsonObject Configurator::getV2RayConfig() {
 
 QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
   QJsonArray dnsServers;
-  QStringList _dnsServers = dnsString.split(',');
+  QStringList _dnsServers = dnsString.split(';');
   for (QString ds : _dnsServers) {
     dnsServers.append(ds.trimmed());
   }

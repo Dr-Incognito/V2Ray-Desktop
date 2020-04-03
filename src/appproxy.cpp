@@ -76,6 +76,7 @@ AppProxy::AppProxy(QObject* parent)
 }
 
 AppProxy::~AppProxy() {
+  NetworkProxyHelper::resetSystemProxy();
   workerThread.quit();
   workerThread.wait();
 }
@@ -180,7 +181,6 @@ void AppProxy::setAppConfig(QString configString) {
   // Save app config
   appConfig["httpPort"]  = appConfig["httpPort"].toString().toInt();
   appConfig["socksPort"] = appConfig["socksPort"].toString().toInt();
-  appConfig["pacPort"]   = appConfig["pacPort"].toString().toInt();
   configurator.setAppConfig(appConfig);
   qInfo() << "Application config updated. Restarting V2Ray ...";
   // Restart V2Ray Core
@@ -205,11 +205,8 @@ QStringList AppProxy::getAppConfigErrors(const QJsonObject& appConfig) {
   errors.append(Utility::getNumericConfigError(
     appConfig, "pacPort", tr("PAC Server Port"), 1, 65535));
 
-  if (appConfig["httpPort"].toString() == appConfig["socksPort"].toString() ||
-      appConfig["httpPort"].toString() == appConfig["pacPort"].toString() ||
-      appConfig["socksPort"].toString() == appConfig["pacPort"].toString()) {
-    errors.append(tr(
-      "'HTTP Port', 'SOCKS Port', and 'PAC Server Port' can not be the same."));
+  if (appConfig["httpPort"].toString() == appConfig["socksPort"].toString()) {
+    errors.append(tr("'HTTP Port' and 'SOCKS Port' can not be the same."));
   }
   errors.append(Utility::getStringConfigError(
     appConfig, "dns", tr("DNS Server"),
@@ -305,10 +302,9 @@ void AppProxy::clearLogs() {
 }
 
 void AppProxy::getProxySettings() {
-  bool isV2RayRunning     = v2ray.isRunning();
-  bool isPacServerRunning = pacServer.isRunning();
-
-  QString proxyMode = NetworkProxyHelper::getSystemProxy().toString();
+  bool isV2RayRunning   = v2ray.isRunning();
+  QJsonObject appConfig = configurator.getAppConfig();
+  QString systemProxy   = NetworkProxyHelper::getSystemProxy().toString();
   QJsonArray connectedServers;
   for (QString cs : configurator.getConnectedServerNames()) {
     connectedServers.append(cs);
@@ -316,41 +312,33 @@ void AppProxy::getProxySettings() {
 
   emit proxySettingsReady(
     QJsonDocument(QJsonObject{{"isV2RayRunning", isV2RayRunning},
-                              {"isPacServerRunning", isPacServerRunning},
-                              {"proxyMode", proxyMode},
+                              {"systemProxy", systemProxy},
+                              {"proxyMode", appConfig["proxyMode"].toString()},
                               {"connectedServers", connectedServers}})
       .toJson());
 }
 
 void AppProxy::setSystemProxyMode(QString proxyMode) {
   QJsonObject appConfig = configurator.getAppConfig();
+  QString _proxyMode    = appConfig["proxyMode"].toString();
   // Automatically set system proxy according to app config
   if (!proxyMode.size()) {
-    proxyMode = appConfig["proxyMode"].toString();
+    proxyMode = _proxyMode;
   }
 
   // Set system proxy
-  NetworkProxy proxy;
-  proxy.host = "127.0.0.1";
+  NetworkProxy proxy("socks", "127.0.0.1", appConfig["socksPort"].toInt(),
+                     NetworkProxyMode::GLOBAL_MODE);
   NetworkProxyHelper::resetSystemProxy();
-  if (pacServer.isRunning()) {
-    pacServer.stop();
+  if (proxyMode == "Global" || proxyMode == "Rule") {
+    NetworkProxyHelper::setSystemProxy(proxy);
   }
-  if (proxyMode == "global") {
-    proxy.port = appConfig["serverPort"].toInt();
-    proxy.type = NetworkProxyType::SOCKS_PROXY;
-  } else if (proxyMode == "pac") {
-    proxy.port = appConfig["pacPort"].toInt();
-    proxy.type = NetworkProxyType::PAC_PROXY;
-    proxy.url  = QString("http://%1:%2/proxy.pac")
-                  .arg(proxy.host, QString::number(proxy.port));
-    // Restart PAC Server
-    QString pacServerHost = appConfig["serverIp"].toString();
-    pacServer.start(pacServerHost, proxy.port);
-  }
-  NetworkProxyHelper::setSystemProxy(proxy);
   emit proxyModeChanged(proxyMode);
 
+  // Detect whether the proxy mode is changed
+  if (proxyMode != _proxyMode) {
+    v2ray.restart();
+  }
   // Update app config
   configurator.setAppConfig({{"proxyMode", proxyMode}});
 }

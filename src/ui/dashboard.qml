@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import com.v2ray.desktop.AppProxy 2.0
+import com.v2ray.desktop.AppProxy 2.1
 
 ColumnLayout {
     id: layoutDashboard
@@ -144,7 +144,7 @@ ColumnLayout {
         onProxySettingsReady: function(proxySettings) {
             proxySettings = JSON.parse(proxySettings)
             var pSettings = "";
-            pSettings += qsTr("System Proxy: ") + proxySettings["proxyMode"] + "\n"
+            pSettings += qsTr("System Proxy: ") + proxySettings["systemProxy"] + " (" + proxySettings["proxyMode"] + ")\n"
             pSettings += qsTr("PAC Server: ") + (proxySettings["isPacServerRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             pSettings += qsTr("Clash: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             if (proxySettings["isV2RayRunning"]) {

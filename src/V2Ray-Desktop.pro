@@ -20,7 +20,6 @@ HEADERS += \
     constants.h \
     networkproxy.h \
     networkrequest.h \
-    pacserver.h \
     qrcodehelper.h \
     runguard.h \
     serverconfighelper.h \
@@ -36,7 +35,6 @@ SOURCES += \
     main.cpp \
     networkproxy.cpp \
     networkrequest.cpp \
-    pacserver.cpp \
     qrcodehelper.cpp \
     runguard.cpp \
     serverconfighelper.cpp \
