@@ -7,8 +7,10 @@
 #include <QFont>
 #include <QIcon>
 #include <QMessageBox>
+#include <QProcessEnvironment>
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
+#include <QQuickStyle>
 #include <QTextStream>
 #include <QTranslator>
 #include <QtGlobal>
@@ -77,6 +79,12 @@ int main(int argc, char *argv[]) {
 #if defined(Q_OS_WIN)
   QFont font("Microsoft YaHei", 10);
   app.setFont(font);
+#endif
+#if defined(Q_OS_LINUX)
+  if (QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP") ==
+      "KDE") {
+    QQuickStyle::setStyle("fusion");
+  }
 #endif
   qmlRegisterSingletonType<AppProxy>(
     "com.v2ray.desktop.AppProxy", APP_VERSION_MAJOR, APP_VERSION_MINOR,
