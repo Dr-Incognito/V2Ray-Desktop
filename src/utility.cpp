@@ -135,6 +135,22 @@ bool Utility::isAlpnValid(const QString& alpn) {
   return true;
 }
 
+QString Utility::formatV2RayLog(const QString& log) {
+  int timeStart  = log.indexOf("time=");
+  int levelStart = log.indexOf("level=");
+  int msgStart   = log.indexOf("msg=");
+
+  QString time = log.mid(timeStart + 6, levelStart - timeStart - 14)
+                   .replace('-', '/')
+                   .replace('T', ' ');
+  QString level = log.mid(levelStart + 6, msgStart - levelStart - 7);
+  QString msg   = log.mid(msgStart + 5, log.size() - msgStart - 6);
+  if (time.size() == 0) {
+    return "";
+  }
+  return QString("%1 [%2] clash: %3").arg(time, level, msg);
+}
+
 QString Utility::getLatestRelease(const QString& releaseUrl,
                                   const QNetworkProxy* proxy) {
   QByteArray releaseJsonStr =

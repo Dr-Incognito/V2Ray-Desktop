@@ -85,7 +85,7 @@ bool V2RayCore::start() {
   int exitCode = v2rayProcess->exitCode();
   if (exitCode != 0) {
     qCritical() << "Failed to start Clash.";
-    qCritical() << v2rayProcess->readAll();
+    qCritical() << Utility::formatV2RayLog(v2rayProcess->readAll());
   }
   v2rayProcess->setStandardErrorFile(Configurator::getV2RayLogFilePath());
   v2rayProcess->setStandardOutputFile(Configurator::getV2RayLogFilePath());

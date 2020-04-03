@@ -140,9 +140,20 @@ ColumnLayout {
             font.bold: true
         }
 
-        Text {
-            text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
-            color: "white"
+        Button {
+            text: qsTr("https://github.com/Dr-Incognito/V2Ray-Desktop")
+
+            contentItem: Text {
+                text: parent.text
+                color: "white"
+            }
+            background: Rectangle {
+                color: "#2e3e4e"
+                radius: 4
+            }
+            onClicked: function() {
+                Qt.openUrlExternally("https://github.com/Dr-Incognito/V2Ray-Desktop")
+            }
         }
     }
 

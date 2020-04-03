@@ -31,6 +31,7 @@ class Utility : public QObject {
   static bool isServerNameNotUsed(const QString &serverName);
   static QStringList getAlpn(const QString &alpn);
   static bool isAlpnValid(const QString &alpn);
+  static QString formatV2RayLog(const QString &log);
   static QString getLatestRelease(const QString &releaseUrl,
                                   const QNetworkProxy *proxy);
   static bool isVersionNewer(const QString &currentVersion,

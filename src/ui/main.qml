@@ -84,13 +84,12 @@ ApplicationWindow {
             MenuSeparator {}
 
             MenuItem {
-                text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
+                text: qsTr("Dashboard")
                 onTriggered: function() {
-                    mouseAreaSettings.clicked(null)
+                    mouseAreaDashboard.clicked(null)
                     appWindow.show()
                     appWindow.requestActivate()
                     appWindow.raise()
-
                 }
             }
 
@@ -102,6 +101,17 @@ ApplicationWindow {
                     appWindow.show()
                     appWindow.requestActivate()
                     appWindow.raise()
+                }
+            }
+
+            MenuItem {
+                text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
+                onTriggered: function() {
+                    mouseAreaSettings.clicked(null)
+                    appWindow.show()
+                    appWindow.requestActivate()
+                    appWindow.raise()
+
                 }
             }
 
@@ -198,6 +208,7 @@ ApplicationWindow {
                     }
 
                     MouseArea {
+                        id: mouseAreaDashboard
                         width: parent.width
                         height: parent.height
 
