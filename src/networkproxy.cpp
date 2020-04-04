@@ -194,8 +194,8 @@ void NetworkProxyHelper::resetSystemProxyMacOs() {
 NetworkProxy NetworkProxyHelper::getSystemProxyLinuxGnome() {
   QProcess p;
   NetworkProxy proxy;
-  p.start("gsettings", QStringList() << "list-recursively"
-                                     << "org.gnome.system.proxy");
+  p.start("gsettings",
+          QStringList{"list-recursively", "org.gnome.system.proxy"});
   p.waitForFinished();
   QList<QByteArray> settings = p.readAllStandardOutput().split('\n');
   for (QByteArray s : settings) {
@@ -247,55 +247,113 @@ void NetworkProxyHelper::setSystemProxyLinuxGnome(const NetworkProxy& proxy) {
 
 void NetworkProxyHelper::resetSystemProxyLinuxGnome() {
   QProcess p;
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy"
-                                     << "mode"
-                                     << "none");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy", "mode", "none"});
   p.waitForFinished();
-  p.start("gsettings", QStringList()
-                         << "set"
-                         << "org.gnome.system.proxy"
-                         << "ignore-hosts"
-                         << "['localhost', '127.0.0.0/8', '::1', '10.0.0.0/8', "
-                            "'172.16.0.0/12', '192.168.0.0/16']");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy", "ignore-hosts",
+                      "['localhost', '127.0.0.0/8', '::1', '10.0.0.0/8', "
+                      "'172.16.0.0/12', '192.168.0.0/16']"});
   p.waitForFinished();
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy.http"
-                                     << "enabled"
-                                     << "false");
+  p.start("gsettings", QStringList{"set", "org.gnome.system.proxy.http",
+                                   "enabled", "false"});
   p.waitForFinished();
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy.http"
-                                     << "host"
-                                     << "");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy.http", "host", ""});
   p.waitForFinished();
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy.http"
-                                     << "port"
-                                     << "0");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy.http", "port", "0"});
   p.waitForFinished();
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy.socks"
-                                     << "host"
-                                     << "");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy.socks", "host", ""});
   p.waitForFinished();
-  p.start("gsettings", QStringList() << "set"
-                                     << "org.gnome.system.proxy.socks"
-                                     << "port"
-                                     << "0");
+  p.start("gsettings",
+          QStringList{"set", "org.gnome.system.proxy.socks", "port", "0"});
   p.waitForFinished();
 }
 
 NetworkProxy NetworkProxyHelper::getSystemProxyLinuxKde() {
-  // TODO
+  QProcess p;
+  NetworkProxy proxy;
+  p.start("kreadconfig5", QStringList{"--file", "kioslaverc", "--group",
+                                      "Proxy Settings", "--key", "ProxyType"});
+  int proxyMode = p.readAllStandardOutput().toInt();
+  if (proxyMode == 1 || proxyMode == 4) {
+    // Manual; Use System Settings
+    proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
+  } else if (proxyMode == 2) {
+    proxy.setMode(NetworkProxyMode::PAC_MODE);
+  }
+  if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
+    p.start("kreadconfig5",
+            QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                        "--key", "httpProxy"});
+    p.waitForFinished();
+    QString httpProxy = p.readAllStandardOutput().trimmed();
+    if (httpProxy.size() > 0) {
+      QStringList _proxy = httpProxy.split(' ');
+      QString hostWithProtocol = _proxy.at(0);
+      proxy.setProtocol("http");
+      proxy.setHost(hostWithProtocol.mid(hostWithProtocol.indexOf('/') + 2));
+      proxy.setPort(_proxy.at(1).toInt());
+    }
+    p.start("kreadconfig5",
+            QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                        "--key", "socksProxy"});
+    p.waitForFinished();
+    QString socksProxy = p.readAllStandardOutput().trimmed();
+    if (socksProxy.size() > 0) {
+      QStringList _proxy = socksProxy.split(' ');
+      QString hostWithProtocol = _proxy.at(0);
+      proxy.setProtocol("http");
+      proxy.setHost(hostWithProtocol.mid(hostWithProtocol.indexOf('/') + 2));
+      proxy.setPort(_proxy.at(1).toInt());
+    }
+  } else if (proxy.getMode() == NetworkProxyMode::PAC_MODE) {
+    p.start("kreadconfig5",
+            QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                        "--key", "Proxy Config Script"});
+    p.waitForFinished();
+    proxy.setHost(p.readAllStandardOutput());
+  }
+  p.waitForFinished();
+
   return NetworkProxy();
 }
 
 void NetworkProxyHelper::setSystemProxyLinuxKde(const NetworkProxy& proxy) {
-  // TODO
+  QProcess p;
+  if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
+    p.start("kwriteconfig5",
+            QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                        "--key", "ProxyType", "1"});
+    p.waitForFinished();
+    p.start("kwriteconfig5",
+            QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                        "--key", "socksProxy",
+                        QString("%1 %2").arg(
+                          proxy.getHost(), QString::number(proxy.getPort()))});
+    p.waitForFinished();
+  }
 }
 
 void NetworkProxyHelper::resetSystemProxyLinuxKde() {
-  // TODO
+  QProcess p;
+  p.start("kwriteconfig5",
+          QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                      "--key", "ProxyType", "0"});
+  p.waitForFinished();
+  p.start("kwriteconfig5",
+          QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                      "--key", "Proxy Config Script", ""});
+  p.waitForFinished();
+  p.start("kwriteconfig5",
+          QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                      "--key", "httpProxy", ""});
+  p.waitForFinished();
+  p.start("kwriteconfig5",
+          QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
+                      "--key", "socksProxy", ""});
+  p.waitForFinished();
 }
 #endif
