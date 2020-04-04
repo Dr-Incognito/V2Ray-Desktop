@@ -16,7 +16,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
   if (desktopEnv == "GNOME") {
     return getSystemProxyLinuxGnome();
-  } else if (desktopEnv == "GNOME") {
+  } else if (desktopEnv == "KDE") {
     return getSystemProxyLinuxKde();
   } else {
     return NetworkProxy();
@@ -36,7 +36,7 @@ void NetworkProxyHelper::setSystemProxy(const NetworkProxy& proxy) {
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
   if (desktopEnv == "GNOME") {
     return setSystemProxyLinuxGnome(proxy);
-  } else if (desktopEnv == "GNOME") {
+  } else if (desktopEnv == "KDE") {
     return setSystemProxyLinuxKde(proxy);
   }
 #endif
@@ -52,7 +52,7 @@ void NetworkProxyHelper::resetSystemProxy() {
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
   if (desktopEnv == "GNOME") {
     return resetSystemProxyLinuxGnome();
-  } else if (desktopEnv == "GNOME") {
+  } else if (desktopEnv == "KDE") {
     return resetSystemProxyLinuxKde();
   }
 #endif
@@ -103,7 +103,8 @@ void NetworkProxyHelper::resetSystemProxyWindows() {
   internetSettings.remove("ProxyServer");
 }
 #elif defined(Q_OS_MAC)
-const QStringList NETWORK_INTERFACES = {"Wi-Fi", "Enternet"};
+const QStringList NetworkProxyHelper::NETWORK_INTERFACES = {"Wi-Fi",
+                                                            "Enternet"};
 
 NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
   NetworkProxy proxy;
