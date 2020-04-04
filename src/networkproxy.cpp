@@ -217,31 +217,30 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxGnome() {
         proxy.setPort(0);
       }
     } else if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
-    }
-
-    if (s.startsWith("org.gnome.system.proxy.http port")) {
-      int port = s.mid(33).toInt();
-      if (port) {
-        proxy.setPort(port);
-      }
-    } else if (s.startsWith("org.gnome.system.proxy.http host")) {
-      int qIndex = s.indexOf('\'');
-      QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
-      if (host.size()) {
-        proxy.setHost(host);
-        proxy.setProtocol("http");
-      }
-    } else if (s.startsWith("org.gnome.system.proxy.socks port")) {
-      int port = s.mid(33).toInt();
-      if (port) {
-        proxy.setPort(port);
-      }
-    } else if (s.startsWith("org.gnome.system.proxy.socks host")) {
-      int qIndex = s.indexOf('\'');
-      QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
-      if (host.size()) {
-        proxy.setHost(host);
-        proxy.setProtocol("socks");
+      if (s.startsWith("org.gnome.system.proxy.http port")) {
+        int port = s.mid(33).toInt();
+        if (port) {
+          proxy.setPort(port);
+        }
+      } else if (s.startsWith("org.gnome.system.proxy.http host")) {
+        int qIndex = s.indexOf('\'');
+        QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
+        if (host.size()) {
+          proxy.setHost(host);
+          proxy.setProtocol("http");
+        }
+      } else if (s.startsWith("org.gnome.system.proxy.socks port")) {
+        int port = s.mid(33).toInt();
+        if (port) {
+          proxy.setPort(port);
+        }
+      } else if (s.startsWith("org.gnome.system.proxy.socks host")) {
+        int qIndex = s.indexOf('\'');
+        QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
+        if (host.size()) {
+          proxy.setHost(host);
+          proxy.setProtocol("socks");
+        }
       }
     }
   }
