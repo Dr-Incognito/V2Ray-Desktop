@@ -277,7 +277,8 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxKde() {
   NetworkProxy proxy;
   p.start("kreadconfig5", QStringList{"--file", "kioslaverc", "--group",
                                       "Proxy Settings", "--key", "ProxyType"});
-  int proxyMode = p.readAllStandardOutput().toInt();
+  p.waitForFinished();
+  int proxyMode = p.readAllStandardOutput().trimmed().toInt();
   if (proxyMode == 1 || proxyMode == 4) {
     // Manual; Use System Settings
     proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
@@ -292,9 +293,8 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxKde() {
     QString httpProxy = p.readAllStandardOutput().trimmed();
     if (httpProxy.size() > 0) {
       QStringList _proxy = httpProxy.split(' ');
-      QString hostWithProtocol = _proxy.at(0);
       proxy.setProtocol("http");
-      proxy.setHost(hostWithProtocol.mid(hostWithProtocol.indexOf('/') + 2));
+      proxy.setHost(_proxy.at(0));
       proxy.setPort(_proxy.at(1).toInt());
     }
     p.start("kreadconfig5",
@@ -304,9 +304,8 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxKde() {
     QString socksProxy = p.readAllStandardOutput().trimmed();
     if (socksProxy.size() > 0) {
       QStringList _proxy = socksProxy.split(' ');
-      QString hostWithProtocol = _proxy.at(0);
-      proxy.setProtocol("http");
-      proxy.setHost(hostWithProtocol.mid(hostWithProtocol.indexOf('/') + 2));
+      proxy.setProtocol("socks");
+      proxy.setHost(_proxy.at(0));
       proxy.setPort(_proxy.at(1).toInt());
     }
   } else if (proxy.getMode() == NetworkProxyMode::PAC_MODE) {
@@ -316,9 +315,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxKde() {
     p.waitForFinished();
     proxy.setHost(p.readAllStandardOutput());
   }
-  p.waitForFinished();
-
-  return NetworkProxy();
+  return proxy;
 }
 
 void NetworkProxyHelper::setSystemProxyLinuxKde(const NetworkProxy& proxy) {
