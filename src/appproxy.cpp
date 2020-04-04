@@ -340,13 +340,12 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
     NetworkProxyHelper::setSystemProxy(proxy);
   }
   emit proxyModeChanged(proxyMode);
-
+  // Update app config
+  configurator.setAppConfig({{"proxyMode", proxyMode}});
   // Detect whether the proxy mode is changed
   if (proxyMode != _proxyMode) {
     v2ray.restart();
   }
-  // Update app config
-  configurator.setAppConfig({{"proxyMode", proxyMode}});
 }
 
 void AppProxy::updateGfwList() {
@@ -366,6 +365,8 @@ void AppProxy::returnGfwList(QString gfwList) {
       {"gfwListLastUpdated", QDateTime::currentDateTime().toString()}});
     qInfo() << "GFW List updated successfully.";
     emit gfwListUpdated(updatedTime);
+    // Restart V2Ray
+    v2ray.restart();
   } else {
     emit gfwListUpdated(tr("Failed to update GFW List."));
   }
