@@ -73,7 +73,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxyWindows() {
              internetSettings.contains("ProxyServer")) {
     QString proxyServer = internetSettings.value("ProxyServer").toString();
     int colonIndex      = proxyServer.indexOf(':');
-    proxy.setProtocol("socks");
+    proxy.setProtocol("http");
     proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
     proxy.setHost(proxyServer.left(colonIndex));
     proxy.setPort(proxyServer.mid(colonIndex + 1).toInt());
@@ -109,8 +109,7 @@ const QStringList NetworkProxyHelper::NETWORK_INTERFACES = {"Wi-Fi",
 
 NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
   NetworkProxy proxy;
-  QString stdOutput, socksProxyHost;
-  int socksProxyPort;
+  QString stdOutput;
   for (QString ni : NETWORK_INTERFACES) {
     QProcess p;
     p.start("networksetup", QStringList{"-getautoproxyurl", ni});
