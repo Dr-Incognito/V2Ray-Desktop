@@ -328,7 +328,12 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   }
 
   // Set system proxy
-  NetworkProxy proxy("socks", "127.0.0.1", appConfig["socksPort"].toInt(),
+  NetworkProxy proxy("socks", "127.0.0.1",
+#if defined(Q_OS_WIN)
+                     appConfig["httpPort"].toInt(),
+#else
+                     appConfig["socksPort"].toInt(),
+#endif
                      NetworkProxyMode::GLOBAL_MODE);
   NetworkProxyHelper::resetSystemProxy();
   if (proxyMode == "Global" || proxyMode == "Rule") {
