@@ -14,7 +14,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxy() {
 #elif defined(Q_OS_LINUX)
   QString desktopEnv =
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
-  if (desktopEnv == "GNOME") {
+  if (desktopEnv == "GNOME" || desktopEnv == "Unity") {
     return getSystemProxyLinuxGnome();
   } else if (desktopEnv == "KDE") {
     return getSystemProxyLinuxKde();
@@ -34,7 +34,7 @@ void NetworkProxyHelper::setSystemProxy(const NetworkProxy& proxy) {
 #elif defined(Q_OS_LINUX)
   QString desktopEnv =
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
-  if (desktopEnv == "GNOME") {
+  if (desktopEnv == "GNOME" || desktopEnv == "Unity") {
     return setSystemProxyLinuxGnome(proxy);
   } else if (desktopEnv == "KDE") {
     return setSystemProxyLinuxKde(proxy);
@@ -50,7 +50,7 @@ void NetworkProxyHelper::resetSystemProxy() {
 #elif defined(Q_OS_LINUX)
   QString desktopEnv =
     QProcessEnvironment::systemEnvironment().value("XDG_CURRENT_DESKTOP");
-  if (desktopEnv == "GNOME") {
+  if (desktopEnv == "GNOME" || desktopEnv == "Unity") {
     return resetSystemProxyLinuxGnome();
   } else if (desktopEnv == "KDE") {
     return resetSystemProxyLinuxKde();
@@ -209,22 +209,40 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxGnome() {
       } else if (proxyMode == "manual") {
         proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
       }
-    } else if (s.startsWith("org.gnome.system.proxy autoconfig-url")) {
-      int qIndex = s.indexOf('\'');
-      proxy.setHost(s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1));
-      proxy.setPort(0);
-    } else if (s.startsWith("org.gnome.system.proxy.http port")) {
-      proxy.setPort(s.mid(33).toInt());
+    }
+    if (proxy.getMode() == NetworkProxyMode::PAC_MODE) {
+      if (s.startsWith("org.gnome.system.proxy autoconfig-url")) {
+        int qIndex = s.indexOf('\'');
+        proxy.setHost(s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1));
+        proxy.setPort(0);
+      }
+    } else if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
+    }
+
+    if (s.startsWith("org.gnome.system.proxy.http port")) {
+      int port = s.mid(33).toInt();
+      if (port) {
+        proxy.setPort(port);
+      }
     } else if (s.startsWith("org.gnome.system.proxy.http host")) {
       int qIndex = s.indexOf('\'');
-      proxy.setHost(s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1));
-      proxy.setProtocol("http");
+      QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
+      if (host.size()) {
+        proxy.setHost(host);
+        proxy.setProtocol("http");
+      }
     } else if (s.startsWith("org.gnome.system.proxy.socks port")) {
-      proxy.setPort(s.mid(33).toInt());
+      int port = s.mid(33).toInt();
+      if (port) {
+        proxy.setPort(port);
+      }
     } else if (s.startsWith("org.gnome.system.proxy.socks host")) {
       int qIndex = s.indexOf('\'');
-      proxy.setHost(s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1));
-      proxy.setProtocol("socks");
+      QString host = s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1);
+      if (host.size()) {
+        proxy.setHost(host);
+        proxy.setProtocol("socks");
+      }
     }
   }
   return proxy;
