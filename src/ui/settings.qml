@@ -89,6 +89,33 @@ ColumnLayout {
         }
 
         Label {
+            text: qsTr("Proxy Mode")
+            color: "white"
+        }
+
+        ComboBox {
+            id: comboProxyMode
+            Layout.fillWidth: true
+            textRole: "text"
+            valueRole: "value"
+            model: ListModel{
+                ListElement { text: "Rule Mode"; value: "Rule" }
+                ListElement { text: "Global Mode"; value: "Global" }
+                ListElement { text: "Direct Mode"; value: "Direct" }
+            }
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+            contentItem: Text {
+                text: comboProxyMode.displayText
+                color: "white"
+                leftPadding: 10
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+        Label {
             text: qsTr("Listening IP Address")
             color: "white"
         }
@@ -98,6 +125,22 @@ ColumnLayout {
             color: "white"
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 127.0.0.1")
+            background: Rectangle {
+                color: Qt.rgba(255, 255, 255, .1)
+                border.color: Qt.rgba(120, 130, 140, .2)
+            }
+        }
+
+        Label {
+            text: qsTr("DNS Servers")
+            color: "white"
+        }
+
+        TextField {
+            id: textDnsServers
+            color: "white"
+            Layout.fillWidth: true
+            placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -139,16 +182,16 @@ ColumnLayout {
         }
 
         Label {
-            text: qsTr("DNS Servers")
+            text: qsTr("GFW List URL")
             color: "white"
         }
 
         TextField {
-            id: textDnsServers
+            id: textGfwListUrl
             color: "white"
             Layout.fillWidth: true
             Layout.columnSpan: 3
-            placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
+            placeholderText: qsTr("Example: https://url/to/gfwlist.yml")
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -174,9 +217,11 @@ ColumnLayout {
                     "serverIp": textServerIpAddr.text,
                     "httpPort": textHttpPort.text,
                     "socksPort": textSocksPort.text,
-                    "dns": textDnsServers.text
+                    "dns": textDnsServers.text,
+                    "gfwListUrl": textGfwListUrl.text
                 }
                 labelErrorMsg.visible = false
+                AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
                 AppProxy.setAppConfig(JSON.stringify(config))
             }
         }
@@ -207,10 +252,12 @@ ColumnLayout {
             checkboxAutoStart.checked = config["autoStart"]
             checkboxHideWindow.checked = config["hideWindow"]
             comboLanguage.currentIndex = comboLanguage.indexOfValue(config["language"])
+            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(config["proxyMode"])
             textServerIpAddr.text = config["serverIp"]
             textSocksPort.text = config["socksPort"]
             textHttpPort.text = config["httpPort"]
             textDnsServers.text = config["dns"]
+            textGfwListUrl.text = config["gfwListUrl"]
         }
 
         onAppConfigChanged: function() {
@@ -220,6 +267,10 @@ ColumnLayout {
         onAppConfigError: function(errorMsg) {
             labelErrorMsg.text = errorMsg
             labelErrorMsg.visible = true
+        }
+
+        onProxyModeChanged: function(proxyMode) {
+            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(proxyMode)
         }
     }
 

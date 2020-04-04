@@ -38,6 +38,8 @@ class Configurator : public QObject {
   QStringList getConnectedServerNames();
   void setServerConnection(QString serverName, bool connected);
   QJsonArray getRules();
+  QJsonArray getGfwListRules();
+  QJsonArray getUserRules();
 
  private:
   Configurator();
@@ -46,6 +48,7 @@ class Configurator : public QObject {
   static QString getDefaultLanguage();
   QJsonArray getPrettyDnsServers(QString dnsString);
   QStringList getAutoConnectServers();
+  QJsonArray getRules(const QString& fileName);
 };
 
 #endif  // CONFIGURATOR_H

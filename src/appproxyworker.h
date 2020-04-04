@@ -28,7 +28,7 @@ class AppProxyWorker : public QObject {
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
-  void gfwListReady(QByteArray gfwList);
+  void gfwListReady(QString gfwList);
   void urlAccessibilityReady(QMap<QString, bool> accessible);
   void subscriptionServersReady(QString subscriptionServers,
                                 QString subscriptionUrl);

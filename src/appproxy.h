@@ -73,8 +73,7 @@ class AppProxy : public QObject {
   void setAppConfig(QString configString);
   void setSystemProxyMode(QString proxyMode = "");
   void getProxySettings();
-  void setGfwListUrl(QString gfwListUrl);
-  void updateGfwList(QString gfwListUrl);
+  void updateGfwList();
   void getLogs();
   void clearLogs();
   void getServers();
@@ -97,7 +96,7 @@ class AppProxy : public QObject {
 
  private slots:
   void returnServerLatency(QMap<QString, QVariant> latency);
-  void returnGfwList(QByteArray gfwList);
+  void returnGfwList(QString gfwList);
   void returnNetworkAccessiblity(QMap<QString, bool> accessible);
   void addSubscriptionServers(QString subsriptionServers,
                               QString subsriptionUrl = "");

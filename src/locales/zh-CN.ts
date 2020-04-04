@@ -30,67 +30,70 @@
         <translation type="vanished">监听端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="202"/>
+        <location filename="../appproxy.cpp" line="207"/>
         <source>HTTP Port</source>
         <translation>HTTP端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="204"/>
+        <location filename="../appproxy.cpp" line="209"/>
         <source>SOCKS Port</source>
         <translation>SOCKS端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="206"/>
         <source>PAC Server Port</source>
-        <translation>PAC服务器端口</translation>
+        <translation type="vanished">PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="211"/>
         <source>&apos;HTTP Port&apos;, &apos;SOCKS Port&apos;, and &apos;PAC Server Port&apos; can not be the same.</source>
-        <translation>&apos;HTTP端口&apos;, &apos;SOCKS端口&apos;, 和&apos;PAC服务器端口&apos;不得相同。</translation>
+        <translation type="vanished">&apos;HTTP端口&apos;, &apos;SOCKS端口&apos;, 和&apos;PAC服务器端口&apos;不得相同。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="215"/>
+        <location filename="../appproxy.cpp" line="202"/>
         <source>DNS Server</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="505"/>
+        <location filename="../appproxy.cpp" line="211"/>
+        <source>&apos;HTTP Port&apos; and &apos;SOCKS Port&apos; can not be the same.</source>
+        <translation>&apos;HTTP端口&apos;和&apos;SOCKS端口&apos;不能相同。</translation>
+    </message>
+    <message>
+        <location filename="../appproxy.cpp" line="482"/>
         <source>Failed to get subscription servers from URLs.</source>
         <translation>无法从指定的URL获取订阅服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="553"/>
+        <location filename="../appproxy.cpp" line="530"/>
         <source>No supported servers added from the URL.</source>
         <translation>未能从该URL中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="561"/>
+        <location filename="../appproxy.cpp" line="538"/>
         <source>The config file does not exist.</source>
         <translation>配置文件不存在。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="603"/>
+        <location filename="../appproxy.cpp" line="580"/>
         <source>No supported servers added from the config file.</source>
         <translation>未能从该配置文件中添加支持的服务器。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="709"/>
+        <location filename="../appproxy.cpp" line="686"/>
         <source>Failed to check updates</source>
         <translation>检查更新失败</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="723"/>
+        <location filename="../appproxy.cpp" line="700"/>
         <source>Please upgrade from the package manager</source>
         <translation>请使用包管理器更新</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="728"/>
+        <location filename="../appproxy.cpp" line="705"/>
         <source>The V2Ray Core in AppImage is not upgradable.</source>
         <translation>无法更新AppImage中的V2Ray Core。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="774"/>
+        <location filename="../appproxy.cpp" line="751"/>
         <source>Failed to replace V2Ray Core files.</source>
         <translation>无法替换V2Ray Core的文件。</translation>
     </message>
@@ -99,7 +102,7 @@
         <translation type="vanished">缺失值：&apos;DNS服务器&apos;。</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="361"/>
+        <location filename="../appproxy.cpp" line="214"/>
         <source>GFW List URL</source>
         <translation>GFW List URL</translation>
     </message>
@@ -208,12 +211,12 @@
         <translation type="vanished">密码</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="479"/>
+        <location filename="../appproxy.cpp" line="456"/>
         <source>Subscription URL</source>
         <translation>订阅URL</translation>
     </message>
     <message>
-        <location filename="../appproxy.cpp" line="388"/>
+        <location filename="../appproxy.cpp" line="365"/>
         <source>Failed to update GFW List.</source>
         <translation>更新GFW List失败。</translation>
     </message>
@@ -221,7 +224,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="70"/>
+        <location filename="../main.cpp" line="72"/>
         <source>There is another %1 instance running!
 </source>
         <translation>已有另一个%1的实例正在运行！</translation>
@@ -434,17 +437,17 @@
         <translation>&apos;%1&apos;的值应介于%2和%3之间。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="189"/>
+        <location filename="../utility.cpp" line="205"/>
         <source>Failed to download the file %1.</source>
         <translation>无法下载文件 %1。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="194"/>
+        <location filename="../utility.cpp" line="210"/>
         <source>Failed to open file %1.</source>
         <translation>无法打开文件 %1。</translation>
     </message>
     <message>
-        <location filename="../utility.cpp" line="200"/>
+        <location filename="../utility.cpp" line="216"/>
         <source>Failed to unzip file %1.</source>
         <translation>无法解压文件 %1。</translation>
     </message>
@@ -452,12 +455,12 @@
 <context>
     <name>V2RayCore</name>
     <message>
-        <location filename="../v2raycore.cpp" line="50"/>
+        <location filename="../v2raycore.cpp" line="52"/>
         <source>Not Installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../v2raycore.cpp" line="57"/>
+        <location filename="../v2raycore.cpp" line="59"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -477,8 +480,8 @@
     <message>
         <location filename="../ui/about.qml" line="48"/>
         <location filename="../ui/about.qml" line="100"/>
-        <location filename="../ui/about.qml" line="191"/>
-        <location filename="../ui/about.qml" line="206"/>
+        <location filename="../ui/about.qml" line="202"/>
+        <location filename="../ui/about.qml" line="217"/>
         <source>Check for updates</source>
         <translation>检查更新</translation>
     </message>
@@ -491,8 +494,8 @@
     <message>
         <location filename="../ui/about.qml" line="66"/>
         <location filename="../ui/about.qml" line="118"/>
-        <location filename="../ui/about.qml" line="222"/>
-        <location filename="../ui/about.qml" line="239"/>
+        <location filename="../ui/about.qml" line="233"/>
+        <location filename="../ui/about.qml" line="250"/>
         <source>Upgrade</source>
         <translation>更新</translation>
     </message>
@@ -507,17 +510,17 @@
         <translation>更新中 …</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="183"/>
+        <location filename="../ui/about.qml" line="194"/>
         <source>Already the latest verion</source>
         <translation>已是最新版本</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="186"/>
+        <location filename="../ui/about.qml" line="197"/>
         <source>Newer verion available: </source>
         <translation>新版本可用：</translation>
     </message>
     <message>
-        <location filename="../ui/about.qml" line="220"/>
+        <location filename="../ui/about.qml" line="231"/>
         <source>Upgrade completed. Please restart V2Ray-Desktop.</source>
         <translation>更新完成，请重启V2Ray-Desktop。</translation>
     </message>
@@ -605,18 +608,15 @@ Please check the network connection.</source>
         <translation>系统代理：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="148"/>
         <source>PAC Server: </source>
-        <translation>PAC服务器：</translation>
+        <translation type="vanished">PAC服务器：</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="148"/>
         <location filename="../ui/dashboard.qml" line="149"/>
         <source>Running</source>
         <translation>正在运行</translation>
     </message>
     <message>
-        <location filename="../ui/dashboard.qml" line="148"/>
         <location filename="../ui/dashboard.qml" line="149"/>
         <source>Not running</source>
         <translation>已停止</translation>
@@ -664,25 +664,24 @@ Please check the network connection.</source>
     <message>
         <location filename="../ui/main.qml" line="14"/>
         <location filename="../ui/main.qml" line="37"/>
-        <location filename="../ui/main.qml" line="456"/>
+        <location filename="../ui/main.qml" line="467"/>
         <source>V2Ray Desktop</source>
         <translation>V2Ray Desktop</translation>
     </message>
     <message>
         <location filename="../ui/main.qml" line="43"/>
-        <location filename="../ui/main.qml" line="473"/>
+        <location filename="../ui/main.qml" line="484"/>
         <source>Turn V2Ray On</source>
         <translation>启动V2Ray</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="476"/>
+        <location filename="../ui/main.qml" line="487"/>
         <source>Turn V2Ray Off</source>
         <translation>关闭V2Ray</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="59"/>
         <source>PAC Mode</source>
-        <translation>PAC 模式</translation>
+        <translation type="vanished">PAC 模式</translation>
     </message>
     <message>
         <location filename="../ui/main.qml" line="68"/>
@@ -690,62 +689,72 @@ Please check the network connection.</source>
         <translation>全局模式</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="77"/>
         <source>Manual Mode</source>
-        <translation>手动模式</translation>
+        <translation type="vanished">手动模式</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="87"/>
-        <location filename="../ui/main.qml" line="328"/>
+        <location filename="../ui/main.qml" line="108"/>
+        <location filename="../ui/main.qml" line="339"/>
         <source>Preferences</source>
         <translation>偏好设置</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="99"/>
-        <location filename="../ui/main.qml" line="249"/>
+        <location filename="../ui/main.qml" line="98"/>
+        <location filename="../ui/main.qml" line="260"/>
         <source>Servers</source>
         <translation>服务器</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="109"/>
+        <location filename="../ui/main.qml" line="59"/>
+        <source>Rule Mode</source>
+        <translation>规则模式</translation>
+    </message>
+    <message>
+        <location filename="../ui/main.qml" line="77"/>
+        <source>Direct Mode</source>
+        <translation>直连模式</translation>
+    </message>
+    <message>
+        <location filename="../ui/main.qml" line="119"/>
         <source>Scan QR Code on the Screen</source>
         <translation>扫描屏幕上的二维码</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="122"/>
-        <location filename="../ui/main.qml" line="368"/>
+        <location filename="../ui/main.qml" line="132"/>
+        <location filename="../ui/main.qml" line="379"/>
         <source>Logs</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="132"/>
+        <location filename="../ui/main.qml" line="142"/>
         <source>Feedback</source>
         <translation>反馈</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="137"/>
-        <location filename="../ui/main.qml" line="408"/>
+        <location filename="../ui/main.qml" line="147"/>
+        <location filename="../ui/main.qml" line="419"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="147"/>
+        <location filename="../ui/main.qml" line="157"/>
         <source>Quit V2Ray Desktop</source>
         <translation>退出V2Ray Desktop</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="194"/>
+        <location filename="../ui/main.qml" line="87"/>
+        <location filename="../ui/main.qml" line="204"/>
         <source>Dashboard</source>
         <translation>控制板</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="288"/>
+        <location filename="../ui/main.qml" line="299"/>
         <source>Rules</source>
         <translation>规则</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="87"/>
-        <location filename="../ui/main.qml" line="328"/>
+        <location filename="../ui/main.qml" line="108"/>
+        <location filename="../ui/main.qml" line="339"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -758,48 +767,44 @@ Please check the network connection.</source>
         <translation>规则</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="46"/>
         <source>Proxy Mode</source>
-        <translation>代理模式</translation>
+        <translation type="vanished">代理模式</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="74"/>
         <source>GFW List URL</source>
-        <translation>GFW List URL</translation>
+        <translation type="vanished">GFW List URL</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="83"/>
-        <source>Example: https://url/to/gfwlist.txt</source>
-        <translation>例如：https://url/to/gfwlist.txt</translation>
+        <source>Example: https://url/to/gfwlist.yml</source>
+        <translation type="vanished">例如：https://url/to/gfwlist.yml</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="91"/>
+        <location filename="../ui/rules.qml" line="46"/>
         <source>GFW List Last Updated on</source>
         <translation>GFW List最近更新时间</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="103"/>
-        <location filename="../ui/rules.qml" line="181"/>
+        <location filename="../ui/rules.qml" line="58"/>
+        <location filename="../ui/rules.qml" line="108"/>
         <source>Update GFW List Now</source>
         <translation>立即更新GFW List</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="116"/>
+        <location filename="../ui/rules.qml" line="71"/>
         <source>Updating ...</source>
         <translation>更新中…</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="123"/>
         <source>Save Settings</source>
-        <translation>保存设置</translation>
+        <translation type="vanished">保存设置</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="151"/>
+        <location filename="../ui/rules.qml" line="88"/>
         <source>Message from V2Ray Desktop</source>
         <translation>来自V2Ray Desktop的消息</translation>
     </message>
     <message>
-        <location filename="../ui/rules.qml" line="153"/>
+        <location filename="../ui/rules.qml" line="90"/>
         <source>Settings saved.</source>
         <translation>设置已保存。</translation>
     </message>
@@ -1311,12 +1316,12 @@ Please check the network connection.</source>
         <translation type="vanished">本地服务器协议</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="92"/>
+        <location filename="../ui/settings.qml" line="119"/>
         <source>Listening IP Address</source>
         <translation>监听IP地址</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="100"/>
+        <location filename="../ui/settings.qml" line="127"/>
         <source>Example: 127.0.0.1</source>
         <translation>例如：127.0.0.1</translation>
     </message>
@@ -1325,57 +1330,70 @@ Please check the network connection.</source>
         <translation type="vanished">监听端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="108"/>
+        <location filename="../ui/settings.qml" line="151"/>
         <source>SOCKS Port</source>
         <translation>SOCKS 端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="116"/>
+        <location filename="../ui/settings.qml" line="159"/>
         <source>Example: 1080</source>
         <translation>例如：1080</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="125"/>
+        <location filename="../ui/settings.qml" line="168"/>
         <source>HTTP Port</source>
         <translation>HTTP 端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="133"/>
+        <location filename="../ui/settings.qml" line="176"/>
         <source>Example: 1087</source>
         <translation>例如：1087</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="142"/>
         <source>PAC Server Port</source>
-        <translation>PAC服务器端口</translation>
+        <translation type="vanished">PAC服务器端口</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="150"/>
         <source>Example: 1085</source>
-        <translation>例如：1085</translation>
+        <translation type="vanished">例如：1085</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="158"/>
+        <location filename="../ui/settings.qml" line="92"/>
+        <source>Proxy Mode</source>
+        <translation>代理模式</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="135"/>
         <source>DNS Servers</source>
         <translation>DNS服务器</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="166"/>
+        <location filename="../ui/settings.qml" line="143"/>
         <source>Example: 8.8.8.8,8.8.4.4</source>
         <translation>例如：8.8.8.8,8.8.4.4</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="175"/>
+        <location filename="../ui/settings.qml" line="185"/>
+        <source>GFW List URL</source>
+        <translation>GFW List URL</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="194"/>
+        <source>Example: https://url/to/gfwlist.yml</source>
+        <translation>例如：https://url/to/gfwlist.yml</translation>
+    </message>
+    <message>
+        <location filename="../ui/settings.qml" line="203"/>
         <source>Save Settings</source>
         <translation>保存设置</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="212"/>
+        <location filename="../ui/settings.qml" line="241"/>
         <source>Message from V2Ray Desktop</source>
         <translation>来自V2Ray Desktop的消息</translation>
     </message>
     <message>
-        <location filename="../ui/settings.qml" line="214"/>
+        <location filename="../ui/settings.qml" line="243"/>
         <source>Settings saved.</source>
         <translation>设置已保存。</translation>
     </message>

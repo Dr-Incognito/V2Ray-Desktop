@@ -25,9 +25,7 @@ void AppProxyWorker::getServerLatency(QJsonArray servers) {
 void AppProxyWorker::getGfwList(QString gfwListUrl, QNetworkProxy proxy) {
   QNetworkProxy* p =
     proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
-  QByteArray gfwList =
-    QByteArray::fromBase64(NetworkRequest::getNetworkResponse(gfwListUrl, p));
-  qRegisterMetaType<QByteArray>("QByteArray");
+  QString gfwList = NetworkRequest::getNetworkResponse(gfwListUrl, p);
   emit gfwListReady(gfwList);
 }
 
