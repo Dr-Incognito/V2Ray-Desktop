@@ -362,6 +362,8 @@ QJsonArray Configurator::getRules() {
   QJsonArray rules;
   QJsonArray userRules    = getGfwListRules();
   QJsonArray gfwListRules = getGfwListRules();
+  QString defaultAct =
+    userRules.size() + gfwListRules.size() == 0 ? "PROXY" : "DIRECT";
 
   rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
   rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
