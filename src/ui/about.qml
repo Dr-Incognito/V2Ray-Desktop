@@ -141,7 +141,7 @@ ColumnLayout {
         }
 
         Button {
-            text: qsTr("https://github.com/Dr-Incognito/V2Ray-Desktop")
+            text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
 
             contentItem: Text {
                 text: parent.text

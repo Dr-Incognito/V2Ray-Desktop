@@ -31,7 +31,7 @@ static const QString V2RAY_CORE_LOG_FILE_NAME = "clash.log";
 static const QString V2RAY_CORE_CFG_FILE_NAME = "config.yaml";
 static const QString APP_LOG_FILE_NAME        = "v2ray-desktop.log";
 static const QString APP_CFG_FILE_NAME        = "config.json";
-static const QString GFW_LIST_FILE_NAME       = "gfwlist.txt";
+static const QString GFW_LIST_FILE_NAME       = "gfwlist.yml";
 
 static const int DEFAULT_V2RAY_KCP_MTU            = 1350;
 static const int DEFAULT_V2RAY_KCP_TTI            = 50;
@@ -53,6 +53,7 @@ static const int DEFAULT_HTTP_PORT      = 1087;
 static const QString DEFAULT_DNS_SERVER = "8.8.8.8; 4.4.4.4";
 static const QString DEFAULT_PROXY_MODE = "Rule";
 static const QString DEFAULT_GFW_LIST_URL =
-  "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt";
+  "https://raw.githubusercontent.com/du5/gfwlist/master/Rules/Clash/"
+  "gfwlist.yml";
 
 #endif  // CONSTANTS_H

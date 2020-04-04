@@ -128,6 +128,14 @@ QJsonObject Configurator::getAppConfig() {
   if (proxyMode == "pac" || proxyMode == "global" || proxyMode == "manual") {
     config["proxyMode"] = "Rule";
   }
+  // Replace old GFW List URL with a newer value
+  QString _glu =
+    "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt";
+  QString gfwListUrl = config["gfwListUrl"].toString();
+  if (gfwListUrl == _glu) {
+    config["gfwListUrl"]         = DEFAULT_GFW_LIST_URL;
+    config["gfwListLastUpdated"] = "Never";
+  }
   return config;
 }
 
@@ -352,11 +360,72 @@ void Configurator::setServerConnection(QString serverName, bool connected) {
 
 QJsonArray Configurator::getRules() {
   QJsonArray rules;
+  QJsonArray userRules    = getGfwListRules();
+  QJsonArray gfwListRules = getGfwListRules();
+
   rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
   rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
   rules.append("IP-CIDR, 172.16.0.0/12, DIRECT");
   rules.append("IP-CIDR, 192.168.0.0/16, DIRECT");
   rules.append("GEOIP, CN, DIRECT");
-  rules.append("FINAL, , PROXY");
+
+  for (auto itr = userRules.begin(); itr != userRules.end(); ++itr) {
+    rules.append(*itr);
+  }
+  for (auto itr = gfwListRules.begin(); itr != gfwListRules.end(); ++itr) {
+    rules.append(*itr);
+  }
+  rules.append("FINAL, , DIRECT");
+  return rules;
+}
+
+QJsonArray Configurator::getGfwListRules() {
+  return getRules(getGfwListFilePath());
+}
+
+QJsonArray Configurator::getUserRules() {
+  QJsonArray rules;
+  // TODO
+  return rules;
+}
+
+QJsonArray Configurator::getRules(const QString &fileName) {
+  static const QStringList SUPPORTED_MATCHES{
+    "DOMAIN-SUFFIX", "DOMAIN",   "DOMAIN-KEYWORD", "IP-CIDR",
+    "SRC-IP-CIDR",   "DST-PORT", "SRC-PORT"};
+  static const QStringList SUPPORTED_ACTS{"PROXY", "DIRECT", "REJECT"};
+  QJsonArray rules;
+  QFile ruleFile(fileName);
+
+  if (ruleFile.exists() &&
+      ruleFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    while (!ruleFile.atEnd()) {
+      QString line = ruleFile.readLine().trimmed();
+      if (!line.startsWith('-')) {
+        continue;
+      }
+
+      QStringList rule = line.mid(1).split(',');
+      if (rule.size() != 3) {
+        qWarning() << QString("Ignore rule: %1 in %2").arg(line, fileName);
+        continue;
+      }
+      QString match  = rule.at(0).trimmed().toUpper();
+      QString value  = rule.at(1).trimmed().toLower();
+      QString action = rule.at(2).trimmed().toUpper();
+
+      if (!SUPPORTED_MATCHES.contains(match)) {
+        qWarning() << QString("Unsupported match: %1 for rule: %2 in %3")
+                        .arg(match, line, fileName);
+        continue;
+      }
+      if (!SUPPORTED_ACTS.contains(action)) {
+        qWarning() << QString("Unsupported match: %1 for rule: %2 in %3")
+                        .arg(match, line, fileName);
+        continue;
+      }
+      rules.append(QString("%1, %2, %3").arg(match, value, action));
+    }
+  }
   return rules;
 }

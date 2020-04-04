@@ -68,6 +68,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxyWindows() {
   if (internetSettings.contains("AutoConfigURL")) {
     proxy.setMode(NetworkProxyMode::PAC_MODE);
     proxy.setHost(internetSettings.value("AutoConfigURL").toString());
+    proxy.setPort(0);
   } else if (internetSettings.value("ProxyEnable").toInt() == 1 &&
              internetSettings.contains("ProxyServer")) {
     QString proxyServer = internetSettings.value("ProxyServer").toString();
@@ -112,7 +113,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
   int socksProxyPort;
   for (QString ni : NETWORK_INTERFACES) {
     QProcess p;
-    p.start("networksetup", QStringList() << "-getautoproxyurl" << ni);
+    p.start("networksetup", QStringList{"-getautoproxyurl", ni});
     p.waitForFinished();
     stdOutput = p.readAllStandardOutput();
     if (!stdOutput.startsWith("** Error:")) {
@@ -122,10 +123,11 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
           proxy.setMode(NetworkProxyMode::PAC_MODE);
         } else if (s.startsWith("URL: ")) {
           proxy.setHost(s.mid(5));
+          proxy.setPort(0);
         }
       }
     }
-    p.start("networksetup", QStringList() << "-getwebproxy" << ni);
+    p.start("networksetup", QStringList{"-getwebproxy", ni});
     p.waitForFinished();
     stdOutput = p.readAllStandardOutput();
     if (!stdOutput.startsWith("** Error:")) {
@@ -135,13 +137,13 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
           proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
           proxy.setProtocol("http");
         } else if (s.startsWith("Server: ")) {
-          socksProxyHost = s.mid(8);
+          proxy.setHost(s.mid(8));
         } else if (s.startsWith("Port: ")) {
-          socksProxyPort = s.mid(6).toInt();
+          proxy.setPort(s.mid(6).toInt());
         }
       }
     }
-    p.start("networksetup", QStringList() << "-getsocksfirewallproxy" << ni);
+    p.start("networksetup", QStringList{"-getsocksfirewallproxy", ni});
     p.waitForFinished();
     stdOutput = p.readAllStandardOutput();
     if (!stdOutput.startsWith("** Error:")) {
@@ -151,9 +153,9 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
           proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
           proxy.setProtocol("socks");
         } else if (s.startsWith("Server: ")) {
-          socksProxyHost = s.mid(8);
+          proxy.setHost(s.mid(8));
         } else if (s.startsWith("Port: ")) {
-          socksProxyPort = s.mid(6).toInt();
+          proxy.setPort(s.mid(6).toInt());
         }
       }
     }
@@ -166,10 +168,11 @@ void NetworkProxyHelper::setSystemProxyMacOs(const NetworkProxy& proxy) {
     QProcess p;
     for (QString ni : NETWORK_INTERFACES) {
       p.start("networksetup",
-              QStringList{"-setsocksfirewallproxy", proxy.getHost(),
+              QStringList{"-setsocksfirewallproxy", ni, proxy.getHost(),
                           QString::number(proxy.getPort())});
       p.waitForFinished();
-      p.start("networksetup", QStringList{"-setsocksfirewallproxystate", "on"});
+      p.start("networksetup",
+              QStringList{"-setsocksfirewallproxystate", ni, "on"});
       p.waitForFinished();
     }
   }
@@ -178,14 +181,12 @@ void NetworkProxyHelper::setSystemProxyMacOs(const NetworkProxy& proxy) {
 void NetworkProxyHelper::resetSystemProxyMacOs() {
   for (QString ni : NETWORK_INTERFACES) {
     QProcess p;
-    p.start("networksetup", QStringList()
-                              << "-setautoproxystate" << ni << "off");
+    p.start("networksetup", QStringList{"-setautoproxystate", ni, "off"});
     p.waitForFinished();
-    p.start("networksetup", QStringList()
-                              << "-setwebproxystate" << ni << "off");
+    p.start("networksetup", QStringList{"-setwebproxystate", ni, "off"});
     p.waitForFinished();
-    p.start("networksetup", QStringList()
-                              << "-setsocksfirewallproxystate" << ni << "off");
+    p.start("networksetup",
+            QStringList{"-setsocksfirewallproxystate", ni, "off"});
     p.waitForFinished();
   }
 }
@@ -211,6 +212,7 @@ NetworkProxy NetworkProxyHelper::getSystemProxyLinuxGnome() {
     } else if (s.startsWith("org.gnome.system.proxy autoconfig-url")) {
       int qIndex = s.indexOf('\'');
       proxy.setHost(s.mid(qIndex + 1, s.lastIndexOf('\'') - qIndex - 1));
+      proxy.setPort(0);
     } else if (s.startsWith("org.gnome.system.proxy.http port")) {
       proxy.setPort(s.mid(33).toInt());
     } else if (s.startsWith("org.gnome.system.proxy.http host")) {

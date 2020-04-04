@@ -43,51 +43,6 @@ ColumnLayout {
         columnSpacing: 20
 
         Label {
-            text: qsTr("Proxy Mode")
-            color: "white"
-        }
-
-        ComboBox {
-            id: comboProxyMode
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            textRole: "text"
-            valueRole: "value"
-            model: ListModel{
-                ListElement { text: "Rule Mode"; value: "Rule" }
-                ListElement { text: "Global Mode"; value: "Global" }
-                ListElement { text: "Direct Mode"; value: "Direct" }
-            }
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-            contentItem: Text {
-                text: comboProxyMode.displayText
-                color: "white"
-                leftPadding: 10
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
-
-        Label {
-            text: qsTr("GFW List URL")
-            color: "white"
-        }
-
-        TextField {
-            id: textGfwListUrl
-            color: "white"
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            placeholderText: qsTr("Example: https://url/to/gfwlist.txt")
-            background: Rectangle {
-                color: Qt.rgba(255, 255, 255, .1)
-                border.color: Qt.rgba(120, 130, 140, .2)
-            }
-        }
-
-        Label {
             text: qsTr("GFW List Last Updated on")
             color: "white"
         }
@@ -114,25 +69,7 @@ ColumnLayout {
               buttonUpdateGfwList.enabled = false
               buttonUpdateGfwListContentItem.color = "white"
               buttonUpdateGfwList.text = qsTr("Updating ...")
-              AppProxy.updateGfwList(textGfwListUrl.text)
-            }
-        }
-
-        Button {
-            id: buttonSaveSettings
-            text: qsTr("Save Settings")
-            contentItem: Text {
-                text: parent.text
-                color: "white"
-            }
-            background: Rectangle {
-                color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
-                radius: 4
-            }
-            onClicked: function() {
-                labelErrorMsg.visible = false
-                AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
-                AppProxy.setGfwListUrl(textGfwListUrl.text)
+              AppProxy.updateGfwList()
             }
         }
     }
@@ -159,22 +96,12 @@ ColumnLayout {
 
         onAppConfigReady: function(config) {
             config = JSON.parse(config)
-            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(config["proxyMode"])
-            textGfwListUrl.text = config["gfwListUrl"]
             labelGfwLastUpdatedTime.text = config["gfwListLastUpdated"]
-        }
-
-        onAppConfigChanged: function() {
-            messageDialog.open()
         }
 
         onAppConfigError: function(errorMsg) {
             labelErrorMsg.text = errorMsg
             labelErrorMsg.visible = true
-        }
-
-        onProxyModeChanged: function(proxyMode) {
-            comboProxyMode.currentIndex = comboProxyMode.indexOfValue(proxyMode)
         }
 
         onGfwListUpdated: function(updatedTime) {
