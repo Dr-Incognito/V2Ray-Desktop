@@ -260,6 +260,10 @@ ColumnLayout {
             textGfwListUrl.text = config["gfwListUrl"]
         }
 
+        onV2RayCoreStatusReady: function(isRunning) {
+            comboProxyMode.enabled = isRunning
+        }
+
         onAppConfigChanged: function() {
             messageDialog.open()
         }
@@ -276,5 +280,6 @@ ColumnLayout {
 
     Component.onCompleted: function() {
         AppProxy.getAppConfig()
+        AppProxy.getV2RayCoreStatus()
     }
 }

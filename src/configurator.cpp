@@ -370,13 +370,13 @@ QJsonArray Configurator::getRules() {
   rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
   rules.append("IP-CIDR, 172.16.0.0/12, DIRECT");
   rules.append("IP-CIDR, 192.168.0.0/16, DIRECT");
-  rules.append("GEOIP, CN, DIRECT");
   for (auto itr = userRules.begin(); itr != userRules.end(); ++itr) {
     rules.append(*itr);
   }
   for (auto itr = gfwListRules.begin(); itr != gfwListRules.end(); ++itr) {
     rules.append(*itr);
   }
+  rules.append("GEOIP, CN, DIRECT");
   rules.append(defaultAct);
   return rules;
 }

@@ -121,6 +121,8 @@ void AppProxy::setV2RayCoreRunning(bool expectedRunning) {
   }
   if (isSuccessful) {
     emit v2RayCoreStatusReady(expectedRunning);
+  } else {
+    emit v2RayCoreStatusReady(!expectedRunning);
   }
 }
 
@@ -133,7 +135,7 @@ void AppProxy::getNetworkStatus() {
 
 QNetworkProxy AppProxy::getQProxy() {
   QStringList connectedServerNames = configurator.getConnectedServerNames();
-  if (connectedServerNames.size() == 0) {
+  if (connectedServerNames.size() == 0 || !v2ray.isRunning()) {
     return QNetworkProxy::NoProxy;
   }
 
@@ -328,15 +330,18 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
   }
 
   // Set system proxy
-  NetworkProxy proxy("socks", "127.0.0.1",
-#if defined(Q_OS_WIN)
-                     appConfig["httpPort"].toInt(),
-#else
-                     appConfig["socksPort"].toInt(),
-#endif
-                     NetworkProxyMode::GLOBAL_MODE);
   NetworkProxyHelper::resetSystemProxy();
-  if (proxyMode == "Global" || proxyMode == "Rule") {
+  if (!v2ray.isRunning()) {
+    proxyMode = "Direct";
+    NetworkProxyHelper::resetSystemProxy();
+  } else if (proxyMode == "Global" || proxyMode == "Rule") {
+    NetworkProxy proxy("socks", "127.0.0.1",
+#if defined(Q_OS_WIN)
+                       appConfig["httpPort"].toInt(),
+#else
+                       appConfig["socksPort"].toInt(),
+#endif
+                       NetworkProxyMode::GLOBAL_MODE);
     NetworkProxyHelper::setSystemProxy(proxy);
   }
   emit proxyModeChanged(proxyMode);
@@ -421,8 +426,9 @@ void AppProxy::returnServerLatency(QMap<QString, QVariant> latency) {
 
 void AppProxy::setServerConnection(QString serverName, bool connected) {
   configurator.setServerConnection(serverName, connected);
-  v2ray.restart();
+  bool isV2RayRunning = v2ray.restart();
   qInfo() << (connected ? "Connected to " : "Disconnected from ") << serverName;
+  emit v2RayCoreStatusReady(isV2RayRunning);
   emit serverConnectivityChanged(serverName, connected);
 }
 
