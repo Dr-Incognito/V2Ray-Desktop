@@ -12,11 +12,18 @@
 #include "constants.h"
 
 QJsonObject Configurator::DEFAULT_APP_CONFIG = {
-  {"autoStart", DEFAULT_AUTO_START},    {"hideWindow", DEFAULT_HIDE_WINDOW},
-  {"language", DEFAULT_LANGUAGE},       {"serverIp", DEFAULT_SERVER_IP},
-  {"httpPort", DEFAULT_HTTP_PORT},      {"socksPort", DEFAULT_SOCKS_PORT},
-  {"dns", DEFAULT_DNS_SERVER},          {"proxyMode", DEFAULT_PROXY_MODE},
-  {"gfwListUrl", DEFAULT_GFW_LIST_URL}, {"gfwListLastUpdated", "Never"}};
+  {"autoStart", DEFAULT_AUTO_START},
+  {"hideWindow", DEFAULT_HIDE_WINDOW},
+  {"enableSysProxy", AUTO_ENABLE_SYS_PROXY},
+  {"defaultSysProxyProtocol", DEFAULT_SYS_PROXY_PROTOCOL},
+  {"language", DEFAULT_LANGUAGE},
+  {"serverIp", DEFAULT_SERVER_IP},
+  {"httpPort", DEFAULT_HTTP_PORT},
+  {"socksPort", DEFAULT_SOCKS_PORT},
+  {"dns", DEFAULT_DNS_SERVER},
+  {"proxyMode", DEFAULT_PROXY_MODE},
+  {"gfwListUrl", DEFAULT_GFW_LIST_URL},
+  {"gfwListLastUpdated", "Never"}};
 
 QString Configurator::getDefaultLanguage() {
   const static QMap<QLocale::Language, QString> LANGUAGES{

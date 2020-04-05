@@ -14,7 +14,8 @@ ApplicationWindow {
     title: qsTr("V2Ray Desktop")
     x: (screen.width - appWindow.width) / 2
     y: (screen.height - appWindow.height) / 2
-    property var initStart: true
+    property var firstRun: true
+    property var currentSysProxyProtocol: ""
 
     onClosing: function() {
         appWindow.hide()
@@ -57,30 +58,55 @@ ApplicationWindow {
             MenuItem {
                 id: menuItemRuleMode
                 text: qsTr("Rule Mode")
-                enabled: false
                 checkable: true
+                enabled: false
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("Rule")
+                  AppProxy.setProxyMode("Rule")
                 }
             }
 
             MenuItem {
                 id: menuItemGlobalMode
                 text: qsTr("Global Mode")
-                enabled: false
                 checkable: true
+                enabled: false
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("Global")
+                  AppProxy.setProxyMode("Global")
                 }
             }
 
             MenuItem {
                 id: menuItemDirectMode
                 text: qsTr("Direct Mode")
-                checked: true
                 checkable: true
+                checked: true
                 onTriggered: function() {
-                  AppProxy.setSystemProxyMode("Direct")
+                  AppProxy.setProxyMode("Direct")
+                }
+            }
+
+            MenuSeparator {}
+
+            MenuItem {
+                id: menuItemSetHttpProxy
+                text: qsTr("Set System Proxy (HTTP)")
+                checkable: true
+                enabled: false
+                onTriggered: function() {
+                  menuItemSetSocksProxy.checked = false
+                  AppProxy.setSystemProxy(menuItemSetHttpProxy.checked, "http")
+                }
+            }
+
+            MenuItem {
+                id: menuItemSetSocksProxy
+                text: qsTr("Set System Proxy (SOCKS)")
+                checkable: true
+                enabled: false
+                visible: Qt.platform.os == "windows" ? false : true
+                onTriggered: function() {
+                  menuItemSetHttpProxy.checked = false
+                  AppProxy.setSystemProxy(menuItemSetSocksProxy.checked, "socks")
                 }
             }
 
@@ -447,7 +473,57 @@ ApplicationWindow {
         Connections {
             target: AppProxy
 
-            function updateProxyModeChecked(proxyMode) {
+            onAppVersionReady: function(appVersion) {
+                appName.text = qsTr("V2Ray Desktop") + " " + appVersion
+            }
+
+            onAppConfigReady: function(config) {
+                config = JSON.parse(config)
+                if (appWindow.firstRun && config["hideWindow"]) {
+                  appWindow.hide()
+                  appWindow.firstRun = false
+                }
+                if (config["enableSysProxy"]) {
+                  appWindow.currentSysProxyProtocol = config["defaultSysProxyProtocol"]
+                }
+            }
+
+            onV2RayCoreStatusReady: function(isRunning) {
+                if (!isRunning) {
+                    triggerV2RayCore.text = qsTr("Turn V2Ray On")
+                    triggerV2RayCore.isV2RayRunning = false
+                    menuItemRuleMode.enabled = false
+                    menuItemGlobalMode.enabled = false
+                    menuItemSetHttpProxy.enabled = false
+                    menuItemSetSocksProxy.enabled = false
+                    menuItemRuleMode.checked = false
+                    menuItemGlobalMode.checked = false
+                    menuItemDirectMode.checked = true
+                    menuItemSetHttpProxy.checked = false
+                    menuItemSetSocksProxy.checked = false
+                    AppProxy.setSystemProxy(false)
+                } else {
+                    triggerV2RayCore.text = qsTr("Turn V2Ray Off")
+                    triggerV2RayCore.isV2RayRunning = true
+                    menuItemRuleMode.enabled = true
+                    menuItemGlobalMode.enabled = true
+                    menuItemSetHttpProxy.enabled = true
+                    menuItemSetSocksProxy.enabled = true
+
+                    // Set system proxy automatically
+                    AppProxy.setProxyMode()
+
+                    if (appWindow.currentSysProxyProtocol === "http") {
+                        AppProxy.setSystemProxy(true, "http")
+                        menuItemSetHttpProxy.checked = true
+                    } else if (appWindow.currentSysProxyProtocol === "socks") {
+                        AppProxy.setSystemProxy(true, "socks")
+                        menuItemSetSocksProxy.checked = true
+                    }
+                }
+            }
+
+            onProxyModeChanged: function(proxyMode) {
                 menuItemRuleMode.checked = false
                 menuItemGlobalMode.checked = false
                 menuItemDirectMode.checked = false
@@ -459,57 +535,6 @@ ApplicationWindow {
                 } else if (proxyMode === "Direct") {
                     menuItemDirectMode.checked = true
                 }
-            }
-
-            function updateServerList(servers) {
-                for (var i = 0; i < servers.length; ++ i) {
-                }
-            }
-
-            onAppVersionReady: function(appVersion) {
-                appName.text = qsTr("V2Ray Desktop") + " " + appVersion
-            }
-
-            onAppConfigReady: function(config) {
-                config = JSON.parse(config)
-                if (appWindow.initStart && config["hideWindow"]) {
-                  appWindow.hide()
-                  appWindow.initStart = false
-                }
-                if ("servers" in config) {
-                    updateServerList(config["servers"])
-                }
-            }
-
-            onV2RayCoreStatusReady: function(isRunning) {
-                if (!isRunning) {
-                    triggerV2RayCore.text = qsTr("Turn V2Ray On")
-                    triggerV2RayCore.isV2RayRunning = false
-                    menuItemRuleMode.enabled = false
-                    menuItemGlobalMode.enabled = false
-                    menuItemRuleMode.checked = false
-                    menuItemGlobalMode.checked = false
-                    menuItemDirectMode.checked = true
-                } else {
-                    triggerV2RayCore.text = qsTr("Turn V2Ray Off")
-                    triggerV2RayCore.isV2RayRunning = true
-                    menuItemRuleMode.enabled = true
-                    menuItemGlobalMode.enabled = true
-                    // Set system proxy automatically
-                    AppProxy.setSystemProxyMode()
-                }
-            }
-
-            onServersChanged: function() {
-                AppProxy.getServers()
-            }
-
-            onServersReady: function(servers) {
-                updateServerList(servers)
-            }
-
-            onProxyModeChanged: function(proxyMode) {
-                updateProxyModeChecked(proxyMode)
             }
         }
 

@@ -71,7 +71,8 @@ class AppProxy : public QObject {
   void getNetworkStatus();
   void getAppConfig();
   void setAppConfig(QString configString);
-  void setSystemProxyMode(QString proxyMode = "");
+  void setProxyMode(QString proxyMode = "");
+  void setSystemProxy(bool enableProxy, QString protocol = "");
   void getProxySettings();
   void updateGfwList();
   void getLogs();

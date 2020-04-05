@@ -144,9 +144,9 @@ ColumnLayout {
         onProxySettingsReady: function(proxySettings) {
             proxySettings = JSON.parse(proxySettings)
             var pSettings = "";
-            pSettings += qsTr("System Proxy: ") + proxySettings["systemProxy"] +
-                         " (" + proxySettings["proxyMode"] + ")\n"
+            pSettings += qsTr("System Proxy: ") + proxySettings["systemProxy"] + "\n"
             pSettings += qsTr("Clash: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
+            pSettings += qsTr("Proxy Mode: ") + proxySettings["proxyMode"] + "\n"
             if (proxySettings["isV2RayRunning"]) {
                 pSettings += qsTr("Connected Servers: \n")
                 for (var i = 0; i < proxySettings["connectedServers"].length; ++ i) {

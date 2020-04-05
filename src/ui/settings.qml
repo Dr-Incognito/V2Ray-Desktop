@@ -221,7 +221,7 @@ ColumnLayout {
                     "gfwListUrl": textGfwListUrl.text
                 }
                 labelErrorMsg.visible = false
-                AppProxy.setSystemProxyMode(comboProxyMode.currentValue)
+                AppProxy.setProxyMode(comboProxyMode.currentValue)
                 AppProxy.setAppConfig(JSON.stringify(config))
             }
         }

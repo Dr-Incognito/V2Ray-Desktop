@@ -6,7 +6,7 @@
 static const QString APP_NAME      = "V2Ray-Desktop";
 static const int APP_VERSION_MAJOR = 2;
 static const int APP_VERSION_MINOR = 1;
-static const int APP_VERSION_PATCH = 2;
+static const int APP_VERSION_PATCH = 3;
 
 static const QString APP_RELEASES_URL =
   "https://api.github.com/repos/Dr-Incognito/V2Ray-Desktop/releases";
@@ -44,14 +44,16 @@ static const QString DEFAULT_TROJRAN_ALPN         = "h2; http/1.1";
 static const bool DEFAULT_TROJRAN_ENABLE_UDP      = false;
 static const bool DEFAULT_TROJRAN_ALLOW_INSECURE  = false;
 
-static const bool DEFAULT_AUTO_START    = true;
-static const bool DEFAULT_HIDE_WINDOW   = false;
-static const QString DEFAULT_LANGUAGE   = "en-US";
-static const QString DEFAULT_SERVER_IP  = "127.0.0.1";
-static const int DEFAULT_SOCKS_PORT     = 1080;
-static const int DEFAULT_HTTP_PORT      = 1087;
-static const QString DEFAULT_DNS_SERVER = "8.8.8.8; 4.4.4.4";
-static const QString DEFAULT_PROXY_MODE = "Rule";
+static const bool DEFAULT_AUTO_START            = true;
+static const bool DEFAULT_HIDE_WINDOW           = false;
+static const bool AUTO_ENABLE_SYS_PROXY         = false;
+static const QString DEFAULT_SYS_PROXY_PROTOCOL = "http";
+static const QString DEFAULT_LANGUAGE           = "en-US";
+static const QString DEFAULT_SERVER_IP          = "127.0.0.1";
+static const int DEFAULT_SOCKS_PORT             = 1080;
+static const int DEFAULT_HTTP_PORT              = 1087;
+static const QString DEFAULT_DNS_SERVER         = "8.8.8.8; 4.4.4.4";
+static const QString DEFAULT_PROXY_MODE         = "Rule";
 static const QString DEFAULT_GFW_LIST_URL =
   "https://raw.githubusercontent.com/du5/gfwlist/master/Rules/Clash/"
   "gfwlist.yml";
