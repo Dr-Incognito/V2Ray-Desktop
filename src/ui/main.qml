@@ -57,6 +57,7 @@ ApplicationWindow {
             MenuItem {
                 id: menuItemRuleMode
                 text: qsTr("Rule Mode")
+                enabled: false
                 checkable: true
                 onTriggered: function() {
                   AppProxy.setSystemProxyMode("Rule")
@@ -66,6 +67,7 @@ ApplicationWindow {
             MenuItem {
                 id: menuItemGlobalMode
                 text: qsTr("Global Mode")
+                enabled: false
                 checkable: true
                 onTriggered: function() {
                   AppProxy.setSystemProxyMode("Global")
@@ -75,6 +77,7 @@ ApplicationWindow {
             MenuItem {
                 id: menuItemDirectMode
                 text: qsTr("Direct Mode")
+                checked: true
                 checkable: true
                 onTriggered: function() {
                   AppProxy.setSystemProxyMode("Direct")
@@ -469,7 +472,6 @@ ApplicationWindow {
 
             onAppConfigReady: function(config) {
                 config = JSON.parse(config)
-                updateProxyModeChecked(config["proxyMode"])
                 if (appWindow.initStart && config["hideWindow"]) {
                   appWindow.hide()
                   appWindow.initStart = false
@@ -483,9 +485,18 @@ ApplicationWindow {
                 if (!isRunning) {
                     triggerV2RayCore.text = qsTr("Turn V2Ray On")
                     triggerV2RayCore.isV2RayRunning = false
+                    menuItemRuleMode.enabled = false
+                    menuItemGlobalMode.enabled = false
+                    menuItemRuleMode.checked = false
+                    menuItemGlobalMode.checked = false
+                    menuItemDirectMode.checked = true
                 } else {
                     triggerV2RayCore.text = qsTr("Turn V2Ray Off")
                     triggerV2RayCore.isV2RayRunning = true
+                    menuItemRuleMode.enabled = true
+                    menuItemGlobalMode.enabled = true
+                    // Set system proxy automatically
+                    AppProxy.setSystemProxyMode()
                 }
             }
 
@@ -511,7 +522,5 @@ ApplicationWindow {
             AppProxy.retranslate()
             // Start V2Ray Core automatically
             AppProxy.setV2RayCoreRunning(true)
-            // Set system proxy automatically
-            AppProxy.setSystemProxyMode()
         }
 }
