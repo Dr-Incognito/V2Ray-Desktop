@@ -135,9 +135,9 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
         if (s.startsWith("Enabled: Yes")) {
           proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
           proxy.setProtocol("http");
-        } else if (s.startsWith("Server: ")) {
+        } else if (proxy.getProtocol() == "http" && s.startsWith("Server: ")) {
           proxy.setHost(s.mid(8));
-        } else if (s.startsWith("Port: ")) {
+        } else if (proxy.getProtocol() == "http" && s.startsWith("Port: ")) {
           proxy.setPort(s.mid(6).toInt());
         }
       }
@@ -151,9 +151,9 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
         if (s.startsWith("Enabled: Yes")) {
           proxy.setMode(NetworkProxyMode::GLOBAL_MODE);
           proxy.setProtocol("socks");
-        } else if (s.startsWith("Server: ")) {
+        } else if (proxy.getProtocol() == "socks" && s.startsWith("Server: ")) {
           proxy.setHost(s.mid(8));
-        } else if (s.startsWith("Port: ")) {
+        } else if (proxy.getProtocol() == "socks" && s.startsWith("Port: ")) {
           proxy.setPort(s.mid(6).toInt());
         }
       }
@@ -164,20 +164,20 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
 
 void NetworkProxyHelper::setSystemProxyMacOs(const NetworkProxy& proxy) {
   QString protocol = proxy.getProtocol();
-  if (protocol == "http") {
-    protocol = "web";
-  }
+  static const QMap<QString, QString> SETTING_KEYS = {
+    {"http", "web"}, {"socks", "socksfirewall"}};
 
   if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
+    QString settingKey = SETTING_KEYS.value(protocol);
     QProcess p;
     for (QString ni : NETWORK_INTERFACES) {
       p.start("networksetup",
-              QStringList{QString("-set%1firewallproxy").arg(protocol), ni,
+              QStringList{QString("-set%1proxy").arg(settingKey), ni,
                           proxy.getHost(), QString::number(proxy.getPort())});
       p.waitForFinished();
-      p.start("networksetup",
-              QStringList{QString("-set%1firewallproxystate").arg(protocol), ni,
-                          "on"});
+      p.start(
+        "networksetup",
+        QStringList{QString("-set%1proxystate").arg(settingKey), ni, "on"});
       p.waitForFinished();
     }
   }
