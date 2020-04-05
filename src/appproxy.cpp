@@ -307,6 +307,7 @@ void AppProxy::clearLogs() {
 void AppProxy::getProxySettings() {
   bool isV2RayRunning   = v2ray.isRunning();
   QJsonObject appConfig = configurator.getAppConfig();
+  bool enableSysProxy   = appConfig["enableSysProxy"].toBool();
   QString systemProxy   = NetworkProxyHelper::getSystemProxy().toString();
   QJsonArray connectedServers;
   for (QString cs : configurator.getConnectedServerNames()) {
@@ -321,7 +322,7 @@ void AppProxy::getProxySettings() {
       .toJson());
 }
 
-void AppProxy::setSystemProxyMode(QString proxyMode) {
+void AppProxy::setProxyMode(QString proxyMode) {
   QJsonObject appConfig = configurator.getAppConfig();
   QString _proxyMode    = appConfig["proxyMode"].toString();
   // Automatically set system proxy according to app config
@@ -329,28 +330,34 @@ void AppProxy::setSystemProxyMode(QString proxyMode) {
     proxyMode = _proxyMode;
   }
 
-  // Set system proxy
-  NetworkProxyHelper::resetSystemProxy();
-  if (!v2ray.isRunning()) {
-    proxyMode = "Direct";
-    NetworkProxyHelper::resetSystemProxy();
-  } else if (proxyMode == "Global" || proxyMode == "Rule") {
-    NetworkProxy proxy("socks", "127.0.0.1",
-#if defined(Q_OS_WIN)
-                       appConfig["httpPort"].toInt(),
-#else
-                       appConfig["socksPort"].toInt(),
-#endif
-                       NetworkProxyMode::GLOBAL_MODE);
-    NetworkProxyHelper::setSystemProxy(proxy);
-  }
-  emit proxyModeChanged(proxyMode);
   // Update app config
   configurator.setAppConfig({{"proxyMode", proxyMode}});
   // Detect whether the proxy mode is changed
   if (proxyMode != _proxyMode) {
     v2ray.restart();
   }
+  emit proxyModeChanged(proxyMode);
+}
+
+void AppProxy::setSystemProxy(bool enableProxy, QString protocol) {
+  // Allow values for 'protocol': http; socks
+  QJsonObject appConfig = configurator.getAppConfig();
+  if (!protocol.size()) {
+    protocol = appConfig["defaultSysProxyProtocol"].toString();
+  }
+
+  // Set system proxy
+  NetworkProxyHelper::resetSystemProxy();
+  if (enableProxy && v2ray.isRunning()) {
+    NetworkProxy proxy(protocol, "127.0.0.1",
+                       appConfig[QString("%1Port").arg(protocol)].toInt(),
+                       NetworkProxyMode::GLOBAL_MODE);
+    NetworkProxyHelper::setSystemProxy(proxy);
+  }
+  configurator.setAppConfig({
+    {"enableSysProxy", enableProxy},
+    {"defaultSysProxyProtocol", protocol},
+  });
 }
 
 void AppProxy::updateGfwList() {

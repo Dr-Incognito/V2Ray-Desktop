@@ -163,15 +163,21 @@ NetworkProxy NetworkProxyHelper::getSystemProxyMacOs() {
 }
 
 void NetworkProxyHelper::setSystemProxyMacOs(const NetworkProxy& proxy) {
+  QString protocol = proxy.getProtocol();
+  if (protocol == "http") {
+    protocol = "web";
+  }
+
   if (proxy.getMode() == NetworkProxyMode::GLOBAL_MODE) {
     QProcess p;
     for (QString ni : NETWORK_INTERFACES) {
       p.start("networksetup",
-              QStringList{"-setsocksfirewallproxy", ni, proxy.getHost(),
-                          QString::number(proxy.getPort())});
+              QStringList{QString("-set%1firewallproxy").arg(protocol), ni,
+                          proxy.getHost(), QString::number(proxy.getPort())});
       p.waitForFinished();
       p.start("networksetup",
-              QStringList{"-setsocksfirewallproxystate", ni, "on"});
+              QStringList{QString("-set%1firewallproxystate").arg(protocol), ni,
+                          "on"});
       p.waitForFinished();
     }
   }
@@ -252,11 +258,17 @@ void NetworkProxyHelper::setSystemProxyLinuxGnome(const NetworkProxy& proxy) {
     p.start("gsettings",
             QStringList{"set", "org.gnome.system.proxy", "mode", "manual"});
     p.waitForFinished();
-    p.start("gsettings", QStringList{"set", "org.gnome.system.proxy.socks",
-                                     "host", proxy.getHost()});
+    p.start(
+      "gsettings",
+      QStringList{"set",
+                  QString("org.gnome.system.proxy.%1").arg(proxy.getProtocol()),
+                  "host", proxy.getHost()});
     p.waitForFinished();
-    p.start("gsettings", QStringList{"set", "org.gnome.system.proxy.socks",
-                                     "port", QString::number(proxy.getPort())});
+    p.start(
+      "gsettings",
+      QStringList{"set",
+                  QString("org.gnome.system.proxy.%1").arg(proxy.getProtocol()),
+                  "port", QString::number(proxy.getPort())});
     p.waitForFinished();
   }
 }
@@ -343,7 +355,7 @@ void NetworkProxyHelper::setSystemProxyLinuxKde(const NetworkProxy& proxy) {
     p.waitForFinished();
     p.start("kwriteconfig5",
             QStringList{"--file", "kioslaverc", "--group", "Proxy Settings",
-                        "--key", "socksProxy",
+                        "--key", QString("%1Proxy").arg(proxy.getProtocol()),
                         QString("%1 %2").arg(
                           proxy.getHost(), QString::number(proxy.getPort()))});
     p.waitForFinished();
