@@ -41,7 +41,7 @@ ApplicationWindow {
 
             MenuItem {
                 id: triggerV2RayCore
-                text: qsTr("Turn V2Ray On")
+                text: qsTr("Turn V2Ray Desktop On")
                 property var isV2RayRunning: false
 
                 onTriggered: function() {
@@ -490,7 +490,7 @@ ApplicationWindow {
 
             onV2RayCoreStatusReady: function(isRunning) {
                 if (!isRunning) {
-                    triggerV2RayCore.text = qsTr("Turn V2Ray On")
+                    triggerV2RayCore.text = qsTr("Turn V2Ray Desktop On")
                     triggerV2RayCore.isV2RayRunning = false
                     menuItemRuleMode.enabled = false
                     menuItemGlobalMode.enabled = false
@@ -503,7 +503,7 @@ ApplicationWindow {
                     menuItemSetSocksProxy.checked = false
                     AppProxy.setSystemProxy(false)
                 } else {
-                    triggerV2RayCore.text = qsTr("Turn V2Ray Off")
+                    triggerV2RayCore.text = qsTr("Turn V2Ray Desktop Off")
                     triggerV2RayCore.isV2RayRunning = true
                     menuItemRuleMode.enabled = true
                     menuItemGlobalMode.enabled = true

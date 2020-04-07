@@ -674,15 +674,12 @@ Please check the network connection.</source>
         <translation>V2Ray Desktop</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="44"/>
-        <location filename="../ui/main.qml" line="493"/>
         <source>Turn V2Ray On</source>
-        <translation>启动V2Ray</translation>
+        <translation type="vanished">启动V2Ray</translation>
     </message>
     <message>
-        <location filename="../ui/main.qml" line="506"/>
         <source>Turn V2Ray Off</source>
-        <translation>关闭V2Ray</translation>
+        <translation type="vanished">关闭V2Ray</translation>
     </message>
     <message>
         <source>PAC Mode</source>
@@ -708,6 +705,12 @@ Please check the network connection.</source>
         <location filename="../ui/main.qml" line="289"/>
         <source>Servers</source>
         <translation>服务器</translation>
+    </message>
+    <message>
+        <location filename="../ui/main.qml" line="44"/>
+        <location filename="../ui/main.qml" line="493"/>
+        <source>Turn V2Ray Desktop On</source>
+        <translation>启动V2Ray Desktop</translation>
     </message>
     <message>
         <location filename="../ui/main.qml" line="60"/>
@@ -755,6 +758,11 @@ Please check the network connection.</source>
         <location filename="../ui/main.qml" line="186"/>
         <source>Quit V2Ray Desktop</source>
         <translation>退出V2Ray Desktop</translation>
+    </message>
+    <message>
+        <location filename="../ui/main.qml" line="506"/>
+        <source>Turn V2Ray Desktop Off</source>
+        <translation>关闭V2Ray Desktop</translation>
     </message>
     <message>
         <location filename="../ui/main.qml" line="116"/>
