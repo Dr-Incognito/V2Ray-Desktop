@@ -193,7 +193,7 @@ QJsonObject Configurator::getV2RayConfig() {
     {"socks-port", appConfig["socksPort"].toInt()},
     {"allow-lan", true},
     {"bind-address", appConfig["serverIp"].toString()},
-    {"mode", appConfig["proxyMode"].toString()},
+    {"mode", "Rule"},
     {"log-level", "info"},
     {"dns", QJsonObject{{"enable", false},
                         {"listen", "0.0.0.0:53"},
@@ -366,24 +366,33 @@ void Configurator::setServerConnection(QString serverName, bool connected) {
 }
 
 QJsonArray Configurator::getRules() {
-  QJsonArray rules;
-  QJsonArray userRules    = getGfwListRules();
-  QJsonArray gfwListRules = getGfwListRules();
-  QString defaultAct      = userRules.size() + gfwListRules.size() == 0
-                         ? "FINAL, PROXY"
-                         : "MATCH, PROXY";
+  QJsonObject appConfig = getAppConfig();
+  QString proxyMode     = appConfig["proxyMode"].toString();
+  QString defaultAct    = "MATCH, PROXY";
 
-  rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
-  rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
-  rules.append("IP-CIDR, 172.16.0.0/12, DIRECT");
-  rules.append("IP-CIDR, 192.168.0.0/16, DIRECT");
-  for (auto itr = userRules.begin(); itr != userRules.end(); ++itr) {
-    rules.append(*itr);
+  QJsonArray rules;
+  if (proxyMode == "Direct") {
+    defaultAct = "FINAL, DIRECT";
+  } else if (proxyMode == "Global") {
+    defaultAct = "FINAL, PROXY";
+  } else {
+    QJsonArray userRules    = getGfwListRules();
+    QJsonArray gfwListRules = getGfwListRules();
+    if (userRules.size() + gfwListRules.size() == 0) {
+      defaultAct = "FINAL, PROXY";
+    }
+    rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
+    rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
+    rules.append("IP-CIDR, 172.16.0.0/12, DIRECT");
+    rules.append("IP-CIDR, 192.168.0.0/16, DIRECT");
+    for (auto itr = userRules.begin(); itr != userRules.end(); ++itr) {
+      rules.append(*itr);
+    }
+    for (auto itr = gfwListRules.begin(); itr != gfwListRules.end(); ++itr) {
+      rules.append(*itr);
+    }
+    rules.append("GEOIP, CN, DIRECT");
   }
-  for (auto itr = gfwListRules.begin(); itr != gfwListRules.end(); ++itr) {
-    rules.append(*itr);
-  }
-  rules.append("GEOIP, CN, DIRECT");
   rules.append(defaultAct);
   return rules;
 }
