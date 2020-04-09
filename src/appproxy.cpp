@@ -307,7 +307,6 @@ void AppProxy::clearLogs() {
 void AppProxy::getProxySettings() {
   bool isV2RayRunning   = v2ray.isRunning();
   QJsonObject appConfig = configurator.getAppConfig();
-  bool enableSysProxy   = appConfig["enableSysProxy"].toBool();
   QString systemProxy   = NetworkProxyHelper::getSystemProxy().toString();
   QJsonArray connectedServers;
   for (QString cs : configurator.getConnectedServerNames()) {

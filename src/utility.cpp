@@ -72,7 +72,7 @@ bool Utility::isIpAddrValid(const QString& ipAddr) {
 }
 
 bool Utility::isIpAddrListValid(const QString& ipAddrList) {
-  QStringList ips = ipAddrList.split(",");
+  QStringList ips = ipAddrList.split(";");
   for (QString ip : ips) {
     if (!Utility::isIpAddrValid(ip.trimmed())) {
       return false;

@@ -480,7 +480,7 @@ ApplicationWindow {
             onAppConfigReady: function(config) {
                 config = JSON.parse(config)
                 if (appWindow.firstRun && config["hideWindow"]) {
-                  appWindow.hide()
+                  appWindow.close()
                   appWindow.firstRun = false
                 }
                 if (config["enableSysProxy"]) {
