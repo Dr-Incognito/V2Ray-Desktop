@@ -102,6 +102,8 @@ QStringList ServerConfigHelper::getV2RayServerConfigErrors(
     Utility::getStringConfigError(serverConfig, "network", tr("Network")));
   errors.append(Utility::getStringConfigError(serverConfig, "networkSecurity",
                                               tr("Network Security")));
+  errors.append(Utility::getStringConfigError(serverConfig, "tcpHeaderType",
+                                              tr("TCP Header")));
   errors.append(getV2RayStreamSettingsErrors(
     serverConfig, serverConfig["network"].toString()));
 
@@ -146,14 +148,55 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
     {"tls", serverConfig["networkSecurity"].toString().toLower() == "tls"},
     {"skip-cert-verify", serverConfig["allowInsecure"].toBool()}};
 
-  QString network = serverConfig["network"].toString();
+  QString network   = serverConfig["network"].toString();
+  QString tcpHeader = serverConfig["tcpHeaderType"].toString();
+  qDebug() << network << tcpHeader;
   if (network == "ws") {
     v2RayConfig["network"] = "ws";
     v2RayConfig["ws-path"] = serverConfig["networkPath"].toString();
     v2RayConfig["ws-headers"] =
       QJsonObject{{"Host", serverConfig["networkHost"].toString()}};
+  } else if (network == "tcp" && tcpHeader == "http") {
+    v2RayConfig["network"]   = "http";
+    v2RayConfig["http-opts"] = QJsonObject{
+      {"method", "GET"},
+      {"path", "/"},
+      {"headers",
+       QJsonObject{
+         {"host",
+          QJsonArray{"www.baidu.com", "www.bing.com", "www.163.com",
+                     "www.netease.com", "www.qq.com", "www.tencent.com",
+                     "www.taobao.com", "www.tmall.com", "www.alibaba-inc.com",
+                     "www.aliyun.com", "www.sensetime.com", "www.megvii.com"}},
+         {"User-Agent", getRandomUserAgents(24)},
+         {"Accept-Encoding", QJsonArray{"gzip, deflate"}},
+         {"Connection", QJsonArray{"keep-alive"}},
+         {"Pragma", "no-cache"},
+       }},
+    };
   }
+  qDebug() << v2RayConfig;
   return v2RayConfig;
+}
+
+QJsonArray ServerConfigHelper::getRandomUserAgents(int n) {
+  QStringList OPERATING_SYSTEMS{"Macintosh; Intel Mac OS X 10_15",
+                                "X11; Linux x86_64",
+                                "Windows NT 10.0; Win64; x64"};
+  QJsonArray userAgents;
+  for (int i = 0; i < n; ++i) {
+    int osIndex            = std::rand() % 3;
+    int chromeMajorVersion = std::rand() % 30 + 50;
+    int chromeBuildVersion = std::rand() % 4000 + 1000;
+    int chromePatchVersion = std::rand() % 100;
+    userAgents.append(QString("Mozilla/5.0 (%1) AppleWebKit/537.36 (KHTML, "
+                              "like Gecko) Chrome/%2.0.%3.%4 Safari/537.36")
+                        .arg(OPERATING_SYSTEMS[osIndex],
+                             QString::number(chromeMajorVersion),
+                             QString::number(chromeBuildVersion),
+                             QString::number(chromePatchVersion)));
+  }
+  return userAgents;
 }
 
 QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
@@ -200,6 +243,9 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"networkPath", rawServerConfig.contains("path")
                       ? rawServerConfig["path"].toString()
                       : ""},
+    {"tcpHeaderType", rawServerConfig.contains("type")
+                        ? rawServerConfig["type"].toString()
+                        : ""},
     {"networkSecurity", rawServerConfig.contains("tls") ? "tls" : "none"}};
 
   return serverConfig;

@@ -36,6 +36,7 @@ class ServerConfigHelper : public QObject {
   static QJsonObject getV2RayStreamSettingsFromConfig(
     const QJsonObject &transport, const QJsonObject &streamSettings);
   static QJsonObject getPrettyV2RayConfig(const QJsonObject &serverConfig);
+  static QJsonArray getRandomUserAgents(int n);
   static QJsonObject getV2RayServerConfigFromUrl(
     const QString &server, const QString &subscriptionUrl);
   static QStringList getShadowsocksServerConfigErrors(

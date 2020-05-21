@@ -493,46 +493,6 @@ ColumnLayout {
                     }
 
                     Label {
-                        text: qsTr("Network")
-                        color: "white"
-                    }
-
-                    ComboBox {
-                        id: comboV2RayNetwork
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        textRole: "text"
-                        valueRole: "value"
-                        model: ListModel{
-                            ListElement { text: "TCP"; value: "tcp" }
-                            ListElement { text: "Websocket"; value: "ws" }
-                        }
-                        background: Rectangle {
-                            color: Qt.rgba(255, 255, 255, .1)
-                            border.color: Qt.rgba(120, 130, 140, .2)
-                        }
-                        contentItem: Text {
-                            text: comboV2RayNetwork.displayText
-                            color: "white"
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        onCurrentTextChanged: function() {
-                            labelV2RayNetworkHost.visible = false
-                            textV2RayNetworktHost.visible = false
-                            labelV2RayNetworkPath.visible = false
-                            textV2RayNetworkPath.visible = false
-
-                            if ( comboV2RayNetwork.currentText === "Websocket" ) {
-                                labelV2RayNetworkHost.visible = true
-                                textV2RayNetworktHost.visible = true
-                                labelV2RayNetworkPath.visible = true
-                                textV2RayNetworkPath.visible = true
-                            }
-                        }
-                    }
-
-                    Label {
                         text: qsTr("Network Security")
                         color: "white"
                     }
@@ -566,6 +526,79 @@ ColumnLayout {
                     CheckBox {
                         id: checkboxV2RayAllowInsecure
                         leftPadding: -2
+                    }
+
+                    Label {
+                        text: qsTr("Network")
+                        color: "white"
+                    }
+
+                    ComboBox {
+                        id: comboV2RayNetwork
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                        textRole: "text"
+                        valueRole: "value"
+                        model: ListModel{
+                            ListElement { text: "TCP"; value: "tcp" }
+                            ListElement { text: "Websocket"; value: "ws" }
+                        }
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                        contentItem: Text {
+                            text: comboV2RayNetwork.displayText
+                            color: "white"
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        onCurrentTextChanged: function() {
+                            labelV2RayTcpHeaderType.visible = false
+                            comboV2RayTcpHeaderType.visible = false
+                            labelV2RayNetworkHost.visible = false
+                            textV2RayNetworktHost.visible = false
+                            labelV2RayNetworkPath.visible = false
+                            textV2RayNetworkPath.visible = false
+
+                            if ( comboV2RayNetwork.currentText === "TCP" ) {
+                                labelV2RayTcpHeaderType.visible = true
+                                comboV2RayTcpHeaderType.visible = true
+                            } else if ( comboV2RayNetwork.currentText === "Websocket" ) {
+                                labelV2RayNetworkHost.visible = true
+                                textV2RayNetworktHost.visible = true
+                                labelV2RayNetworkPath.visible = true
+                                textV2RayNetworkPath.visible = true
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: labelV2RayTcpHeaderType
+                        text: qsTr("TCP Header")
+                        color: "white"
+                    }
+
+                    ComboBox {
+                        id: comboV2RayTcpHeaderType
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                        textRole: "text"
+                        valueRole: "value"
+                        model: ListModel{
+                            ListElement { text: "None"; value: "none" }
+                            ListElement { text: "HTTP"; value: "http" }
+                        }
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                        contentItem: Text {
+                            text: comboV2RayTcpHeaderType.displayText
+                            color: "white"
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
                     }
 
                     Label {
@@ -625,6 +658,7 @@ ColumnLayout {
                                 "security": comboV2RaySecurity.currentText,
                                 "udp": checkboxV2RayEnableUdp.checked,
                                 "network": comboV2RayNetwork.currentValue,
+                                "tcpHeaderType": comboV2RayTcpHeaderType.currentValue,
                                 "networkSecurity": comboV2RayNetworkSecurity.currentText,
                                 "allowInsecure": checkboxV2RayAllowInsecure.checked,
                                 "networkHost": textV2RayNetworktHost.text,
@@ -1207,7 +1241,7 @@ ColumnLayout {
                         radius: 4
                     }
                     onClicked: function() {
-                        menuSyncServers.enabled = true
+                        menuItemSyncServers.enabled = true
                         buttonSyncServers.enabled = false
                         buttonSyncServers.text = qsTr("Please wait ...")
                         AppProxy.updateSubscriptionServers(menuSubscription.currentSubscription)
@@ -1509,7 +1543,12 @@ ColumnLayout {
                 comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue(server["network"])
                 comboV2RayNetworkSecurity.currentIndex = server["tls"] ? 1 : 0
                 checkboxV2RayAllowInsecure.checked = server["skip-cert-verify"]
-                if (server["network"] === "ws") {
+                if (server["network"] === "tcp") {
+                    comboV2RayTcpHeaderType.currentIndex = 0
+                } else if (server["network"] === "http") {
+                    comboV2RayNetwork.currentIndex = comboV2RayNetwork.indexOfValue("tcp")
+                    comboV2RayTcpHeaderType.currentIndex = comboV2RayTcpHeaderType.indexOfValue("http")
+                } else if (server["network"] === "ws") {
                     textV2RayNetworktHost.text = server["ws-headers"]["Host"]
                     textV2RayNetworkPath.text = server["ws-path"]
                 }
@@ -1563,6 +1602,7 @@ ColumnLayout {
         comboV2RayNetwork.currentIndex = 0
         comboV2RayNetworkSecurity.currentIndex = 0
         checkboxV2RayAllowInsecure.checked = false
+        comboV2RayTcpHeaderType.currentIndex = 0
         textV2RayNetworktHost.text = ""
         textV2RayNetworkPath.text = ""
         // Clear text fields for Shadowsocks
