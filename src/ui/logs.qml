@@ -95,7 +95,7 @@ ColumnLayout {
     Connections {
         target: AppProxy
 
-        onLogsReady: function(logs) {
+        function onLogsReady(logs) {
             textLogs.text = logs
         }
     }

@@ -1426,7 +1426,7 @@ ColumnLayout {
             return subscriptionUrls
         }
 
-        onServersReady: function(servers) {
+        function onServersReady(servers) {
             servers = JSON.parse(servers)
             listModelServers.clear()
             listModelSubscriptions.clear()
@@ -1446,7 +1446,7 @@ ColumnLayout {
             }
         }
 
-        onServerLatencyReady: function(serverLatency) {
+        function onServerLatencyReady(serverLatency) {
             serverLatency = JSON.parse(serverLatency)
             // Refresh latency in server list
             for (var i = 0; i < listModelServers.count; ++ i) {
@@ -1463,7 +1463,7 @@ ColumnLayout {
             menuItemTestAllLatency.enabled = true
         }
 
-        onServerConfigError: function(errorMsg) {
+        function onServerConfigError(errorMsg) {
             var popUpButtons = [
                 buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
                 buttonSubscriptionAddServer, buttonConfigAddServer,
@@ -1480,7 +1480,7 @@ ColumnLayout {
             labelSubscriptionErrorMsg.visible = true
         }
 
-        onServerConnectivityChanged: function(serverName, connected) {
+        function onServerConnectivityChanged(serverName, connected) {
             // Refresh connectivity for the server
             for (var i = 0; i < listModelServers.count; ++ i) {
                 var _serverName = listModelServers.get(i).values.get(0).value
@@ -1492,7 +1492,7 @@ ColumnLayout {
             }
         }
 
-        onServerChanged: function(serverName, serverConfig) {
+        function onServerChanged(serverName, serverConfig) {
             serverConfig = JSON.parse(serverConfig)
 
             for (var i = 0; i < listModelServers.count; ++ i) {
@@ -1508,7 +1508,7 @@ ColumnLayout {
             popUpSubscription.close()
         }
 
-        onServerRemoved: function(serverName) {
+        function onServerRemoved(serverName) {
             for (var i = 0; i < listModelServers.count; ++ i) {
                 var _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
@@ -1518,13 +1518,13 @@ ColumnLayout {
             }
         }
 
-        onServersChanged: function() {
+        function onServersChanged() {
             AppProxy.getServers()
             popUpServer.close()
             popUpSubscription.close()
         }
 
-        onServerDInfoReady: function(server) {
+        function onServerDInfoReady(server) {
             server = JSON.parse(server)
             layoutServer.resetPopUpServerFields("name" in server ? "edit" : "add")
 
