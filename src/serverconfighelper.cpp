@@ -160,7 +160,6 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
     v2RayConfig["network"]   = "http";
     v2RayConfig["http-opts"] = QJsonObject{
       {"method", "GET"},
-      {"path", "/"},
       {"headers",
        QJsonObject{
          {"host",
@@ -170,8 +169,7 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
                      "www.aliyun.com", "www.sensetime.com", "www.megvii.com"}},
          {"User-Agent", getRandomUserAgents(24)},
          {"Accept-Encoding", QJsonArray{"gzip, deflate"}},
-         {"Connection", QJsonArray{"keep-alive"}},
-         {"Pragma", "no-cache"},
+         {"Connection", QJsonArray{"keep-alive"}}
        }},
     };
   }
