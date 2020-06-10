@@ -169,8 +169,7 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
                      "www.aliyun.com", "www.sensetime.com", "www.megvii.com"}},
          {"User-Agent", getRandomUserAgents(24)},
          {"Accept-Encoding", QJsonArray{"gzip, deflate"}},
-         {"Connection", QJsonArray{"keep-alive"}}
-       }},
+         {"Connection", QJsonArray{"keep-alive"}}}},
     };
   }
   qDebug() << v2RayConfig;
