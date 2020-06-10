@@ -473,11 +473,11 @@ ApplicationWindow {
         Connections {
             target: AppProxy
 
-            onAppVersionReady: function(appVersion) {
+            function onAppVersionReady(appVersion) {
                 appName.text = qsTr("V2Ray Desktop") + " " + appVersion
             }
 
-            onAppConfigReady: function(config) {
+            function onAppConfigReady(config) {
                 config = JSON.parse(config)
                 if (appWindow.firstRun && config["hideWindow"]) {
                   appWindow.close()
@@ -488,7 +488,7 @@ ApplicationWindow {
                 }
             }
 
-            onV2RayCoreStatusReady: function(isRunning) {
+            function onV2RayCoreStatusReady(isRunning) {
                 if (!isRunning) {
                     triggerV2RayCore.text = qsTr("Turn V2Ray Desktop On")
                     triggerV2RayCore.isV2RayRunning = false
@@ -523,7 +523,7 @@ ApplicationWindow {
                 }
             }
 
-            onProxyModeChanged: function(proxyMode) {
+            function onProxyModeChanged(proxyMode) {
                 menuItemRuleMode.checked = false
                 menuItemGlobalMode.checked = false
                 menuItemDirectMode.checked = false

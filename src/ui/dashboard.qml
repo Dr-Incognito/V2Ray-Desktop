@@ -118,19 +118,19 @@ ColumnLayout {
     Connections {
         target: AppProxy
 
-        onAppVersionReady: function(appVersion) {
+        function onAppVersionReady(appVersion) {
             labelAppVersion.text = appVersion
         }
 
-        onV2RayCoreVersionReady: function(v2RayVersion) {
+        function onV2RayCoreVersionReady(v2RayVersion) {
             labelV2rayVersion.text = v2RayVersion
         }
 
-        onOperatingSystemReady: function(operatingSystem) {
+        function onOperatingSystemReady(operatingSystem) {
             labelOperatingSystem.text = operatingSystem
         }
 
-        onNetworkStatusReady: function(networkStatus) {
+        function onNetworkStatusReady(networkStatus) {
             networkStatus = JSON.parse(networkStatus)
             if (networkStatus["isGoogleAccessible"]) {
                 labelNetworkStatus.text = qsTr("Everything works fine.\nYou can access the free Internet.")
@@ -141,7 +141,7 @@ ColumnLayout {
             }
         }
 
-        onProxySettingsReady: function(proxySettings) {
+        function onProxySettingsReady(proxySettings) {
             proxySettings = JSON.parse(proxySettings)
             var pSettings = "";
             pSettings += qsTr("System Proxy: ") + proxySettings["systemProxy"] + "\n"

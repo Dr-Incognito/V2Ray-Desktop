@@ -247,7 +247,7 @@ ColumnLayout {
     Connections {
         target: AppProxy
 
-        onAppConfigReady: function(config) {
+        function onAppConfigReady(config) {
             config = JSON.parse(config)
             checkboxAutoStart.checked = config["autoStart"]
             checkboxHideWindow.checked = config["hideWindow"]
@@ -260,20 +260,20 @@ ColumnLayout {
             textGfwListUrl.text = config["gfwListUrl"]
         }
 
-        onV2RayCoreStatusReady: function(isRunning) {
+        function onV2RayCoreStatusReady(isRunning) {
             comboProxyMode.enabled = isRunning
         }
 
-        onAppConfigChanged: function() {
+        function onAppConfigChanged() {
             messageDialog.open()
         }
 
-        onAppConfigError: function(errorMsg) {
+        function onAppConfigError(errorMsg) {
             labelErrorMsg.text = errorMsg
             labelErrorMsg.visible = true
         }
 
-        onProxyModeChanged: function(proxyMode) {
+        function onProxyModeChanged(proxyMode) {
             comboProxyMode.currentIndex = comboProxyMode.indexOfValue(proxyMode)
         }
     }

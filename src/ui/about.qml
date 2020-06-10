@@ -169,15 +169,15 @@ ColumnLayout {
     Connections {
         target: AppProxy
 
-        onAppVersionReady: function(appVersion) {
+        function onAppVersionReady(appVersion) {
             labelAppVersion.text = labelAppVersion.value = appVersion
         }
 
-        onV2RayCoreVersionReady: function(v2RayVersion) {
+        function onV2RayCoreVersionReady(v2RayVersion) {
             labelV2rayVersion.text = labelV2rayVersion.value = v2RayVersion
         }
 
-        onLatestReleaseReady: function(name, latestVersion) {
+        function onLatestReleaseReady(name, latestVersion) {
             var buttonCheckUpdates, buttonUpgrade, labelVersion
 
             if (name === "v2ray-core") {
@@ -203,7 +203,7 @@ ColumnLayout {
             buttonCheckUpdates.enabled = true
         }
 
-        onLatestReleaseError: function(name, errorMsg) {
+        function onLatestReleaseError(name, errorMsg) {
             var buttonCheckUpdates, buttonUpgrade, labelVersion
 
             if (name === "v2ray-core") {
@@ -218,7 +218,7 @@ ColumnLayout {
             buttonCheckUpdates.enabled = true
         }
 
-        onUpgradeCompleted: function(name) {
+        function onUpgradeCompleted(name) {
             var buttonCheckUpdates, buttonUpgrade
 
             if (name === "v2ray-core") {
@@ -236,7 +236,7 @@ ColumnLayout {
             buttonCheckUpdates.visible = true
         }
 
-        onUpgradeError: function(name, errorMsg) {
+        function onUpgradeError(name, errorMsg) {
             var buttonUpgrade, labelVersion
 
             if (name === "v2ray-core") {

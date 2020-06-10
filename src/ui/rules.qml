@@ -94,17 +94,17 @@ ColumnLayout {
     Connections {
         target: AppProxy
 
-        onAppConfigReady: function(config) {
+        function onAppConfigReady(config) {
             config = JSON.parse(config)
             labelGfwLastUpdatedTime.text = config["gfwListLastUpdated"]
         }
 
-        onAppConfigError: function(errorMsg) {
+        function onAppConfigError(errorMsg) {
             labelErrorMsg.text = errorMsg
             labelErrorMsg.visible = true
         }
 
-        onGfwListUpdated: function(updatedTime) {
+        function onGfwListUpdated(updatedTime) {
             buttonUpdateGfwList.text = qsTr("Update GFW List Now")
             buttonUpdateGfwListContentItem.color = "#3498db"
             buttonUpdateGfwList.enabled = true
