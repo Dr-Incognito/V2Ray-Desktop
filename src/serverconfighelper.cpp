@@ -150,12 +150,13 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
 
   QString network   = serverConfig["network"].toString();
   QString tcpHeader = serverConfig["tcpHeaderType"].toString();
-  qDebug() << network << tcpHeader;
   if (network == "ws") {
     v2RayConfig["network"] = "ws";
     v2RayConfig["ws-path"] = serverConfig["networkPath"].toString();
     v2RayConfig["ws-headers"] =
       QJsonObject{{"Host", serverConfig["networkHost"].toString()}};
+  } else if (network == "tcp" && tcpHeader == "none") {
+    v2RayConfig["network"] = "tcp";
   } else if (network == "tcp" && tcpHeader == "http") {
     v2RayConfig["network"]   = "http";
     v2RayConfig["http-opts"] = QJsonObject{
@@ -172,7 +173,6 @@ QJsonObject ServerConfigHelper::getPrettyV2RayConfig(
          {"Connection", QJsonArray{"keep-alive"}}}},
     };
   }
-  qDebug() << v2RayConfig;
   return v2RayConfig;
 }
 
