@@ -137,8 +137,11 @@ ColumnLayout {
                              }
                              background: MouseArea {
                                  anchors.fill: parent
-                                 acceptedButtons: Qt.RightButton
-                                 onClicked: function() {
+                                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                 onClicked: function(mouse) {
+                                     if (mouse.button !== Qt.RightButton) {
+                                         return
+                                     }
                                      var serverName = parent.parent.data[0].text,
                                          isConnected = parent.parent.data[3].text === qsTr("Connected")
 
@@ -147,6 +150,15 @@ ColumnLayout {
                                      menuItemServerName.text = serverName
                                      menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
                                      menuServer.open()
+                                 }
+                                 onDoubleClicked: function(mouse) {
+                                     if (mouse.button !== Qt.LeftButton) {
+                                         return
+                                     }
+                                     var serverName = parent.parent.data[0].text,
+                                         isConnected = parent.parent.data[3].text === qsTr("Connected")
+
+                                     AppProxy.setServerConnection(serverName, !isConnected)
                                  }
                              }
                          }
