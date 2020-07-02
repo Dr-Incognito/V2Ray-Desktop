@@ -133,7 +133,7 @@ QJsonObject Configurator::getAppConfig() {
   // Replace old proxy mode with a newer value
   QString proxyMode = config["proxyMode"].toString();
   if (proxyMode == "pac" || proxyMode == "global" || proxyMode == "manual") {
-    config["proxyMode"] = "Rule";
+    config["proxyMode"] = "rule";
   }
   // Replace old GFW List URL with a newer value
   QString _glu =
@@ -193,7 +193,7 @@ QJsonObject Configurator::getV2RayConfig() {
     {"socks-port", appConfig["socksPort"].toInt()},
     {"allow-lan", true},
     {"bind-address", appConfig["serverIp"].toString()},
-    {"mode", "Rule"},
+    {"mode", "rule"},
     {"log-level", "info"},
     {"dns", QJsonObject{{"enable", false},
                         {"listen", "0.0.0.0:53"},
@@ -372,14 +372,14 @@ QJsonArray Configurator::getRules() {
 
   QJsonArray rules;
   if (proxyMode == "Direct") {
-    defaultAct = "FINAL, DIRECT";
+    defaultAct = "MATCH, DIRECT";
   } else if (proxyMode == "Global") {
-    defaultAct = "FINAL, PROXY";
+    defaultAct = "MATCH, PROXY";
   } else {
     QJsonArray userRules    = getGfwListRules();
     QJsonArray gfwListRules = getGfwListRules();
     if (userRules.size() + gfwListRules.size() == 0) {
-      defaultAct = "FINAL, PROXY";
+      defaultAct = "MATCH, PROXY";
     }
     rules.append("IP-CIDR, 127.0.0.0/8, DIRECT");
     rules.append("IP-CIDR, 10.0.0.0/8, DIRECT");
