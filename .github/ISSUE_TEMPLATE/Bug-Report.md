@@ -38,7 +38,7 @@ Please understand that we close issues that fail to follow the issue template.
 <!--
 在下方附上 V2Ray Desktop 脱敏后配置文件的内容
 Paste the V2Ray Desktop configuration below.
-- Windows: C:\Users\<UserName>\Local\V2Ray\V2Ray-Desktop\V2Ray-Desktop\config.yaml
+- Windows: C:\Users\<UserName>\AppData\Local\V2Ray\V2Ray-Desktop\V2Ray-Desktop\config.yaml
 - Linux: ~/.config/V2Ray-Desktop/config.yaml
 - macOS: ~/Library/Preferences/V2Ray-Desktop/config.yaml
 -->
