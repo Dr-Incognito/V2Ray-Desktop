@@ -124,8 +124,8 @@ QStringList ServerConfigHelper::getV2RayStreamSettingsErrors(
     errors.append(Utility::getStringConfigError(
       serverConfig, "networkHost", tr("Host"),
       {std::bind(&Utility::isDomainNameValid, std::placeholders::_1)}, true));
-    errors.append(
-      Utility::getStringConfigError(serverConfig, "networkPath", tr("Path"), {}, true));
+    errors.append(Utility::getStringConfigError(
+      serverConfig, "networkPath", tr("Path"), {}, true));
   }
   return errors;
 }
