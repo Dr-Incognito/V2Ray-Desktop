@@ -22,6 +22,7 @@ install:
 - git submodule update --init --recursive
 
 build_script:
+- sed -i "s/Qt::endl/endl/g" src/main.cpp
 - qmake src\V2Ray-Desktop.pro
 - mingw32-make -j4
 

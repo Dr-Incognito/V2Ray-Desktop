@@ -1,6 +1,6 @@
 language: cpp
-dist: bionic
-osx_image: xcode11.3
+dist: focal
+osx_image: xcode12.2
 
 os:
   - linux
@@ -13,14 +13,13 @@ branches:
 before_install:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get install -y build-essential libz-dev qt5-default libqt5svg5-dev qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev;
-    sudo apt-get install clang-format-9;
+    sudo apt-get install clang-format;
     sudo rm /usr/local/clang-7.0.0/bin/clang-format;
-    sudo ln -s `which clang-format-9` /usr/bin/clang-format;
   fi
 
-# Remove the quickcontrols2 and retranslate() because it is not supported in Qt 5.9
+# Replace Qt::endl to endl because it is not supported in Qt 5.12 (Ubuntu 20.04)
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sed -i "/QQmlEngine::contextForObject/d" src/appproxy.cpp;
+    sed -i "s/Qt::endl/endl/g" src/main.cpp;
   fi
 
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
@@ -32,6 +31,9 @@ before_install:
 
 script:
 - clang-format --version
-- bash scripts/clang-format.sh
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    bash scripts/clang-format.sh;
+  fi
 - qmake src/V2Ray-Desktop.pro
 - make -j4
+
