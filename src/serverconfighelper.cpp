@@ -527,9 +527,9 @@ QJsonObject ServerConfigHelper::getV2RayStreamSettingsFromConfig(
   QJsonObject _streamSettings =
     streamSettings.empty() ? transport : streamSettings;
   QJsonObject serverStreamSettings;
-  QString network = _streamSettings.contains("network")
-                      ? _streamSettings["network"].toString()
-                      : "tcp";
+  QString network                 = _streamSettings.contains("network")
+                                      ? _streamSettings["network"].toString()
+                                      : "tcp";
   serverStreamSettings["network"] = network;
   serverStreamSettings["networkSecurity"] =
     _streamSettings.contains("security")

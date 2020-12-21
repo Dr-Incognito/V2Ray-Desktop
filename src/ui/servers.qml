@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.4
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 2.1
+import com.v2ray.desktop.AppProxy 2.2
 
 ColumnLayout {
     id: layoutServer
@@ -49,6 +49,9 @@ ColumnLayout {
         }
 
         Button {
+            /* Fix the layout bug introduced in Qt 5.15 */
+            Layout.rightMargin: 20
+
             text: qsTr("Add New Servers")
             contentItem: Text {
                 text: parent.text
@@ -66,120 +69,122 @@ ColumnLayout {
     }
 
     Item {
-         Layout.fillWidth: true
-         Layout.fillHeight: true
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        /* Fix the layout bug introduced in Qt 5.15 */
+        Layout.rightMargin: 20
 
-         ListView {
-             id: listViewServers
-             anchors.fill: parent
-             anchors.rightMargin: 5
-             flickableDirection: Flickable.HorizontalAndVerticalFlick
-             headerPositioning: ListView.OverlayHeader
-             clip: true
+        ListView {
+            id: listViewServers
+            anchors.fill: parent
+            anchors.rightMargin: 5
+            flickableDirection: Flickable.HorizontalAndVerticalFlick
+            headerPositioning: ListView.OverlayHeader
+            clip: true
 
-             function getColumnWidth(index) {
-                 switch (index) {
-                     case 0:
-                         return listViewServers.width * 0.25
-                     case 1:
-                         return listViewServers.width * 0.275
-                     case 2:
-                         return listViewServers.width * 0.175
-                     case 3:
-                         return listViewServers.width * 0.175
-                     case 4:
-                         return listViewServers.width * 0.125
-                     default:
-                         return 0
-                 }
-             }
+            function getColumnWidth(index) {
+                switch (index) {
+                case 0:
+                    return listViewServers.width * 0.25
+                case 1:
+                    return listViewServers.width * 0.275
+                case 2:
+                    return listViewServers.width * 0.175
+                case 3:
+                    return listViewServers.width * 0.175
+                case 4:
+                    return listViewServers.width * 0.125
+                default:
+                    return 0
+                }
+            }
 
-             header: Row {
-                 spacing: 1
-                 z: 4
+            header: Row {
+                spacing: 1
+                z: 4
 
-                 function itemAt(index) {
-                     return listViewServersRepeater.itemAt(index)
-                 }
-                 Repeater {
-                     id: listViewServersRepeater
-                     model: [
-                         qsTr("Name"), qsTr("Server"), qsTr("Protocol"), qsTr("Status"),
-                         qsTr("Latency")
-                     ]
-                     Label {
-                         text: modelData
-                         color: "white"
-                         font.bold: true
-                         padding: 10
-                         width: listViewServers.getColumnWidth(index)
-                         background: Rectangle {
-                             color: "#354759"
-                         }
-                     }
-                 }
-             }
+                function itemAt(index) {
+                    return listViewServersRepeater.itemAt(index)
+                }
+                Repeater {
+                    id: listViewServersRepeater
+                    model: [
+                        qsTr("Name"), qsTr("Server"), qsTr("Protocol"), qsTr("Status"),
+                        qsTr("Latency")
+                    ]
+                    Label {
+                        text: modelData
+                        color: "white"
+                        font.bold: true
+                        padding: 10
+                        width: listViewServers.getColumnWidth(index)
+                        background: Rectangle {
+                            color: "#354759"
+                        }
+                    }
+                }
+            }
 
-             model: listModelServers
-             delegate: Column {
-                 Row {
-                     spacing: 1
-                     Repeater {
-                         model: values
-                         ItemDelegate {
-                             text: value
-                             width: listViewServers.getColumnWidth(index)
+            model: listModelServers
+            delegate: Column {
+                Row {
+                    spacing: 1
+                    Repeater {
+                        model: values
+                        ItemDelegate {
+                            text: value
+                            width: listViewServers.getColumnWidth(index)
 
-                             contentItem: Text {
-                                 clip: true
-                                 color: "white"
-                                 text: parent.text
-                             }
-                             background: MouseArea {
-                                 anchors.fill: parent
-                                 acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                 onClicked: function(mouse) {
-                                     if (mouse.button !== Qt.RightButton) {
-                                         return
-                                     }
-                                     var serverName = parent.parent.data[0].text,
-                                         isConnected = parent.parent.data[3].text === qsTr("Connected")
+                            contentItem: Text {
+                                clip: true
+                                color: "white"
+                                text: parent.text
+                            }
+                            background: MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onClicked: function(mouse) {
+                                    if (mouse.button !== Qt.RightButton) {
+                                        return
+                                    }
+                                    var serverName = parent.parent.data[0].text,
+                                    isConnected = parent.parent.data[3].text === qsTr("Connected")
 
-                                     menuServer.x = parent.x + mouseX
-                                     menuServer.y = parent.y + mouseY
-                                     menuItemServerName.text = serverName
-                                     menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
-                                     menuServer.open()
-                                 }
-                                 onDoubleClicked: function(mouse) {
-                                     if (mouse.button !== Qt.LeftButton) {
-                                         return
-                                     }
-                                     var serverName = parent.parent.data[0].text,
-                                         isConnected = parent.parent.data[3].text === qsTr("Connected")
+                                    menuServer.x = parent.x + mouseX
+                                    menuServer.y = parent.y + mouseY
+                                    menuItemServerName.text = serverName
+                                    menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
+                                    menuServer.open()
+                                }
+                                onDoubleClicked: function(mouse) {
+                                    if (mouse.button !== Qt.LeftButton) {
+                                        return
+                                    }
+                                    var serverName = parent.parent.data[0].text,
+                                    isConnected = parent.parent.data[3].text === qsTr("Connected")
 
-                                     AppProxy.setServerConnection(serverName, !isConnected)
-                                 }
-                             }
-                         }
-                     }
-                 }
-                 Rectangle {
-                     color: "#3b4d5d"
-                     width: parent.width
-                     height: 1
-                 }
-             }
+                                    AppProxy.setServerConnection(serverName, !isConnected)
+                                }
+                            }
+                        }
+                    }
+                }
+                Rectangle {
+                    color: "#3b4d5d"
+                    width: parent.width
+                    height: 1
+                }
+            }
 
-             ListModel {
-                 id: listModelServers
-             }
+            ListModel {
+                id: listModelServers
+            }
 
-             ScrollIndicator.horizontal: ScrollIndicator { }
-             ScrollIndicator.vertical: ScrollIndicator { }
-         }
+            ScrollIndicator.horizontal: ScrollIndicator { }
+            ScrollIndicator.vertical: ScrollIndicator { }
+        }
 
-         Menu {
+        Menu {
             id: menuServer
             padding: 5
 
@@ -195,7 +200,7 @@ ColumnLayout {
                 text: qsTr("Connect")
                 onTriggered: function() {
                     var serverName = menuItemServerName.text,
-                        connected = menuItemConnect.text === qsTr("Connect")
+                    connected = menuItemConnect.text === qsTr("Connect")
 
                     AppProxy.setServerConnection(serverName, connected)
                 }
@@ -1151,7 +1156,7 @@ ColumnLayout {
                         }
                         onClicked: function() {
                             var configFilePath = textConfigFilePath.text,
-                                configFileType = comboAddServerMethod.currentValue
+                            configFileType = comboAddServerMethod.currentValue
 
                             AppProxy.addServerConfigFile(configFilePath, configFileType)
                         }
@@ -1287,12 +1292,12 @@ ColumnLayout {
 
                     function getColumnWidth(index) {
                         switch (index) {
-                            case 0:
-                                return listViewServers.width * 0.1
-                            case 1:
-                                return listViewServers.width * 0.9
-                            default:
-                                return 0
+                        case 0:
+                            return listViewServers.width * 0.1
+                        case 1:
+                            return listViewServers.width * 0.9
+                        default:
+                            return 0
                         }
                     }
 
@@ -1398,12 +1403,12 @@ ColumnLayout {
 
         function getServerPrettyInformation(server) {
             var serverAddress = server["server"],
-                serverPort = server["port"],
-                serverName = server["name"] || serverAddress,
-                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected"),
-                latency = "latency" in server ?
-                            (server["latency"] === -1 ?
-                                 qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
+            serverPort = server["port"],
+            serverName = server["name"] || serverAddress,
+            status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected"),
+            latency = "latency" in server ?
+                        (server["latency"] === -1 ?
+                             qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
 
             var protocol = ""
             if (server["type"] === "ss") {
@@ -1414,12 +1419,12 @@ ColumnLayout {
                 protocol = "Trojan"
             }
             return [
-                {value: serverName},
-                {value: serverAddress + ":" + serverPort},
-                {value: protocol},
-                {value: status},
-                {value: latency}
-            ]
+                        {value: serverName},
+                        {value: serverAddress + ":" + serverPort},
+                        {value: protocol},
+                        {value: status},
+                        {value: latency}
+                    ]
         }
 
         function getSubscriptionUrls(servers) {
@@ -1444,17 +1449,17 @@ ColumnLayout {
             listModelSubscriptions.clear()
 
             var i = 0,
-                subscriptionUrls = getSubscriptionUrls(servers)
+            subscriptionUrls = getSubscriptionUrls(servers)
             for (i = 0; i < servers.length; ++ i) {
                 if ('name' in servers[i]) {
-                  listModelServers.append({values: getServerPrettyInformation(servers[i])})
+                    listModelServers.append({values: getServerPrettyInformation(servers[i])})
                 }
             }
             for (i = 0; i < subscriptionUrls.length; ++ i) {
                 listModelSubscriptions.append({values: [
-                    {value: (i + 1).toString()},
-                    {value: subscriptionUrls[i]}
-                ]})
+                                                      {value: (i + 1).toString()},
+                                                      {value: subscriptionUrls[i]}
+                                                  ]})
             }
         }
 
@@ -1463,7 +1468,7 @@ ColumnLayout {
             // Refresh latency in server list
             for (var i = 0; i < listModelServers.count; ++ i) {
                 var server = listModelServers.get(i),
-                    serverName = server.values.get(0).value
+                serverName = server.values.get(0).value
 
                 if (serverName in serverLatency) {
                     var latency = serverLatency[serverName]
@@ -1477,10 +1482,10 @@ ColumnLayout {
 
         function onServerConfigError(errorMsg) {
             var popUpButtons = [
-                buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
-                buttonSubscriptionAddServer, buttonConfigAddServer,
-                buttonSyncServers, menuItemSyncServers
-            ]
+                        buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
+                        buttonSubscriptionAddServer, buttonConfigAddServer,
+                        buttonSyncServers, menuItemSyncServers
+                    ]
             for (var i = 0; i < popUpButtons.length; ++ i) {
                 popUpButtons[i].enabled = true
             }
@@ -1498,7 +1503,7 @@ ColumnLayout {
                 var _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
                     listModelServers.get(i).values.get(3).value =
-                        connected ? qsTr("Connected") : qsTr("Disconnected")
+                            connected ? qsTr("Connected") : qsTr("Disconnected")
                     break
                 }
             }
@@ -1511,8 +1516,8 @@ ColumnLayout {
                 var _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
                     listModelServers.set(i, {
-                        values: getServerPrettyInformation(serverConfig)
-                    })
+                                             values: getServerPrettyInformation(serverConfig)
+                                         })
                     break
                 }
             }
@@ -1571,14 +1576,14 @@ ColumnLayout {
                 textShadowsocksServerPort.text = server["port"]
                 checkboxShadowsocksAutoConnect.checked = server["autoConnect"]
                 comboShadowsocksEncryptionMethod.currentIndex =
-                    comboShadowsocksEncryptionMethod.find(
-                        server["cipher"].toUpperCase())
+                        comboShadowsocksEncryptionMethod.find(
+                            server["cipher"].toUpperCase())
                 textShadowsocksPassword.text = server["password"]
 
                 if ("plugin-opts" in server) {
-                  comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
-                    server["plugin-opts"]["mode"] || "")
-                  textObfsHost.text = server["plugin-opts"]["host"] || ""
+                    comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
+                                server["plugin-opts"]["mode"] || "")
+                    textObfsHost.text = server["plugin-opts"]["host"] || ""
                 }
             } else if (protocol === "trojan") {
                 comboAddServerMethod.currentIndex = 2
@@ -1642,10 +1647,10 @@ ColumnLayout {
         textConfigFilePath.text = ""
         // Initialize controls for editing or creating
         var i = 0,
-            popUpButtons = [
-                buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
-                buttonSubscriptionAddServer, buttonConfigAddServer
-            ]
+        popUpButtons = [
+                    buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
+                    buttonSubscriptionAddServer, buttonConfigAddServer
+                ]
         for (i = 0; i < popUpButtons.length; ++ i) {
             popUpButtons[i].enabled = true
         }

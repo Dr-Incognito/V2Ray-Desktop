@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 2.1
+import com.v2ray.desktop.AppProxy 2.2
 
 ApplicationWindow {
     id: appWindow
@@ -31,6 +31,7 @@ ApplicationWindow {
     SystemTrayIcon {
         visible: true
         icon.source: Qt.platform.os == "osx" ? "qrc:/images/v2ray.gray.png" : "qrc:/images/v2ray.png"
+        icon.mask: true
 
         menu: Menu {
             MenuItem {

@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import com.v2ray.desktop.AppProxy 2.1
+import com.v2ray.desktop.AppProxy 2.2
 
 ColumnLayout {
     anchors.fill: parent
@@ -140,20 +140,9 @@ ColumnLayout {
             font.bold: true
         }
 
-        Button {
+        Label {
+            color: "white"
             text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
-
-            contentItem: Text {
-                text: parent.text
-                color: "white"
-            }
-            background: Rectangle {
-                color: "#2e3e4e"
-                radius: 4
-            }
-            onClicked: function() {
-                Qt.openUrlExternally("https://github.com/Dr-Incognito/V2Ray-Desktop")
-            }
         }
     }
 
