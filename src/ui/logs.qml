@@ -1,8 +1,8 @@
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.14
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
-import com.v2ray.desktop.AppProxy 2.1
+import com.v2ray.desktop.AppProxy 2.2
 
 ColumnLayout {
     anchors.fill: parent
@@ -24,6 +24,7 @@ ColumnLayout {
 
         Item {      // spacer item
             Layout.fillWidth: true
+
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
@@ -31,6 +32,9 @@ ColumnLayout {
         }
 
         Button {
+            /* Fix the layout bug introduced in Qt 5.15 */
+            Layout.rightMargin: 20
+
             text: qsTr("Clear Logs")
             contentItem: Text {
                 text: parent.text
@@ -50,6 +54,9 @@ ColumnLayout {
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
+        /* Fix the layout bug introduced in Qt 5.15 */
+        Layout.rightMargin: 20
+
         Rectangle {
             id: rectLogs
             width:parent.width
