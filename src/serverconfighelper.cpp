@@ -124,8 +124,8 @@ QStringList ServerConfigHelper::getV2RayStreamSettingsErrors(
     errors.append(Utility::getStringConfigError(
       serverConfig, "networkHost", tr("Host"),
       {std::bind(&Utility::isDomainNameValid, std::placeholders::_1)}, true));
-    errors.append(
-      Utility::getStringConfigError(serverConfig, "networkPath", tr("Path"), {}, true));
+    errors.append(Utility::getStringConfigError(serverConfig, "networkPath",
+                                                tr("Path"), {}, true));
   }
   return errors;
 }
@@ -243,7 +243,10 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"tcpHeaderType", rawServerConfig.contains("type")
                         ? rawServerConfig["type"].toString()
                         : ""},
-    {"networkSecurity", rawServerConfig.contains("tls") && !rawServerConfig["tls"].toString().isEmpty() ? "tls" : "none"}};
+    {"networkSecurity", rawServerConfig.contains("tls") &&
+                            !rawServerConfig["tls"].toString().isEmpty()
+                          ? "tls"
+                          : "none"}};
 
   return serverConfig;
 }

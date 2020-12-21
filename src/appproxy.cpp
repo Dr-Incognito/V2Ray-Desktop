@@ -676,7 +676,7 @@ void AppProxy::copyToClipboard(QString text) {
 void AppProxy::getLatestRelease(QString name) {
   if (!latestVersion.contains(name)) {
     QDateTime initTime = QDateTime::currentDateTime();
-    initTime.setTime_t(0);
+    initTime.setSecsSinceEpoch(0);
     latestVersion[name] = {
       {"currentVersion", ""},
       {"latestVersion", ""},
