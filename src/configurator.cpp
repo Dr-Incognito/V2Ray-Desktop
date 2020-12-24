@@ -223,8 +223,8 @@ QJsonArray Configurator::getPrettyDnsServers(QString dnsString) {
 QJsonArray Configurator::getServers() {
   QJsonObject appConfig = getAppConfig();
   QJsonArray servers    = appConfig.contains("servers")
-                            ? appConfig["servers"].toArray()
-                            : QJsonArray();
+                         ? appConfig["servers"].toArray()
+                         : QJsonArray();
   return servers;
 }
 
@@ -272,8 +272,8 @@ int Configurator::editServer(QString serverName, QJsonObject serverConfig) {
       serverConfig["subscription"] = server.contains("subscription")
                                        ? server["subscription"].toString()
                                        : "";
-      *itr                         = serverConfig;
-      isEdited                     = true;
+      *itr     = serverConfig;
+      isEdited = true;
     }
   }
   // Update the server in connected servers

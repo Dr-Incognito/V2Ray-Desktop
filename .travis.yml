@@ -18,8 +18,10 @@ before_install:
   fi
 
 # Replace Qt::endl to endl because it is not supported in Qt 5.12 (Ubuntu 20.04)
+# QByteArray::AbortOnBase64DecodingErrors is not supported until Qt 5.15
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sed -i "s/Qt::endl/endl/g" src/main.cpp;
+    sed -i "s/, QByteArray::AbortOnBase64DecodingErrors//g" src/serverconfighelper.cpp
   fi
 
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
