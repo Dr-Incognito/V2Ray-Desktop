@@ -831,6 +831,12 @@ ColumnLayout {
                             ListElement { text: "Disabled"; value: "" }
                             ListElement { text: "TLS"; value: "tls" }
                             ListElement { text: "HTTP"; value: "http" }
+                            ListElement { text: "PLAIN"; value: "plain" }
+                            ListElement { text: "HTTP SIMPLE"; value: "http_simple" }
+                            ListElement { text: "HTTP POST"; value: "http_post" }
+                            ListElement { text: "RANDOM HEAD"; value: "random_head" }
+                            ListElement { text: "TLS1.2 TICKET AUTH"; value: "tls1.2_ticket_auth" }
+                            ListElement { text: "TLS1.2 TICKET FASTAUTH"; value: "tls1.2_ticket_fastauth" }
                         }
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -842,15 +848,75 @@ ColumnLayout {
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
+                        onCurrentTextChanged: function() {
+                            if (comboObfsMode.currentIndex < 3) {
+                                // Shadowsocks
+                                labelProtocol.visible = false
+                                comboProtocol.visible = false
+                                labelProtocolParameter.visible = false
+                                textProtocolParameter.visible = false
+                            } else {
+                                // ShadowsocksR
+                                labelProtocol.visible = true
+                                comboProtocol.visible = true
+                                labelProtocolParameter.visible = true
+                                textProtocolParameter.visible = true
+                            }
+                        }
                     }
 
                     Label {
-                        text: qsTr("Obfuscate Host")
+                        text: qsTr("Obfuscate Parameter")
                         color: "white"
                     }
 
                     TextField {
-                        id: textObfsHost
+                        id: textObfsParameter
+                        color: "white"
+                        Layout.fillWidth: true
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                    }
+
+                    Label {
+                        id: labelProtocol
+                        text: qsTr("Protocol")
+                        color: "white"
+                    }
+
+                    ComboBox {
+                        id: comboProtocol
+                        Layout.fillWidth: true
+                        model: ListModel{
+                            ListElement { text: "Origin" }
+                            ListElement { text: "AUTH_SHA1_V4" }
+                            ListElement { text: "AUTH_AES128_MD5" }
+                            ListElement { text: "AUTH_AES128_SHA1" }
+                            ListElement { text: "AUTH_CHAIN_A" }
+                            ListElement { text: "AUTH_CHAIN_B" }
+                        }
+                        background: Rectangle {
+                            color: Qt.rgba(255, 255, 255, .1)
+                            border.color: Qt.rgba(120, 130, 140, .2)
+                        }
+                        contentItem: Text {
+                            text: comboProtocol.displayText
+                            color: "white"
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+
+                    Label {
+                        id: labelProtocolParameter
+                        text: qsTr("Protocol Parameter")
+                        color: "white"
+                    }
+
+                    TextField {
+                        id: textProtocolParameter
                         color: "white"
                         Layout.fillWidth: true
                         background: Rectangle {
@@ -881,7 +947,16 @@ ColumnLayout {
                                 "password": textShadowsocksPassword.text,
                                 "plugins": {
                                     "obfs": comboObfsMode.currentValue,
-                                    "obfs-host": textObfsHost.text
+                                    "obfs-host": textObfsParameter.text
+                                }
+                            }
+                            if (comboObfsMode.currentIndex >= 3) {
+                                // ShadowsocksR
+                                server["plugins"] = {
+                                    "obfs": comboObfsMode.currentValue,
+                                    "obfsparam": textObfsParameter.text,
+                                    "protocol": comboProtocol.currentText,
+                                    "protoparam": textProtocolParameter.text
                                 }
                             }
                             if (buttonShadowsocksAddServer.text === qsTr("Add Server")) {
@@ -1583,9 +1658,16 @@ ColumnLayout {
                 textShadowsocksPassword.text = server["password"]
 
                 if ("plugin-opts" in server) {
+                    // Shadowsocks
                     comboObfsMode.currentIndex = comboObfsMode.indexOfValue(
                                 server["plugin-opts"]["mode"] || "")
-                    textObfsHost.text = server["plugin-opts"]["host"] || ""
+                    textObfsParameter.text = server["plugin-opts"]["host"] || ""
+                } else if ("obfs" in server) {
+                    // ShadowsocksR
+                    comboObfsMode.currentIndex = comboObfsMode.indexOfValue(server["obfs"] || "")
+                    textObfsParameter.text = "obfs-param" in server ? server["obfs-param"] : ""
+                    comboProtocol.currentIndex = comboProtocol.indexOfValue(server["protocol"].toUpperCase() || "")
+                    textProtocolParameter.text = "protocol-param" in server ? server["protocol-param"] : ""
                 }
             } else if (protocol === "trojan") {
                 comboAddServerMethod.currentIndex = 2
@@ -1632,7 +1714,7 @@ ColumnLayout {
         comboShadowsocksEncryptionMethod.currentIndex = 0
         textShadowsocksPassword.text = ""
         comboObfsMode.currentIndex = 0
-        textObfsHost.text = ""
+        textObfsParameter.text = ""
         // Clear text fields for Trojan
         textTrojanServerName.text = ""
         checkboxTrojanAutoConnect.checked = false

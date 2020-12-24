@@ -21,7 +21,7 @@ before_install:
 # QByteArray::AbortOnBase64DecodingErrors is not supported until Qt 5.15
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sed -i "s/Qt::endl/endl/g" src/main.cpp;
-    sed -i "s/, QByteArray::AbortOnBase64DecodingErrors//g" src/serverconfighelper.cpp
+    sed -i "s/QByteArray::AbortOnBase64DecodingErrors/QByteArray::Base64Encoding/g" src/serverconfighelper.cpp;
   fi
 
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
