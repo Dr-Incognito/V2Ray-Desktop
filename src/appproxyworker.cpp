@@ -50,8 +50,8 @@ void AppProxyWorker::getSubscriptionServers(QString subscriptionUrl,
                                             QNetworkProxy proxy) {
   QNetworkProxy* p =
     proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
-  QByteArray subscriptionServers = QByteArray::fromBase64(
-    NetworkRequest::getNetworkResponse(subscriptionUrl, p));
+  QByteArray response = NetworkRequest::getNetworkResponse(subscriptionUrl, p);
+  QByteArray subscriptionServers = QByteArray::fromBase64(response);
   emit subscriptionServersReady(subscriptionServers, subscriptionUrl);
 }
 
