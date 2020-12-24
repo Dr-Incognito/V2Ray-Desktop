@@ -33,9 +33,6 @@ before_install:
 
 script:
 - clang-format --version
-- if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    bash scripts/clang-format.sh;
-  fi
 - qmake src/V2Ray-Desktop.pro
 - make -j4
 
