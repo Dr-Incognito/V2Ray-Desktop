@@ -34,7 +34,8 @@ ServerConfigHelper::Protocol ServerConfigHelper::getProtocol(QString protocol) {
 
   if (protocol == "vmess" || protocol == "v2ray") {
     return Protocol::VMESS;
-  } else if (protocol == "shadowsocks" || protocol == "ss") {
+  } else if (protocol == "shadowsocks" || protocol == "ss" ||
+             protocol == "shadowsocksr" || protocol == "ssr") {
     return Protocol::SHADOWSOCKS;
   } else if (protocol == "trojan") {
     return Protocol::TROJAN;
@@ -74,7 +75,11 @@ QJsonObject ServerConfigHelper::getServerConfigFromUrl(
   if (protocol == Protocol::VMESS) {
     return getV2RayServerConfigFromUrl(serverUrl, subscriptionUrl);
   } else if (protocol == Protocol::SHADOWSOCKS) {
-    return getShadowsocksServerConfigFromUrl(serverUrl, subscriptionUrl);
+    if (serverUrl.startsWith("ssr://")) {
+      return getShadowsocksRServerConfigFromUrl(serverUrl, subscriptionUrl);
+    } else {
+      return getShadowsocksServerConfigFromUrl(serverUrl, subscriptionUrl);
+    }
   } else if (protocol == Protocol::TROJAN) {
     return getTrojanServerConfigFromUrl(serverUrl, subscriptionUrl);
   }
@@ -205,7 +210,9 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     {"h2", "http"}, {"quic", "quic"},
   };
   QJsonObject rawServerConfig =
-    QJsonDocument::fromJson(QByteArray::fromBase64(server.mid(8).toUtf8()))
+    QJsonDocument::fromJson(
+      QByteArray::fromBase64(server.mid(8).toUtf8(),
+                             QByteArray::AbortOnBase64DecodingErrors))
       .object();
   QString network =
     rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
@@ -251,6 +258,14 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
   return serverConfig;
 }
 
+bool ServerConfigHelper::isShadowsocksR(const QJsonObject& serverConfig) {
+  if (!serverConfig.contains("plugins")) {
+    return false;
+  }
+  QJsonObject plugins = serverConfig["plugins"].toObject();
+  return plugins.contains("protocol");
+}
+
 QStringList ServerConfigHelper::getShadowsocksServerConfigErrors(
   const QJsonObject& serverConfig, const QString* pServerName) {
   QStringList errors;
@@ -276,29 +291,51 @@ QStringList ServerConfigHelper::getShadowsocksServerConfigErrors(
 
 QJsonObject ServerConfigHelper::getPrettyShadowsocksConfig(
   const QJsonObject& serverConfig) {
+  bool isSSR                  = isShadowsocksR(serverConfig);
   QJsonObject prettyServerCfg = {
     {"autoConnect", serverConfig["autoConnect"].toBool()},
     {"subscription", serverConfig.contains("subscription")
                        ? serverConfig["subscription"].toString()
                        : ""},
     {"name", serverConfig["serverName"].toString()},
-    {"type", "ss"},
+    {"type", isSSR ? "ssr" : "ss"},
     {"server", serverConfig["serverAddr"].toString()},
     {"port", serverConfig["serverPort"].toVariant().toInt()},
     {"cipher", serverConfig["encryption"].toString().toLower()},
     {"password", serverConfig["password"].toString()}};
 
-  if (serverConfig.contains("plugins")) {
+  // Parse Shadowsocks Plugins
+  if (!isSSR && serverConfig.contains("plugins")) {
     QJsonObject plugins = serverConfig["plugins"].toObject();
+
     if (plugins.contains("obfs") && !plugins["obfs"].toString().isEmpty()) {
       prettyServerCfg["plugin"] = "obfs";
       QJsonObject pluginOpts;
-
       pluginOpts["mode"] = plugins["obfs"].toString();
-      if (plugins.contains("obfs-host")) {
+      if (plugins.contains("obfs-host") &&
+          plugins["obfs-host"].toString().size()) {
         pluginOpts["host"] = plugins["obfs-host"].toString();
       }
       prettyServerCfg["plugin-opts"] = pluginOpts;
+    }
+  }
+  // Parse ShadowsocksR (SSR)
+  if (isSSR) {
+    QJsonObject plugins = serverConfig["plugins"].toObject();
+
+    prettyServerCfg["obfs"]     = plugins["obfs"].toString().toLower();
+    prettyServerCfg["protocol"] = plugins["protocol"].toString().toLower();
+    if (plugins.contains("obfs-host") &&
+        plugins["obfs-host"].toString().size()) {
+      prettyServerCfg["obfs-param"] = plugins["obfs-host"].toString();
+    }
+    if (plugins.contains("protocol-param") &&
+        plugins["protocol-param"].toString().size()) {
+      prettyServerCfg["protocol-param"] =
+        plugins["protocol-param"].toString().toLower();
+    }
+    if (plugins.contains("udp")) {
+      prettyServerCfg["udp"] = plugins["udp"].toBool();
     }
   }
   return prettyServerCfg;
@@ -313,8 +350,8 @@ QJsonObject ServerConfigHelper::getShadowsocksServerConfigFromUrl(
   int sharpIndex        = serverUrl.indexOf('#');
   int questionMarkIndex = serverUrl.indexOf('?');
 
-  QString confidential =
-    QByteArray::fromBase64(serverUrl.left(atIndex).toUtf8());
+  QString confidential = QByteArray::fromBase64(
+    serverUrl.left(atIndex).toUtf8(), QByteArray::AbortOnBase64DecodingErrors);
   QString serverAddr = serverUrl.mid(atIndex + 1, colonIndex - atIndex - 1);
   QString serverPort =
     serverUrl.mid(colonIndex + 1, splashIndex - colonIndex - 1);
@@ -358,6 +395,44 @@ QJsonObject ServerConfigHelper::getShadowsocksPlugins(
     }
   }
   return plugins;
+}
+
+QJsonObject ServerConfigHelper::getShadowsocksRServerConfigFromUrl(
+  QString server, const QString& subscriptionUrl) {
+  server            = server.mid(6);
+  QString serverUrl = QByteArray::fromBase64(
+    server.toUtf8(), QByteArray::AbortOnBase64DecodingErrors);
+  // Failed to parse the SSR URL
+  if (!serverUrl.size()) {
+    serverUrl = QByteArray::fromBase64(server.replace('_', '/').toUtf8(),
+                                       QByteArray::AbortOnBase64DecodingErrors);
+  }
+  int sepIndex                   = serverUrl.indexOf("/?");
+  QStringList essentialServerCfg = serverUrl.left(sepIndex).split(':');
+  if (essentialServerCfg.size() != 6) {
+    return QJsonObject{};
+  }
+
+  QString serverAddr = essentialServerCfg.at(0);
+  int serverPort     = essentialServerCfg.at(1).toInt();
+  QString serverName =
+    QString("%1:%2").arg(serverAddr, QString::number(serverPort));
+  QJsonObject serverConfig{
+    {"serverName", serverName},
+    {"autoConnect", false},
+    {"subscription", subscriptionUrl},
+    {"serverAddr", serverAddr},
+    {"serverPort", serverPort},
+    {"encryption", essentialServerCfg.at(3)},
+    {"password", essentialServerCfg.at(5)},
+    {"plugins", QJsonObject{{"obfs", essentialServerCfg.at(4)},
+                            {"protocol", essentialServerCfg.at(2)}}}};
+
+  QString optionalServerCfg = serverUrl.mid(sepIndex + 2);
+  for (QPair<QString, QString> p : QUrlQuery(optionalServerCfg).queryItems()) {
+    serverConfig[p.first] = p.second;
+  }
+  return serverConfig;
 }
 
 QStringList ServerConfigHelper::getTrojanServerConfigErrors(

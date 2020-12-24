@@ -461,7 +461,7 @@ void AppProxy::addServer(QString protocol, QString configString) {
 
 void AppProxy::addServerUrl(QString serverUrl) {
   if (serverUrl.startsWith("vmess://") || serverUrl.startsWith("ss://") ||
-      serverUrl.startsWith("trojan://")) {
+      serverUrl.startsWith("ssr://") || serverUrl.startsWith("trojan://")) {
     addSubscriptionServers(serverUrl);
   } else {
     addSubscriptionUrl(serverUrl);
@@ -511,7 +511,7 @@ void AppProxy::addSubscriptionServers(QString subsriptionServers,
   for (QString server : servers) {
     ServerConfigHelper::Protocol protocol =
       ServerConfigHelper::Protocol::UNKNOWN;
-    if (server.startsWith("ss://")) {
+    if (server.startsWith("ss://") || server.startsWith("ssr://")) {
       protocol = ServerConfigHelper::Protocol::SHADOWSOCKS;
     } else if (server.startsWith("vmess://")) {
       protocol = ServerConfigHelper::Protocol::VMESS;

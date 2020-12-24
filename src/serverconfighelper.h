@@ -39,6 +39,7 @@ class ServerConfigHelper : public QObject {
   static QJsonArray getRandomUserAgents(int n);
   static QJsonObject getV2RayServerConfigFromUrl(
     const QString &server, const QString &subscriptionUrl);
+  static bool isShadowsocksR(const QJsonObject &serverConfig);
   static QStringList getShadowsocksServerConfigErrors(
     const QJsonObject &serverConfig, const QString *pServerName = nullptr);
   static QJsonObject getPrettyShadowsocksConfig(
@@ -46,6 +47,8 @@ class ServerConfigHelper : public QObject {
   static QJsonObject getShadowsocksServerConfigFromUrl(
     QString serverUrl, const QString &subscriptionUrl);
   static QJsonObject getShadowsocksPlugins(const QString &pluginString);
+  static QJsonObject getShadowsocksRServerConfigFromUrl(
+    QString serverUrl, const QString &subscriptionUrl);
   static QStringList getTrojanServerConfigErrors(
     const QJsonObject &serverConfig, const QString *pServerName = nullptr);
   static QJsonObject getPrettyTrojanConfig(const QJsonObject &serverConfig);

@@ -305,7 +305,7 @@ ColumnLayout {
                                 value: "v2ray-manual"
                             }
                             ListElement {
-                                text: qsTr("Manually setting up a Shadowsocks server");
+                                text: qsTr("Manually setting up a Shadowsocks(R) server");
                                 value: "shadowsocks-manual"
                             }
                             ListElement {
@@ -1413,6 +1413,8 @@ ColumnLayout {
             var protocol = ""
             if (server["type"] === "ss") {
                 protocol = "Shadowsocks"
+            } else if (server["type"] === "ssr") {
+                protocol = "ShadowsocksR"
             } else if (server["type"] === "vmess") {
                 protocol = "V2Ray"
             } else if (server["type"] === "trojan") {
@@ -1569,7 +1571,7 @@ ColumnLayout {
                     textV2RayNetworktHost.text = server["ws-headers"]["Host"]
                     textV2RayNetworkPath.text = server["ws-path"]
                 }
-            } else if (protocol === "ss") {
+            } else if (protocol === "ss" || protocol === "ssr") {
                 comboAddServerMethod.currentIndex = 1
                 textShadowsocksServerName.text = server["name"] || ""
                 textShadowsocksServerAddr.text = server["server"]
