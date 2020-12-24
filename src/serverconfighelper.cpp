@@ -401,7 +401,7 @@ QJsonObject ServerConfigHelper::getShadowsocksRServerConfigFromUrl(
   QString server, const QString& subscriptionUrl) {
   server            = server.mid(6);
   QString serverUrl = QByteArray::fromBase64(
-    server.toUtf8());
+    server.toUtf8(), QByteArray::AbortOnBase64DecodingErrors);
   // Failed to parse the SSR URL
   if (!serverUrl.size()) {
     serverUrl = QByteArray::fromBase64(server.replace('_', '/').toUtf8(),
