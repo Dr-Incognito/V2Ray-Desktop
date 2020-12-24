@@ -22,9 +22,9 @@ install:
 - git submodule update --init --recursive
 
 build_script:
-# Qt::endl and QByteArray::AbortOnBase64DecodingErrors are not supported until Qt 5.15
+# Qt::endl and QByteArray::AbortOnBase64DecodingErrors are not supported until Qt 5.14 and 5.15, respectively.
 - sed -i "s/Qt::endl/endl/g" src/main.cpp
-- sed -i "s/, QByteArray::AbortOnBase64DecodingErrors//g" src/serverconfighelper.cpp
+- sed -i "s/QByteArray::AbortOnBase64DecodingErrors/QByteArray::Base64Encoding/g" src/serverconfighelper.cpp
 - qmake src\V2Ray-Desktop.pro
 - mingw32-make -j4
 

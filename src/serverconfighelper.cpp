@@ -325,14 +325,14 @@ QJsonObject ServerConfigHelper::getPrettyShadowsocksConfig(
 
     prettyServerCfg["obfs"]     = plugins["obfs"].toString().toLower();
     prettyServerCfg["protocol"] = plugins["protocol"].toString().toLower();
-    if (plugins.contains("obfs-host") &&
-        plugins["obfs-host"].toString().size()) {
-      prettyServerCfg["obfs-param"] = plugins["obfs-host"].toString();
+    if (plugins.contains("obfsparam") &&
+        plugins["obfsparam"].toString().size()) {
+      prettyServerCfg["obfs-param"] = plugins["obfsparam"].toString();
     }
-    if (plugins.contains("protocol-param") &&
-        plugins["protocol-param"].toString().size()) {
+    if (plugins.contains("protoparam") &&
+        plugins["protoparam"].toString().size()) {
       prettyServerCfg["protocol-param"] =
-        plugins["protocol-param"].toString().toLower();
+        plugins["protoparam"].toString().toLower();
     }
     if (plugins.contains("udp")) {
       prettyServerCfg["udp"] = plugins["udp"].toBool();
@@ -401,7 +401,7 @@ QJsonObject ServerConfigHelper::getShadowsocksRServerConfigFromUrl(
   QString server, const QString& subscriptionUrl) {
   server            = server.mid(6);
   QString serverUrl = QByteArray::fromBase64(
-    server.toUtf8(), QByteArray::AbortOnBase64DecodingErrors);
+    server.toUtf8());
   // Failed to parse the SSR URL
   if (!serverUrl.size()) {
     serverUrl = QByteArray::fromBase64(server.replace('_', '/').toUtf8(),
