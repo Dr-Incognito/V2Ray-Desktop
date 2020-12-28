@@ -72,16 +72,17 @@ QJsonObject ServerConfigHelper::getPrettyServerConfig(
 
 QJsonObject ServerConfigHelper::getServerConfigFromUrl(
   Protocol protocol, const QString& serverUrl, const QString& subscriptionUrl) {
+  QString _serverUrl = serverUrl.trimmed();
   if (protocol == Protocol::VMESS) {
-    return getV2RayServerConfigFromUrl(serverUrl, subscriptionUrl);
+    return getV2RayServerConfigFromUrl(_serverUrl, subscriptionUrl);
   } else if (protocol == Protocol::SHADOWSOCKS) {
     if (serverUrl.startsWith("ssr://")) {
-      return getShadowsocksRServerConfigFromUrl(serverUrl, subscriptionUrl);
+      return getShadowsocksRServerConfigFromUrl(_serverUrl, subscriptionUrl);
     } else {
-      return getShadowsocksServerConfigFromUrl(serverUrl, subscriptionUrl);
+      return getShadowsocksServerConfigFromUrl(_serverUrl, subscriptionUrl);
     }
   } else if (protocol == Protocol::TROJAN) {
-    return getTrojanServerConfigFromUrl(serverUrl, subscriptionUrl);
+    return getTrojanServerConfigFromUrl(_serverUrl, subscriptionUrl);
   }
   return QJsonObject{};
 }
