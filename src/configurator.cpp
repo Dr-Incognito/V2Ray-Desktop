@@ -162,7 +162,8 @@ void Configurator::setAppConfig(QJsonObject config) {
     switch (configValue.type()) {
       case QVariant::Bool: _config[configName] = configValue.toBool(); break;
       case QVariant::Double:
-      case QVariant::Int: _config[configName] = configValue.toInt(); break;
+      case QVariant::Int:
+      case QVariant::LongLong:_config[configName] = configValue.toInt(); break;
       case QVariant::String:
         _config[configName] = configValue.toString();
         break;
