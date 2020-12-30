@@ -489,7 +489,7 @@ QJsonObject ServerConfigHelper::getPrettyTrojanConfig(
     {"sni", serverConfig["sni"].toString()},
     {"udp", serverConfig["udp"].toBool()},
     {"alpn", alpn},
-    {"skip-cert-verify", serverConfig["allowInsecure"].toString()}};
+    {"skip-cert-verify", serverConfig["allowInsecure"].toBool()}};
 
   return prettyServerCfg;
 }
