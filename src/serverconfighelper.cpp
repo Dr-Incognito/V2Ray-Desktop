@@ -354,8 +354,9 @@ QJsonObject ServerConfigHelper::getShadowsocksServerConfigFromUrl(
   QString confidential = QByteArray::fromBase64(
     serverUrl.left(atIndex).toUtf8(), QByteArray::AbortOnBase64DecodingErrors);
   QString serverAddr = serverUrl.mid(atIndex + 1, colonIndex - atIndex - 1);
-  QString serverPort =
-    serverUrl.mid(colonIndex + 1, splashIndex - colonIndex - 1);
+  QString serverPort = serverUrl.mid(
+    colonIndex + 1, splashIndex != -1 ? (splashIndex - colonIndex - 1)
+                                      : (sharpIndex - colonIndex - 1));
   QString plugins =
     serverUrl.mid(questionMarkIndex + 1, sharpIndex - questionMarkIndex - 1);
   QString serverName =
@@ -606,9 +607,9 @@ QJsonObject ServerConfigHelper::getV2RayStreamSettingsFromConfig(
   QJsonObject _streamSettings =
     streamSettings.empty() ? transport : streamSettings;
   QJsonObject serverStreamSettings;
-  QString network = _streamSettings.contains("network")
-                      ? _streamSettings["network"].toString()
-                      : "tcp";
+  QString network                 = _streamSettings.contains("network")
+                                      ? _streamSettings["network"].toString()
+                                      : "tcp";
   serverStreamSettings["network"] = network;
   serverStreamSettings["networkSecurity"] =
     _streamSettings.contains("security")
