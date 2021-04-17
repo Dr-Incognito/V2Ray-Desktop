@@ -219,11 +219,14 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
     rawServerConfig.contains("net") ? rawServerConfig["net"].toString() : "tcp";
   QString serverAddr =
     rawServerConfig.contains("add") ? rawServerConfig["add"].toString() : "";
-  int alterId = rawServerConfig.contains("aid")
-                  ? (rawServerConfig["aid"].isString()
-                       ? rawServerConfig["aid"].toString().toInt()
-                       : rawServerConfig["aid"].toInt())
-                  : 0;
+  QString serverPort = rawServerConfig["port"].isString()
+                         ? rawServerConfig["port"].toString()
+                         : QString::number(rawServerConfig["port"].toInt());
+  int alterId        = rawServerConfig.contains("aid")
+                         ? (rawServerConfig["aid"].isString()
+                              ? rawServerConfig["aid"].toString().toInt()
+                              : rawServerConfig["aid"].toInt())
+                         : 0;
 
   QJsonObject serverConfig{
     {"autoConnect", false},
@@ -231,9 +234,7 @@ QJsonObject ServerConfigHelper::getV2RayServerConfigFromUrl(
                      ? rawServerConfig["ps"].toString().trimmed()
                      : serverAddr},
     {"serverAddr", serverAddr},
-    {"serverPort", rawServerConfig.contains("port")
-                     ? QString::number(rawServerConfig["port"].toInt())
-                     : ""},
+    {"serverPort", rawServerConfig.contains("port") ? serverPort : ""},
     {"subscription", subscriptionUrl},
     {"id",
      rawServerConfig.contains("id") ? rawServerConfig["id"].toString() : ""},
