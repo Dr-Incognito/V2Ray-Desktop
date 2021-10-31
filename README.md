@@ -1,6 +1,6 @@
 # V2Ray Desktop
 
-[![Build Status](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop.svg?branch=master)](https://travis-ci.org/Dr-Incognito/V2Ray-Desktop)
+[![Build Status](https://travis-ci.com/Dr-Incognito/V2Ray-Desktop.svg?branch=master)](https://travis-ci.com/Dr-Incognito/V2Ray-Desktop)
 [![Build status](https://ci.appveyor.com/api/projects/status/0t07jpv22tf7xpn9?svg=true)](https://ci.appveyor.com/project/Dr-Incognito/V2Ray-Desktop)
 [![LGTM grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/context:cpp)
 [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/Dr-Incognito/V2Ray-Desktop.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Dr-Incognito/V2Ray-Desktop/alerts/)
