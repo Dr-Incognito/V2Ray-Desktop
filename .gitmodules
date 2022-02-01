@@ -1,6 +1,3 @@
-[submodule "src/3rdparty/quazip"]
-	path = src/3rdparty/quazip
-	url = https://github.com/stachenov/quazip
 [submodule "src/3rdparty/qzxing"]
 	path = src/3rdparty/qzxing
 	url = https://github.com/ftylitak/qzxing.git

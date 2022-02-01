@@ -11,7 +11,6 @@
 #include "configurator.h"
 #include "constants.h"
 #include "networkrequest.h"
-#include "zipfile.h"
 
 QString Utility::getNumericConfigError(const QJsonObject& config,
                                        const QString& key,
@@ -194,31 +193,4 @@ QList<int> Utility::getVersion(QString version) {
     _version.append(v.toInt());
   }
   return _version;
-}
-
-QString Utility::getReleaseAssets(const QString& assetsUrl,
-                                  const QString& fileName,
-                                  const QString& fileExtension,
-                                  const QString& outputFolderPath,
-                                  const QNetworkProxy* proxy) {
-  QByteArray assetsBytes = NetworkRequest::getNetworkResponse(assetsUrl, proxy);
-  QString assetsFilePath = QDir(Configurator::getAppTempDir())
-                             .filePath(QString("Upgrade-%1").arg(fileName));
-
-  if (assetsBytes.size() == 0) {
-    return QString(tr("Failed to download the file %1.")).arg(fileName);
-  }
-  QFile assetsFile(assetsFilePath);
-  if (!assetsFile.open(QIODevice::WriteOnly)) {
-    assetsFile.remove();
-    return QString(tr("Failed to open file %1.")).arg(fileName);
-  }
-  assetsFile.write(assetsBytes);
-  assetsFile.close();
-  if (fileExtension.endsWith(".zip")) {
-    if (!ZipFile::unzipFile(assetsFilePath, outputFolderPath)) {
-      return QString(tr("Failed to unzip file %1.")).arg(fileName);
-    }
-  }
-  return "";
 }

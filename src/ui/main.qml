@@ -14,8 +14,8 @@ ApplicationWindow {
     title: qsTr("V2Ray Desktop")
     x: (screen.width - appWindow.width) / 2
     y: (screen.height - appWindow.height) / 2
-    property var firstRun: true
-    property var currentSysProxyProtocol: ""
+    property bool firstRun: true
+    property string currentSysProxyProtocol: ""
 
     onClosing: function() {
         appWindow.hide()
@@ -43,7 +43,7 @@ ApplicationWindow {
             MenuItem {
                 id: triggerV2RayCore
                 text: qsTr("Turn V2Ray Desktop On")
-                property var isV2RayRunning: false
+                property bool isV2RayRunning: false
 
                 onTriggered: function() {
                     if (!isV2RayRunning) {

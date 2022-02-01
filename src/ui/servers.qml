@@ -265,7 +265,7 @@ ColumnLayout {
             color: "#2e3e4e"
         }
         // The variable is used for saving the old name of server before editing
-        property var editServerName
+        property string editServerName
 
         ScrollView {
             anchors.fill: parent

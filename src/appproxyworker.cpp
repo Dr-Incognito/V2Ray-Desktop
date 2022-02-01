@@ -94,16 +94,3 @@ void AppProxyWorker::getLatestRelease(QString name,
 
   emit latestReleaseReady(name, latestRelease);
 }
-
-void AppProxyWorker::upgradeDependency(QString name,
-                                       QString assetsUrl,
-                                       QString outputFolderPath,
-                                       QNetworkProxy proxy) {
-  QString fileName      = assetsUrl.mid(assetsUrl.lastIndexOf('/') + 1);
-  QString fileExtension = fileName.mid(fileName.lastIndexOf('.'));
-  QNetworkProxy* p =
-    proxy.type() == QNetworkProxy::ProxyType::NoProxy ? nullptr : &proxy;
-  QString errorMsg = Utility::getReleaseAssets(
-    assetsUrl, fileName, fileExtension, outputFolderPath, p);
-  emit upgradeFinished(name, outputFolderPath, errorMsg);
-}

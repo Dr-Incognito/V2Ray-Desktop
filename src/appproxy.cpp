@@ -66,12 +66,6 @@ AppProxy::AppProxy(QObject* parent)
   connect(worker, &AppProxyWorker::latestReleaseReady, this,
           &AppProxy::returnLatestRelease);
 
-  // Setup Worker -> upgradeDependency
-  connect(this, &AppProxy::upgradeStarted, worker,
-          &AppProxyWorker::upgradeDependency);
-  connect(worker, &AppProxyWorker::upgradeFinished, this,
-          &AppProxy::replaceDependency);
-
   workerThread.start();
 }
 

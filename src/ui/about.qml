@@ -40,7 +40,7 @@ ColumnLayout {
             id: labelAppVersion
             text: "N/a"
             color: "white"
-            property var value: "N/a"
+            property string value: "N/a"
         }
 
         Button {
@@ -92,7 +92,7 @@ ColumnLayout {
             id: labelV2rayVersion
             text: "N/a"
             color: "white"
-            property var value: "N/a"
+            property string value: "N/a"
         }
 
         Button {
@@ -110,27 +110,6 @@ ColumnLayout {
                 buttonV2RayCheckUpdates.text = qsTr("Checking updates ...")
                 buttonV2RayCheckUpdates.enabled = false
                 AppProxy.getLatestRelease("v2ray-core")
-            }
-        }
-
-        Button {
-            id: buttonV2RayUpgrade
-            text: qsTr("Upgrade")
-            visible: false
-            property var value
-
-            contentItem: Text {
-                text: parent.text
-                color: parent.enabled ? "#3498db" : "#ccc"
-            }
-            background: Rectangle {
-                color: "#2e3e4e"
-                radius: 4
-            }
-            onClicked: function() {
-                buttonV2RayUpgrade.text = qsTr("Upgrading ...")
-                buttonV2RayUpgrade.enabled = false
-                AppProxy.upgradeDependency("v2ray-core", buttonV2RayUpgrade.value)
             }
         }
 
@@ -205,39 +184,6 @@ ColumnLayout {
             labelVersion.text = labelVersion.value + " (" + errorMsg + ")"
             buttonCheckUpdates.text = qsTr("Check for updates")
             buttonCheckUpdates.enabled = true
-        }
-
-        function onUpgradeCompleted(name) {
-            var buttonCheckUpdates, buttonUpgrade
-
-            if (name === "v2ray-core") {
-                buttonCheckUpdates = buttonV2RayCheckUpdates
-                buttonUpgrade = buttonV2RayUpgrade
-                labelV2rayVersion.text = labelV2rayVersion.value = buttonUpgrade.value
-            } else if (name === "v2ray-desktop") {
-                buttonCheckUpdates = buttonAppCheckUpdates
-                buttonUpgrade = buttonAppUpgrade
-                labelAppVersion = qsTr("Upgrade completed. Please restart V2Ray-Desktop.")
-            }
-            buttonUpgrade.text = qsTr("Upgrade")
-            buttonUpgrade.enabled = true
-            buttonUpgrade.visible = false
-            buttonCheckUpdates.visible = true
-        }
-
-        function onUpgradeError(name, errorMsg) {
-            var buttonUpgrade, labelVersion
-
-            if (name === "v2ray-core") {
-                buttonUpgrade = buttonV2RayUpgrade
-                labelVersion = labelV2rayVersion
-            } else if (name === "v2ray-desktop") {
-                buttonUpgrade = buttonAppUpgrade
-                labelVersion = labelAppVersion
-            }
-            labelVersion.text = labelVersion.value + " (" + errorMsg + ")"
-            buttonUpgrade.text = qsTr("Upgrade")
-            buttonUpgrade.enabled = true
         }
     }
 

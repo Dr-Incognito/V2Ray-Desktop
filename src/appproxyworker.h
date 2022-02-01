@@ -21,10 +21,6 @@ class AppProxyWorker : public QObject {
   void getSubscriptionServers(QString url, QNetworkProxy proxy);
   void getLogs(QString appLogFilePath, QString v2RayLogFilePath);
   void getLatestRelease(QString name, QString releaseUrl, QNetworkProxy proxy);
-  void upgradeDependency(QString name,
-                         QString assetsUrl,
-                         QString outputFolderPath,
-                         QNetworkProxy proxy);
 
  signals:
   void serverLatencyReady(QMap<QString, QVariant> latency);
@@ -34,7 +30,6 @@ class AppProxyWorker : public QObject {
                                 QString subscriptionUrl);
   void logsReady(QString logs);
   void latestReleaseReady(QString name, QString version);
-  void upgradeFinished(QString name, QString outputFilePath, QString errorMsg);
 };
 
 #endif  // APPPROXYWORKER_H

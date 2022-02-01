@@ -37,11 +37,6 @@ class Utility : public QObject {
   static bool isVersionNewer(const QString &currentVersion,
                              const QString &version);
   static QList<int> getVersion(QString version);
-  static QString getReleaseAssets(const QString &assetsUrl,
-                                  const QString &fileName,
-                                  const QString &fileExtension,
-                                  const QString &outputFolderPath,
-                                  const QNetworkProxy *proxy);
 };
 
 #endif  // UTILITY_H
