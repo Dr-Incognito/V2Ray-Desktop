@@ -1,4 +1,4 @@
-name: Run clang-format Linter
+name: Format Source Code with clang-format
 on: [push]
 
 jobs:

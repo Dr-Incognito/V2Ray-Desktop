@@ -1,0 +1,78 @@
+name: Release V2Ray-Desktop for Linux
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      # Install dependencies
+      - name: Install Linux dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y zlib1g-dev libgl1-mesa-dev libxcb-xinerama0 libgtk2.0-dev patchelf
+      # Install Qt (Qt 6 requires Ubuntu 20.04; Use Qt 5 here for better compatibility)
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '5.15.2'
+          target: desktop
+      # Clone the source code
+      - name: Get the source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+      # Install linuxdeployqt
+      - name: Install linuxdeployqt
+        run: |
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/8/linuxdeployqt-continuous-x86_64.AppImage -O /usr/local/bin/linuxdeployqt
+          chmod a+x /usr/local/bin/linuxdeployqt
+      # Build
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          qmake ../src/V2Ray-Desktop.pro
+          make -j$(nproc)
+      # Integrate with clash 1.9.0
+      - name: Get clash-1.9.0
+        run: |
+          wget https://github.com/Dreamacro/clash/releases/download/v1.9.0/clash-linux-amd64-v1.9.0.gz
+          wget https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
+          mkdir -p dist/clash-core
+          gzip -d clash-linux-amd64-v1.9.0.gz
+          mv clash-linux-amd64-v1.9.0 dist/clash-core/clash
+          chmod a+x dist/clash-core/clash
+          mv Country.mmdb dist/clash-core/Country.mmdb
+      # Localization
+      - name: Localization
+        run: |
+          lrelease src/V2Ray-Desktop.pro
+          mkdir -p dist/locale
+          cp src/locales/*.qm dist/locales
+      # Generate AppImage
+      - name: Package
+        run: |
+          cp build/V2Ray-Desktop dist
+          cp src/images/v2ray.png dist/v2ray-desktop.png
+          cp src/misc/tpl-linux-autostart.desktop dist/default.desktop
+          sed -i "s/%1/AppRun %F/" dist/default.desktop
+          cd dist
+          linuxdeployqt V2Ray-Desktop -appimage -qmldir=../src/ui
+          mv *.AppImage ../V2Ray-Desktop-linux-x86_64.AppImage
+      # Upload binaries to release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: V2Ray-Desktop-v${{ github.ref }}-linux-x86_64.AppImage
+          path: V2Ray-Desktop-linux-x86_64.AppImage
+      - name: Upload binaries to release (Linux)
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: V2Ray-Desktop-linux-x86_64.AppImage
+          asset_name: V2Ray-Desktop-v${{ github.ref }}-linux-x86_64.AppImage
+          tag: ${{ github.ref }}
+          overwrite: true
