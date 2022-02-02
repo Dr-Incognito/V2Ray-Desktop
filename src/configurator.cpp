@@ -9,6 +9,10 @@
 #include <QProcessEnvironment>
 #include <QStandardPaths>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QMetaType>
+#endif
+
 #include "constants.h"
 
 QJsonObject Configurator::DEFAULT_APP_CONFIG = {
@@ -159,6 +163,22 @@ void Configurator::setAppConfig(QJsonObject config) {
   for (auto itr = config.begin(); itr != config.end(); ++itr) {
     QString configName   = itr.key();
     QVariant configValue = itr.value().toVariant();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    if (configValue.metaType().id() == QMetaType::Bool) {
+      _config[configName] = configValue.toBool();
+    } else if (configValue.metaType().id() == QMetaType::Double ||
+               configValue.metaType().id() == QMetaType::Int ||
+               configValue.metaType().id() == QMetaType::LongLong) {
+      _config[configName] = configValue.toInt();
+    } else if (configValue.metaType().id() == QMetaType::QString) {
+      _config[configName] = configValue.toString();
+    } else if (configValue.metaType().id() == QMetaType::QJsonArray) {
+      _config[configName] = configValue.toJsonArray();
+    } else {
+      qWarning() << "Ignore unknown config item [Name=" << configName
+                 << ", Type=" << configValue.metaType().name() << "]";
+    }
+#else
     switch (configValue.type()) {
       case QVariant::Bool: _config[configName] = configValue.toBool(); break;
       case QVariant::Double:
@@ -175,6 +195,7 @@ void Configurator::setAppConfig(QJsonObject config) {
                    << ", Type=" << configValue.type() << "]";
         break;
     }
+#endif
   }
   // Save config to file
   QFile configFile(getAppConfigFilePath());

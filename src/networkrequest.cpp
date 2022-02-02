@@ -28,7 +28,8 @@ QByteArray NetworkRequest::getNetworkResponse(QString url,
 
   request.setUrl(QUrl(url));
   request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
-  request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+  request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                       QNetworkRequest::ManualRedirectPolicy);
   qInfo() << "Start to get url: " << url;
   QNetworkReply* networkReply = accessManager.get(request);
   QEventLoop eventLoop;
