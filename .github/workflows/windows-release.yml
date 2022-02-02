@@ -1,0 +1,81 @@
+name: Release V2Ray-Desktop for Windows
+on:
+  # TODO: Remove on push later
+  push:
+    branches:
+      - 'master'
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      # Install dependencies (VS 2019)
+      - name: Install MSVC compiler
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.2
+          arch: x64
+      # Install Qt
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '6.2.3'
+          arch: 'win64_msvc2019_64'
+          install-deps: true
+          target: desktop
+      # Clone the source code
+      - name: Get the source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+      # Build
+      - name: Build Binary
+        run: |
+          mkdir build
+          cd build
+          qmake ../src/V2Ray-Desktop.pro
+          nmake
+          cd ..
+          mkdir dist
+          windeployqt build/V2Ray-Desktop.exe --dir dist --release --qmldir src/ui
+      # Localization
+      - name: Localization
+        run: |
+          lrelease src/V2Ray-Desktop.pro
+          mkdir dist/locales
+          copy src/locales/*.qm dist/locales
+      # Integrate with clash 1.9.0
+      - name: Get clash-1.9.0
+        run: |
+          wget https://github.com/Dreamacro/clash/releases/download/v1.9.0/clash-windows-amd64-v1.9.0.zip
+          wget https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
+          mkdir dist/clash-core
+          unzip clash-windows-amd64-v1.9.0.zip
+          move clash-windows-amd64.exe dist/clash-core/clash.exe
+          move Country.mmdb dist/clash-core/Country.mmdb
+      # TODO: Copy OpenSSL Dynamic Link Libraries
+      # - name: Fix OpenSSL
+      #   run: |
+      #     wget 
+      # Upload binaries to release
+      - name: Create zip release
+        uses: vimtor/action-zip@v1
+        with:
+          files: dist/
+          dest: V2Ray-Desktop.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: V2Ray-Desktop-v${{ github.ref }}-win64.zip
+          path: V2Ray-Desktop.zip
+      - name: Upload binaries to release (Windows)
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: V2Ray-Desktop.zip
+          asset_name: V2Ray-Desktop-v${{ github.ref }}-win64.zip
+          tag: ${{ github.ref }}
+          overwrite: true
