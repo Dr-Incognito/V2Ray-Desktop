@@ -50,7 +50,7 @@ jobs:
       - name: Localization
         run: |
           lrelease src/V2Ray-Desktop.pro
-          mkdir -p dist/locale
+          mkdir -p dist/locales
           cp src/locales/*.qm dist/locales
       # Generate AppImage
       - name: Package
