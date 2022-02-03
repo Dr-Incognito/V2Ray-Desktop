@@ -52,16 +52,17 @@ jobs:
           macdeployqt build/V2Ray-Desktop.app -dmg -qmldir=src/ui
           mv build/V2Ray-Desktop.dmg .
       # Upload binaries to release
-      - name: Upload Artifact
-        uses: actions/upload-artifact@master
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release binary
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: V2Ray-Desktop-v${{ github.ref }}-macOS-x86_64.dmg
-          path: V2Ray-Desktop.dmg
-      - name: Upload binaries to release (macOS)
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: V2Ray-Desktop.dmg
-          asset_name: V2Ray-Desktop-v${{ github.ref }}-macOS-x86_64.dmg
-          tag: ${{ github.ref }}
-          overwrite: true
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: V2Ray-Desktop-macOS-x86_64.dmg
+          asset_name: V2Ray-Desktop-v${{ steps.get_release.outputs.tag_name }}-macOS-x86_64.dmg
+          asset_content_type: application/octet-stream

@@ -72,16 +72,17 @@ jobs:
         with:
           files: dist/
           dest: V2Ray-Desktop.zip
-      - name: Upload Artifact
-        uses: actions/upload-artifact@master
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release binary
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: V2Ray-Desktop-v${{ github.ref }}-win64.zip
-          path: V2Ray-Desktop.zip
-      - name: Upload binaries to release (Windows)
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: V2Ray-Desktop.zip
-          asset_name: V2Ray-Desktop-v${{ github.ref }}-win64.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: V2Ray-Desktop.zip
+          asset_name: V2Ray-Desktop-v${{ steps.get_release.outputs.tag_name }}-win64.zip
+          asset_content_type: application/octet-stream
