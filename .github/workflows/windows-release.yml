@@ -16,7 +16,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: '6.2.1'
+          version: '5.15.2'
           arch: 'win64_mingw81'
           install-deps: true
           target: desktop
