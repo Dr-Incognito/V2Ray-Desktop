@@ -1,9 +1,5 @@
 name: Release V2Ray-Desktop for Windows
 on:
-  # TODO: Remove on push later
-  push:
-    branches:
-      - 'master'
   release:
     types: [published]
 
@@ -11,18 +7,17 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      # Install dependencies (VS 2019)
-      - name: Install MSVC compiler
-        uses: ilammy/msvc-dev-cmd@v1
+      # Install dependencies (MinGW)
+      - name: Install MinGW compiler
+        uses: egor-tensin/setup-mingw@v2
         with:
-          toolset: 14.2
-          arch: x64
+          platform: x64
       # Install Qt
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: '6.2.3'
-          arch: 'win64_msvc2019_64'
+          version: '6.2.1'
+          arch: 'win64_mingw81'
           install-deps: true
           target: desktop
       # Clone the source code
@@ -37,10 +32,11 @@ jobs:
           mkdir build
           cd build
           qmake ../src/V2Ray-Desktop.pro
-          nmake
+          make -j16
           cd ..
           mkdir dist
-          windeployqt build/V2Ray-Desktop.exe --dir dist --release --qmldir src/ui
+          copy build/release/V2Ray-Desktop.exe dist
+          windeployqt build/release/V2Ray-Desktop.exe --dir dist --release --qmldir src/ui
       # Localization
       - name: Localization
         run: |
@@ -49,17 +45,27 @@ jobs:
           copy src/locales/*.qm dist/locales
       # Integrate with clash 1.9.0
       - name: Get clash-1.9.0
-        run: |
-          wget https://github.com/Dreamacro/clash/releases/download/v1.9.0/clash-windows-amd64-v1.9.0.zip
-          wget https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: "https://github.com/Dreamacro/clash/releases/download/v1.9.0/clash-windows-amd64-v1.9.0.zip"
+      - uses: carlosperate/download-file-action@v1
+        with:
+          file-url: "https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb"
+      - run: |
           mkdir dist/clash-core
           unzip clash-windows-amd64-v1.9.0.zip
           move clash-windows-amd64.exe dist/clash-core/clash.exe
           move Country.mmdb dist/clash-core/Country.mmdb
-      # TODO: Copy OpenSSL Dynamic Link Libraries
-      # - name: Fix OpenSSL
-      #   run: |
-      #     wget 
+      # Copy OpenSSL Dynamic Link Libraries
+      - name: Fix OpenSSL
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: "https://github.com/Dr-Incognito/V2Ray-Desktop/files/7991307/libssl.dll%2Blibcrypto.dll.zip"
+          file-name: "libssl.dll+libcrypto.dll.zip"
+      - run: |
+          unzip libssl.dll+libcrypto.dll.zip
+          move libcrypto-1_1-x64.dll dist
+          move libssl-1_1-x64.dll dist
       # Upload binaries to release
       - name: Create zip release
         uses: vimtor/action-zip@v1
