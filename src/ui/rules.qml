@@ -1,7 +1,7 @@
-import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.14
-import QtQuick.Dialogs 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import Qt.labs.platform 1.1
 
 import com.v2ray.desktop.AppProxy 2.2
 
@@ -86,9 +86,8 @@ ColumnLayout {
     MessageDialog {
         id: messageDialog
         title: qsTr("Message from V2Ray Desktop")
-        icon: StandardIcon.Information
         text: qsTr("Settings saved.")
-        standardButtons: StandardButton.Ok
+        buttons: MessageDialog.Ok
     }
 
     Connections {

@@ -1,7 +1,7 @@
-﻿import QtQuick 2.14
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.4
-import QtQuick.Dialogs 1.3
+﻿import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import Qt.labs.platform 1.1
 
 import com.v2ray.desktop.AppProxy 2.2
 
@@ -150,8 +150,8 @@ ColumnLayout {
                                     var serverName = parent.parent.data[0].text,
                                     isConnected = parent.parent.data[3].text === qsTr("Connected")
 
-                                    menuServer.x = parent.x + mouseX
-                                    menuServer.y = parent.y + mouseY
+                                    // menuServer.x = parent.x + mouseX
+                                    // menuServer.y = parent.y + mouseY
                                     menuItemServerName.text = serverName
                                     menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
                                     menuServer.open()
@@ -186,7 +186,7 @@ ColumnLayout {
 
         Menu {
             id: menuServer
-            padding: 5
+            // padding: 5
 
             MenuItem {
                 id: menuItemServerName
@@ -1241,10 +1241,7 @@ ColumnLayout {
                         id: fileDialog
                         visible: false
                         modality: Qt.WindowModal
-                        selectMultiple: false
-                        selectFolder: false
                         nameFilters: [qsTr("Config File (*.json)")]
-                        selectedNameFilter: qsTr("Config File (*.json)")
                         onAccepted: {
                             var path = fileDialog.fileUrl.toString()
                             path = path.replace(/^(file:\/{2})/,"") // remove prefixed "file://"
@@ -1444,7 +1441,7 @@ ColumnLayout {
 
             Menu {
                 id: menuSubscription
-                padding: 5
+                // padding: 5
                 property var currentSubscription
 
                 MenuItem {
