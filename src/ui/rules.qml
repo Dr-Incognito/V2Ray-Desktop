@@ -3,7 +3,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 import QtQuick.Dialogs 1.3
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.3
 
 ColumnLayout {
     anchors.fill: parent

@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.14
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.3
 
 ApplicationWindow {
     id: appWindow
