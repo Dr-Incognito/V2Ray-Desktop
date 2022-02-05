@@ -15,7 +15,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: '5.15.2'
+          version: '6.2.3'
           target: desktop
       # Clone the source code
       - name: Get the source code

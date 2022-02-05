@@ -16,7 +16,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: '5.15.2'
+          version: '6.2.1'
           arch: 'win64_mingw81'
           install-deps: true
           target: desktop
@@ -39,14 +39,14 @@ jobs:
         with:
           file-url: "https://github.com/Dr-Incognito/V2Ray-Desktop/releases/download/2.2.1/V2Ray-Desktop-v2.2.1-win64.zip"
       - run: |
-          # windeployqt build/release/V2Ray-Desktop.exe --dir dist --release --qmldir src/ui
-          unzip V2Ray-Desktop-v2.2.1-win64.zip -d dist
+          windeployqt build/release/V2Ray-Desktop.exe --dir dist --release --qmldir src/ui
+          # unzip V2Ray-Desktop-v2.2.1-win64.zip -d dist
           copy build/release/V2Ray-Desktop.exe dist
       # Localization
       - name: Localization
         run: |
           lrelease src/V2Ray-Desktop.pro
-          # mkdir dist/locales
+          mkdir dist/locales
           copy src/locales/*.qm dist/locales
       # Integrate with clash 1.9.0
       - name: Get clash-1.9.0
@@ -57,22 +57,22 @@ jobs:
         with:
           file-url: "https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb"
       - run: |
-          # mkdir dist/clash-core
-          del dist/clash-core/clash.exe
-          del dist/clash-core/Country.mmdb
+          mkdir dist/clash-core
+          # del dist/clash-core/clash.exe
+          # del dist/clash-core/Country.mmdb
           unzip clash-windows-amd64-v1.9.0.zip
           move clash-windows-amd64.exe dist/clash-core/clash.exe
           move Country.mmdb dist/clash-core/Country.mmdb
       # Copy OpenSSL Dynamic Link Libraries
-      # - name: Fix OpenSSL
-      #   uses: carlosperate/download-file-action@v1
-      #   with:
-      #     file-url: "https://github.com/Dr-Incognito/V2Ray-Desktop/files/7991307/libssl.dll%2Blibcrypto.dll.zip"
-      #     file-name: "libssl.dll+libcrypto.dll.zip"
-      # - run: |
-      #     unzip libssl.dll+libcrypto.dll.zip
-      #     move libcrypto-1_1-x64.dll dist
-      #     move libssl-1_1-x64.dll dist
+      - name: Fix OpenSSL
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: "https://github.com/Dr-Incognito/V2Ray-Desktop/files/7991307/libssl.dll%2Blibcrypto.dll.zip"
+          file-name: "libssl.dll+libcrypto.dll.zip"
+      - run: |
+          unzip libssl.dll+libcrypto.dll.zip
+          move libcrypto-1_1-x64.dll dist
+          move libssl-1_1-x64.dll dist
       # Upload binaries to release
       - name: Create zip release
         uses: vimtor/action-zip@v1

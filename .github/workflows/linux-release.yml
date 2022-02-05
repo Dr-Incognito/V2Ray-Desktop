@@ -32,6 +32,9 @@ jobs:
       # Build
       - name: Build
         run: |
+          sed -i "s/QtQuick.Dialogs/QtQuick.Dialogs 1.3/" src/ui/servers.qml
+          sed -i "/topPadding: 7/d" src/ui/servers.qml
+          sed -i "/bottomPadding: 7/d" src/ui/servers.qml
           mkdir build
           cd build
           qmake ../src/V2Ray-Desktop.pro
