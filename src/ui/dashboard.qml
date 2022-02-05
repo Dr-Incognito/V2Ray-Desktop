@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.4
 
 ColumnLayout {
     id: layoutDashboard
@@ -34,18 +34,21 @@ ColumnLayout {
         Label {
             text: qsTr("Network Status")
             color: "white"
+            font.pointSize: 10.5
             font.bold: true
             Layout.alignment: Qt.AlignTop
         }
 
         Label {
             id: labelNetworkStatus
+            font.pointSize: 10.5
             text: qsTr("N/a")
             color: "white"
         }
 
         Label {
             text: qsTr("Proxy Settings")
+            font.pointSize: 10.5
             color: "white"
             font.bold: true
             Layout.alignment: Qt.AlignTop
@@ -53,42 +56,49 @@ ColumnLayout {
 
         Label {
             id: labelProxySettings
+            font.pointSize: 10.5
             text: qsTr("N/a")
             color: "white"
         }
 
         Label {
             text: qsTr("Operating System")
+            font.pointSize: 10.5
             color: "white"
             font.bold: true
         }
 
         Label {
             id: labelOperatingSystem
+            font.pointSize: 10.5
             text: qsTr("N/a")
             color: "white"
         }
 
         Label {
             text: qsTr("V2Ray Desktop Version")
+            font.pointSize: 10.5
             color: "white"
             font.bold: true
         }
 
         Label {
             id: labelAppVersion
+            font.pointSize: 10.5
             text: qsTr("N/a")
             color: "white"
         }
 
         Label {
             text: qsTr("Clash Version")
+            font.pointSize: 10.5
             color: "white"
             font.bold: true
         }
 
         Label {
             id: labelV2rayVersion
+            font.pointSize: 10.5
             text: qsTr("N/a")
             color: "white"
         }
@@ -145,14 +155,17 @@ ColumnLayout {
             proxySettings = JSON.parse(proxySettings)
             var pSettings = "";
             pSettings += qsTr("System Proxy: ") + proxySettings["systemProxy"] + "\n"
-            pSettings += qsTr("Clash: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             pSettings += qsTr("Proxy Mode: ") + proxySettings["proxyMode"] + "\n"
+            pSettings += qsTr("Clash: ") + (proxySettings["isV2RayRunning"] ? qsTr("Running") : qsTr("Not running")) + "\n"
             if (proxySettings["isV2RayRunning"]) {
-                pSettings += qsTr("Connected Servers: \n")
+                pSettings += qsTr("Connected Servers:") + "\n"
                 for (var i = 0; i < proxySettings["connectedServers"].length; ++ i) {
                   pSettings += "- " + proxySettings["connectedServers"][i] + "\n"
                 }
+            } else if (proxySettings["connectedServers"].length === 0) {
+                pSettings += qsTr("Please connect to at least one server!")
             }
+
             labelProxySettings.text = pSettings
         }
     }

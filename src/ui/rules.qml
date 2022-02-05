@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.4
 
 ColumnLayout {
     anchors.fill: parent
@@ -30,6 +30,7 @@ ColumnLayout {
             color: "#ee8989"
         }
         color: "#652424"
+        font.pointSize: 10.5
         Layout.fillWidth: true
         padding: 10
         visible: false
@@ -45,12 +46,14 @@ ColumnLayout {
         Label {
             text: qsTr("GFW List Last Updated on")
             color: "white"
+            font.pointSize: 10.5
         }
 
         Label {
             id: labelGfwLastUpdatedTime
             Layout.fillWidth: true
             color: "white"
+            font.pointSize: 10.5
         }
 
         Button {
@@ -60,6 +63,7 @@ ColumnLayout {
                 id: buttonUpdateGfwListContentItem
                 text: parent.text
                 color: "#3498db"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"

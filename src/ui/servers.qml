@@ -1,9 +1,10 @@
 ﻿import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQml.Models 2.15
 import Qt.labs.platform 1.1
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.4
 
 ColumnLayout {
     id: layoutServer
@@ -37,6 +38,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -56,6 +58,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -81,6 +84,7 @@ ColumnLayout {
             flickableDirection: Flickable.HorizontalAndVerticalFlick
             headerPositioning: ListView.OverlayHeader
             clip: true
+            spacing: 1
 
             function getColumnWidth(index) {
                 switch (index) {
@@ -99,8 +103,29 @@ ColumnLayout {
                 }
             }
 
+            function sort(listModel, compareFunction, order="asc") {
+                // Ref: https://community.esri.com/t5/arcgis-appstudio-blog/sorting-qml-listmodels/ba-p/895823
+                let indexes = [ ...Array(listModel.count).keys() ]
+                indexes.sort((a, b) => compareFunction(listModel.get(a), listModel.get(b)))
+                if (order === "desc") {
+                    indexes.reverse()
+                }
+
+                let sorted = 0
+                while (sorted < indexes.length && sorted === indexes[sorted]) {
+                    ++ sorted
+                }
+                if (sorted === indexes.length) {
+                    return
+                }
+                for (let i = sorted; i < indexes.length; ++i) {
+                    listModel.move(indexes[i], listModel.count - 1, 1)
+                    listModel.insert(indexes[i], { })
+                }
+                listModel.remove(sorted, indexes.length - sorted)
+            }
+
             header: Row {
-                spacing: 1
                 z: 4
 
                 function itemAt(index) {
@@ -115,64 +140,114 @@ ColumnLayout {
                     Label {
                         text: modelData
                         color: "white"
+                        font.pointSize: 10.5
                         font.bold: true
                         padding: 10
                         width: listViewServers.getColumnWidth(index)
                         background: Rectangle {
                             color: "#354759"
+                            MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton
+                                onClicked: function() {
+                                    let titleText = this.parent.parent.text,
+                                        sortOrder = "asc";
+
+                                    // Remove the ending arrows in title
+                                    // children: Label_QMLTYPE_6 x5 + QQuickRepeater
+                                    for (let i = 0; i < this.parent.parent.parent.children.length - 1; ++ i) {
+                                        let _titleText = this.parent.parent.parent.children[i].text
+                                        if (_titleText.endsWith("↑") || _titleText.endsWith("↓")) {
+                                            this.parent.parent.parent.children[i].text = _titleText.substring(0, _titleText.length - 1)
+                                        }
+                                    }
+                                    // Determine the sort order
+                                    if (titleText.endsWith("↑")) {
+                                        sortOrder = "desc"
+                                        this.parent.parent.text = titleText.replace("↑", "↓")
+                                    } else if (titleText.endsWith("↓")) {
+                                        sortOrder = "asc"
+                                        this.parent.parent.text = titleText.replace("↓", "↑")
+                                    } else {
+                                        sortOrder = "asc"
+                                        this.parent.parent.text += "↑"
+                                    }
+                                    // Sort the list
+                                    listViewServers.sort(listModelServers, function(a, b) {
+                                        let valueA = a.values.get(index).value,
+                                            valueB = b.values.get(index).value
+
+                                        if (index === 4) {
+                                            let intA = parseInt(valueA),
+                                                intB = parseInt(valueB)
+                                            return isNaN(intB) ? -1 : (intA < intB ? -1 : 1)
+                                        } else {
+                                            return valueA.localeCompare(valueB, "zh-CN")
+                                        }
+                                    }, sortOrder)
+                                    listViewServers.positionViewAtBeginning()
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            model: listModelServers
-            delegate: Column {
-                Row {
-                    spacing: 1
-                    Repeater {
-                        model: values
-                        ItemDelegate {
-                            text: value
-                            width: listViewServers.getColumnWidth(index)
+            model: delegateModelServers
+            DelegateModel {
+                id: delegateModelServers
+                model: listModelServers
+                delegate: delegateServers
+            }
+            Component {
+                id: delegateServers
+                Column {
+                    Row {
+                        Repeater {
+                            model: values
+                            ItemDelegate {
+                                text: value
+                                width: listViewServers.getColumnWidth(index)
 
-                            contentItem: Text {
-                                clip: true
-                                color: "white"
-                                text: parent.text
-                            }
-                            background: MouseArea {
-                                anchors.fill: parent
-                                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                onClicked: function(mouse) {
-                                    if (mouse.button !== Qt.RightButton) {
-                                        return
-                                    }
-                                    var serverName = parent.parent.data[0].text,
-                                    isConnected = parent.parent.data[3].text === qsTr("Connected")
-
-                                    // menuServer.x = parent.x + mouseX
-                                    // menuServer.y = parent.y + mouseY
-                                    menuItemServerName.text = serverName
-                                    menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
-                                    menuServer.open()
+                                contentItem: Text {
+                                    clip: true
+                                    color: "white"
+                                    text: parent.text
+                                    font.pointSize: 10.5
                                 }
-                                onDoubleClicked: function(mouse) {
-                                    if (mouse.button !== Qt.LeftButton) {
-                                        return
+                                background: MouseArea {
+                                    anchors.fill: parent
+                                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                    onClicked: function(mouse) {
+                                        if (mouse.button !== Qt.RightButton) {
+                                            return
+                                        }
+                                        let serverName = parent.parent.data[0].text,
+                                        isConnected = parent.parent.data[3].text === qsTr("Connected")
+                                        // menuServer.x = parent.x + mouseX
+                                        // menuServer.y = parent.y + mouseY
+                                        menuItemServerName.text = serverName
+                                        menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
+                                        menuServer.open()
                                     }
-                                    var serverName = parent.parent.data[0].text,
-                                    isConnected = parent.parent.data[3].text === qsTr("Connected")
+                                    onDoubleClicked: function(mouse) {
+                                        if (mouse.button !== Qt.LeftButton) {
+                                            return
+                                        }
+                                        let serverName = parent.parent.data[0].text,
+                                        isConnected = parent.parent.data[3].text === qsTr("Connected")
 
-                                    AppProxy.setServerConnection(serverName, !isConnected)
+                                        AppProxy.setServerConnection(serverName, !isConnected)
+                                    }
+                                }
+                                Rectangle {
+                                    color: "#3b4d5d"
+                                    width: parent.width
+                                    height: 1
                                 }
                             }
                         }
                     }
-                }
-                Rectangle {
-                    color: "#3b4d5d"
-                    width: parent.width
-                    height: 1
                 }
             }
 
@@ -199,7 +274,7 @@ ColumnLayout {
                 id: menuItemConnect
                 text: qsTr("Connect")
                 onTriggered: function() {
-                    var serverName = menuItemServerName.text,
+                    let serverName = menuItemServerName.text,
                     connected = menuItemConnect.text === qsTr("Connect")
 
                     AppProxy.setServerConnection(serverName, connected)
@@ -292,6 +367,7 @@ ColumnLayout {
                         id: labelAddServerMethod
                         text: qsTr("Add new servers by ")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -332,6 +408,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboAddServerMethod.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -364,6 +441,7 @@ ColumnLayout {
                         color: "#ee8989"
                     }
                     color: "#652424"
+                    font.pointSize: 10.5
                     Layout.fillWidth: true
                     padding: 10
                     visible: false
@@ -382,11 +460,13 @@ ColumnLayout {
                         id: labelShadowsocksServerName
                         text: qsTr("Server Name")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -398,6 +478,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -408,11 +489,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -424,11 +507,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
                         background: Rectangle {
@@ -440,11 +525,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("ID")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayId
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.minimumWidth: 200
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 27848739-7e62-4138-9fd3-098a63964b6b")
@@ -457,11 +544,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Alter ID")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayAlterId
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 4")
                         background: Rectangle {
@@ -473,6 +562,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -494,6 +584,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RaySecurity.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -502,6 +593,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Enable UDP")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -512,6 +604,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Network Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -530,6 +623,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayNetworkSecurity.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -538,6 +632,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Allow Insecure")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -548,6 +643,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Network")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -567,6 +663,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayNetwork.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -594,6 +691,7 @@ ColumnLayout {
                         id: labelV2RayTcpHeaderType
                         text: qsTr("TCP Header")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -613,6 +711,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayTcpHeaderType.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -622,11 +721,13 @@ ColumnLayout {
                         id: labelV2RayNetworkHost
                         text: qsTr("Host")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayNetworktHost
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: example.com")
                         background: Rectangle {
@@ -639,11 +740,13 @@ ColumnLayout {
                         id: labelV2RayNetworkPath
                         text: qsTr("Path")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayNetworkPath
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /ray")
                         background: Rectangle {
@@ -658,6 +761,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -665,7 +769,7 @@ ColumnLayout {
                         }
                         onClicked: function() {
                             buttonV2RayAddServer.enabled = false
-                            var server = {
+                            let server = {
                                 "serverName": textV2RayServerName.text,
                                 "serverAddr": textV2RayServerAddr.text,
                                 "serverPort": textV2RayServerPort.text,
@@ -707,6 +811,7 @@ ColumnLayout {
                     TextField {
                         id: textShadowsocksServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -718,6 +823,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -728,11 +834,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -744,11 +852,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 8388")
                         background: Rectangle {
@@ -760,6 +870,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -797,6 +908,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboShadowsocksEncryptionMethod.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -805,11 +917,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Password")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksPassword
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -820,6 +934,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Obfuscate Mode")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -845,6 +960,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboObfsMode.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -868,11 +984,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Obfuscate Parameter")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textObfsParameter
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -884,6 +1002,7 @@ ColumnLayout {
                         id: labelProtocol
                         text: qsTr("Protocol")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -904,6 +1023,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboProtocol.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -913,11 +1033,13 @@ ColumnLayout {
                         id: labelProtocolParameter
                         text: qsTr("Protocol Parameter")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textProtocolParameter
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -931,6 +1053,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -938,7 +1061,7 @@ ColumnLayout {
                         }
                         onClicked: function() {
                             buttonShadowsocksAddServer.enabled = false
-                            var server = {
+                            let server = {
                                 "serverName": textShadowsocksServerName.text,
                                 "serverAddr": textShadowsocksServerAddr.text,
                                 "serverPort": textShadowsocksServerPort.text,
@@ -979,12 +1102,14 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Name")
                         color: "white"
+                        font.pointSize: 10.5
                         width: labelAddServerMethod.width
                     }
 
                     TextField {
                         id: textTrojanServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -996,6 +1121,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1006,11 +1132,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -1022,11 +1150,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
                         background: Rectangle {
@@ -1038,11 +1168,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Password")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanPassword
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1053,6 +1185,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("UDP")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1063,11 +1196,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("SNI")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanSni
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1078,6 +1213,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Allow Insecure")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1088,11 +1224,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("ALPN Protocols")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanAlpn
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         Layout.columnSpan: 3
                         placeholderText: qsTr("Example: h2; http/1.1")
@@ -1108,6 +1246,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1115,7 +1254,7 @@ ColumnLayout {
                         }
                         onClicked: function() {
                             buttonTrojanAddServer.enabled = false
-                            var server = {
+                            let server = {
                                 "serverName": textTrojanServerName.text,
                                 "serverAddr": textTrojanServerAddr.text,
                                 "serverPort": textTrojanServerPort.text,
@@ -1146,12 +1285,14 @@ ColumnLayout {
                     Label {
                         text: qsTr("Subscription URL")
                         color: "white"
+                        font.pointSize: 10.5
                         rightPadding: 2
                     }
 
                     TextField {
                         id: textSubsriptionUrl
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: https://url/to/subscription or vmess://abcdefg")
                         background: Rectangle {
@@ -1166,6 +1307,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1189,11 +1331,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Config File Path")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textConfigFilePath
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /path/to/config.json")
                         background: Rectangle {
@@ -1208,6 +1352,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1224,13 +1369,14 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
                             radius: 4
                         }
                         onClicked: function() {
-                            var configFilePath = textConfigFilePath.text,
+                            let configFilePath = textConfigFilePath.text,
                             configFileType = comboAddServerMethod.currentValue
 
                             AppProxy.addServerConfigFile(configFilePath, configFileType)
@@ -1243,7 +1389,7 @@ ColumnLayout {
                         modality: Qt.WindowModal
                         nameFilters: [qsTr("Config File (*.json)")]
                         onAccepted: {
-                            var path = fileDialog.fileUrl.toString()
+                            let path = fileDialog.fileUrl.toString()
                             path = path.replace(/^(file:\/{2})/,"") // remove prefixed "file://"
                             path = decodeURIComponent(path)         // unescape html codes like '%23' for '#'
                             if ( Qt.platform.os === "windows" || Qt.platform.os === "winrt" ) {
@@ -1304,6 +1450,7 @@ ColumnLayout {
                     contentItem: Text {
                         text: parent.text
                         color: "white"
+                        font.pointSize: 10.5
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -1324,6 +1471,7 @@ ColumnLayout {
                     contentItem: Text {
                         text: parent.text
                         color: "white"
+                        font.pointSize: 10.5
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1344,6 +1492,7 @@ ColumnLayout {
                     color: "#ee8989"
                 }
                 color: "#652424"
+                font.pointSize: 10.5
                 Layout.fillWidth: true
                 padding: 10
                 visible: false
@@ -1385,6 +1534,7 @@ ColumnLayout {
                             Label {
                                 text: modelData
                                 color: "white"
+                                font.pointSize: 10.5
                                 font.bold: true
                                 padding: 10
                                 width: listViewSubscriptions.getColumnWidth(index)
@@ -1408,14 +1558,15 @@ ColumnLayout {
                                     contentItem: Text {
                                         clip: true
                                         color: "white"
+                                        font.pointSize: 10.5
                                         text: parent.text
                                     }
                                     background: MouseArea {
                                         anchors.fill: parent
                                         acceptedButtons: Qt.RightButton
                                         onClicked: function() {
-                                            menuSubscription.x = parent.x + mouseX
-                                            menuSubscription.y = parent.parent.parent.y + mouseY
+                                            // menuSubscription.x = parent.x + mouseX
+                                            // menuSubscription.y = parent.parent.parent.y + mouseY
                                             menuSubscription.currentSubscription = parent.parent.data[1].text
                                             menuSubscription.open()
                                         }
@@ -1474,15 +1625,15 @@ ColumnLayout {
         target: AppProxy
 
         function getServerPrettyInformation(server) {
-            var serverAddress = server["server"],
-            serverPort = server["port"],
-            serverName = server["name"] || serverAddress,
-            status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected"),
-            latency = "latency" in server ?
-                        (server["latency"] === -1 ?
-                             qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
+            let serverAddress = server["server"],
+                serverPort = server["port"],
+                serverName = server["name"] || serverAddress,
+                status = server["connected"] ? qsTr("Connected") : qsTr("Disconnected"),
+                latency = "latency" in server ?
+                            (server["latency"] === -1 ?
+                                    qsTr("Timeout") : server["latency"].toString() + " ms") : qsTr("N/a")
 
-            var protocol = ""
+            let protocol = ""
             if (server["type"] === "ss") {
                 protocol = "Shadowsocks"
             } else if (server["type"] === "ssr") {
@@ -1502,10 +1653,10 @@ ColumnLayout {
         }
 
         function getSubscriptionUrls(servers) {
-            var subscriptionUrls = []
-            for (var i = 0; i < servers.length; ++ i) {
+            let subscriptionUrls = []
+            for (let i = 0; i < servers.length; ++ i) {
                 if ("subscription" in servers[i]) {
-                    var subscriptionUrl = servers[i]["subscription"]
+                    let subscriptionUrl = servers[i]["subscription"]
                     if (subscriptionUrl.length === 0) {
                         continue
                     }
@@ -1522,8 +1673,8 @@ ColumnLayout {
             listModelServers.clear()
             listModelSubscriptions.clear()
 
-            var i = 0,
-            subscriptionUrls = getSubscriptionUrls(servers)
+            let i = 0,
+                subscriptionUrls = getSubscriptionUrls(servers)
             for (i = 0; i < servers.length; ++ i) {
                 if ('name' in servers[i]) {
                     listModelServers.append({values: getServerPrettyInformation(servers[i])})
@@ -1531,21 +1682,21 @@ ColumnLayout {
             }
             for (i = 0; i < subscriptionUrls.length; ++ i) {
                 listModelSubscriptions.append({values: [
-                                                      {value: (i + 1).toString()},
-                                                      {value: subscriptionUrls[i]}
-                                                  ]})
+                                                        {value: (i + 1).toString()},
+                                                        {value: subscriptionUrls[i]}
+                                                    ]})
             }
         }
 
         function onServerLatencyReady(serverLatency) {
             serverLatency = JSON.parse(serverLatency)
             // Refresh latency in server list
-            for (var i = 0; i < listModelServers.count; ++ i) {
-                var server = listModelServers.get(i),
+            for (let i = 0; i < listModelServers.count; ++ i) {
+                let server = listModelServers.get(i),
                 serverName = server.values.get(0).value
 
                 if (serverName in serverLatency) {
-                    var latency = serverLatency[serverName]
+                    let latency = serverLatency[serverName]
                     latency = latency === -1 ? qsTr("Timeout") : latency.toString() + " ms"
                     server.values.set(4, {value: latency})
                 }
@@ -1555,12 +1706,12 @@ ColumnLayout {
         }
 
         function onServerConfigError(errorMsg) {
-            var popUpButtons = [
+            let popUpButtons = [
                         buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
                         buttonSubscriptionAddServer, buttonConfigAddServer,
                         buttonSyncServers, menuItemSyncServers
                     ]
-            for (var i = 0; i < popUpButtons.length; ++ i) {
+            for (let i = 0; i < popUpButtons.length; ++ i) {
                 popUpButtons[i].enabled = true
             }
             buttonSyncServers.text = qsTr("Sync Servers")
@@ -1573,8 +1724,8 @@ ColumnLayout {
 
         function onServerConnectivityChanged(serverName, connected) {
             // Refresh connectivity for the server
-            for (var i = 0; i < listModelServers.count; ++ i) {
-                var _serverName = listModelServers.get(i).values.get(0).value
+            for (let i = 0; i < listModelServers.count; ++ i) {
+                let _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
                     listModelServers.get(i).values.get(3).value =
                             connected ? qsTr("Connected") : qsTr("Disconnected")
@@ -1586,12 +1737,12 @@ ColumnLayout {
         function onServerChanged(serverName, serverConfig) {
             serverConfig = JSON.parse(serverConfig)
 
-            for (var i = 0; i < listModelServers.count; ++ i) {
-                var _serverName = listModelServers.get(i).values.get(0).value
+            for (let i = 0; i < listModelServers.count; ++ i) {
+                let _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
                     listModelServers.set(i, {
-                                             values: getServerPrettyInformation(serverConfig)
-                                         })
+                                                values: getServerPrettyInformation(serverConfig)
+                                            })
                     break
                 }
             }
@@ -1600,8 +1751,8 @@ ColumnLayout {
         }
 
         function onServerRemoved(serverName) {
-            for (var i = 0; i < listModelServers.count; ++ i) {
-                var _serverName = listModelServers.get(i).values.get(0).value
+            for (let i = 0; i < listModelServers.count; ++ i) {
+                let _serverName = listModelServers.get(i).values.get(0).value
                 if (_serverName === serverName) {
                     listModelServers.remove(i)
                     break
@@ -1620,7 +1771,7 @@ ColumnLayout {
             layoutServer.resetPopUpServerFields("name" in server ? "edit" : "add")
 
             // Set correct form in pop up window
-            var protocol = server["type"]
+            let protocol = server["type"]
             if (protocol === "vmess") {
                 comboAddServerMethod.currentIndex = 0
                 textV2RayServerName.text = server["name"] || ""
@@ -1727,11 +1878,11 @@ ColumnLayout {
         // Clear text fields for config files
         textConfigFilePath.text = ""
         // Initialize controls for editing or creating
-        var i = 0,
-        popUpButtons = [
-                    buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
-                    buttonSubscriptionAddServer, buttonConfigAddServer
-                ]
+        let i = 0,
+            popUpButtons = [
+                        buttonV2RayAddServer, buttonShadowsocksAddServer, buttonTrojanAddServer,
+                        buttonSubscriptionAddServer, buttonConfigAddServer
+                    ]
         for (i = 0; i < popUpButtons.length; ++ i) {
             popUpButtons[i].enabled = true
         }

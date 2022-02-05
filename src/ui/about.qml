@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.4
 
 ColumnLayout {
     anchors.fill: parent
@@ -34,12 +34,14 @@ ColumnLayout {
             text: qsTr("V2Ray Desktop Version")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             id: labelAppVersion
             text: "N/a"
             color: "white"
+            font.pointSize: 10.5
             property string value: "N/a"
         }
 
@@ -49,6 +51,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: parent.enabled ? "#3498db" : "#ccc"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"
@@ -61,37 +64,18 @@ ColumnLayout {
             }
         }
 
-        Button {
-            id: buttonAppUpgrade
-            text: qsTr("Upgrade")
-            visible: false
-            property var value
-
-            contentItem: Text {
-                text: parent.text
-                color: parent.enabled ? "#3498db" : "#ccc"
-            }
-            background: Rectangle {
-                color: "#2e3e4e"
-                radius: 4
-            }
-            onClicked: function() {
-                Qt.openUrlExternally(
-                    "https://github.com/Dr-Incognito/V2Ray-Desktop/releases/tag/" +
-                    buttonAppUpgrade.value.substr(1))
-            }
-        }
-
         Label {
             text: qsTr("Clash Version")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             id: labelV2rayVersion
             text: "N/a"
             color: "white"
+            font.pointSize: 10.5
             property string value: "N/a"
         }
 
@@ -101,6 +85,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: parent.enabled ? "#3498db" : "#ccc"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"
@@ -117,10 +102,12 @@ ColumnLayout {
             text: qsTr("Project Page")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             color: "white"
+            font.pointSize: 10.5
             text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
         }
     }
@@ -146,15 +133,13 @@ ColumnLayout {
         }
 
         function onLatestReleaseReady(name, latestVersion) {
-            var buttonCheckUpdates, buttonUpgrade, labelVersion
+            var buttonCheckUpdates, labelVersion
 
             if (name === "v2ray-core") {
                 buttonCheckUpdates = buttonV2RayCheckUpdates
-                buttonUpgrade = buttonV2RayUpgrade
                 labelVersion = labelV2rayVersion
             } else if (name === "v2ray-desktop") {
                 buttonCheckUpdates = buttonAppCheckUpdates
-                buttonUpgrade = buttonAppUpgrade
                 labelVersion = labelAppVersion
             }
             if (latestVersion.length === 0) {
@@ -163,16 +148,13 @@ ColumnLayout {
             } else {
                 labelVersion.text = labelVersion.value + " (" +
                     qsTr("Newer verion available: ") + latestVersion + ")"
-                buttonCheckUpdates.visible = false
-                buttonUpgrade.visible = true
-                buttonUpgrade.value = latestVersion
             }
             buttonCheckUpdates.text = qsTr("Check for updates")
             buttonCheckUpdates.enabled = true
         }
 
         function onLatestReleaseError(name, errorMsg) {
-            var buttonCheckUpdates, buttonUpgrade, labelVersion
+            var buttonCheckUpdates, labelVersion
 
             if (name === "v2ray-core") {
                 buttonCheckUpdates = buttonV2RayCheckUpdates

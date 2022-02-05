@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-import com.v2ray.desktop.AppProxy 2.2
+import com.v2ray.desktop.AppProxy 2.4
 
 ColumnLayout {
     anchors.fill: parent
@@ -39,6 +39,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#c0392b" : "#e74c3c") : "#bdc3c7"
@@ -90,6 +91,7 @@ ColumnLayout {
                     readOnly: true
                     selectByMouse: true
                     text: qsTr("Loading logs ...")
+                    font.pointSize: 10.5
                     textMargin: 10
                     wrapMode: Text.Wrap
                     width: flick.width

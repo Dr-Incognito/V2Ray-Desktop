@@ -5,8 +5,8 @@
 
 static const QString APP_NAME      = "V2Ray-Desktop";
 static const int APP_VERSION_MAJOR = 2;
-static const int APP_VERSION_MINOR = 2;
-static const int APP_VERSION_PATCH = 2;
+static const int APP_VERSION_MINOR = 4;
+static const int APP_VERSION_PATCH = 0;
 
 static const QString APP_RELEASES_URL =
   "https://api.github.com/repos/Dr-Incognito/V2Ray-Desktop/releases";
