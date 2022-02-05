@@ -30,7 +30,7 @@ ApplicationWindow {
 
     SystemTrayIcon {
         visible: true
-        icon.source: Qt.platform.os == "osx" ? "qrc:/images/v2ray.gray.png" : "qrc:/images/v2ray.png"
+        icon.source: Qt.platform.os === "osx" ? "qrc:/images/v2ray.gray.png" : "qrc:/images/v2ray.png"
         icon.mask: true
 
         menu: Menu {

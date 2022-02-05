@@ -2,7 +2,7 @@
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
-import Qt.labs.platform 1.1
+import QtQuick.Dialogs
 
 import com.v2ray.desktop.AppProxy 2.4
 
@@ -22,7 +22,7 @@ ColumnLayout {
         Text {
             text: qsTr("Servers")
             color: "white"
-            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
+            font.pointSize: Qt.platform.os === "windows" ? 20 : 24
         }
 
         Item {      // spacer item
@@ -39,6 +39,7 @@ ColumnLayout {
                 text: parent.text
                 color: "white"
                 font.pointSize: 10.5
+                padding: 4
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -59,6 +60,7 @@ ColumnLayout {
                 text: parent.text
                 color: "white"
                 font.pointSize: 10.5
+                padding: 4
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -142,7 +144,7 @@ ColumnLayout {
                         color: "white"
                         font.pointSize: 10.5
                         font.bold: true
-                        padding: 10
+                        padding: 7
                         width: listViewServers.getColumnWidth(index)
                         background: Rectangle {
                             color: "#354759"
@@ -214,6 +216,8 @@ ColumnLayout {
                                     color: "white"
                                     text: parent.text
                                     font.pointSize: 10.5
+                                    topPadding: 7
+                                    bottomPadding: 7
                                 }
                                 background: MouseArea {
                                     anchors.fill: parent
@@ -224,8 +228,8 @@ ColumnLayout {
                                         }
                                         let serverName = parent.parent.data[0].text,
                                         isConnected = parent.parent.data[3].text === qsTr("Connected")
-                                        // menuServer.x = parent.x + mouseX
-                                        // menuServer.y = parent.y + mouseY
+                                        menuServer.x = parent.x + mouseX
+                                        menuServer.y = parent.y + mouseY
                                         menuItemServerName.text = serverName
                                         menuItemConnect.text = isConnected ? qsTr("Disconnect") : qsTr("Connect")
                                         menuServer.open()
@@ -261,7 +265,7 @@ ColumnLayout {
 
         Menu {
             id: menuServer
-            // padding: 5
+            padding: 5
 
             MenuItem {
                 id: menuItemServerName
@@ -409,7 +413,7 @@ ColumnLayout {
                             text: comboAddServerMethod.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                         onCurrentValueChanged: function() {
@@ -442,8 +446,8 @@ ColumnLayout {
                     }
                     color: "#652424"
                     font.pointSize: 10.5
+                    padding: 7
                     Layout.fillWidth: true
-                    padding: 10
                     visible: false
                     wrapMode: Text.Wrap
                 }
@@ -467,8 +471,10 @@ ColumnLayout {
                         id: textV2RayServerName
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -496,8 +502,10 @@ ColumnLayout {
                         id: textV2RayServerAddr
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -514,8 +522,10 @@ ColumnLayout {
                         id: textV2RayServerPort
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -532,9 +542,11 @@ ColumnLayout {
                         id: textV2RayId
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.minimumWidth: 200
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 27848739-7e62-4138-9fd3-098a63964b6b")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -550,9 +562,11 @@ ColumnLayout {
                     TextField {
                         id: textV2RayAlterId
                         color: "white"
+                        padding: 7
                         font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 4")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -585,7 +599,7 @@ ColumnLayout {
                             text: comboV2RaySecurity.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -624,7 +638,7 @@ ColumnLayout {
                             text: comboV2RayNetworkSecurity.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -664,7 +678,7 @@ ColumnLayout {
                             text: comboV2RayNetwork.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                         onCurrentTextChanged: function() {
@@ -712,7 +726,7 @@ ColumnLayout {
                             text: comboV2RayTcpHeaderType.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -728,8 +742,10 @@ ColumnLayout {
                         id: textV2RayNetworktHost
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: example.com")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -747,8 +763,10 @@ ColumnLayout {
                         id: textV2RayNetworkPath
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /ray")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -762,6 +780,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -812,8 +831,10 @@ ColumnLayout {
                         id: textShadowsocksServerName
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -841,8 +862,10 @@ ColumnLayout {
                         id: textShadowsocksServerAddr
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -859,8 +882,10 @@ ColumnLayout {
                         id: textShadowsocksServerPort
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 8388")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -909,7 +934,7 @@ ColumnLayout {
                             text: comboShadowsocksEncryptionMethod.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -924,6 +949,7 @@ ColumnLayout {
                         id: textShadowsocksPassword
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -961,7 +987,7 @@ ColumnLayout {
                             text: comboObfsMode.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                         onCurrentTextChanged: function() {
@@ -991,6 +1017,7 @@ ColumnLayout {
                         id: textObfsParameter
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1024,7 +1051,7 @@ ColumnLayout {
                             text: comboProtocol.displayText
                             color: "white"
                             font.pointSize: 10.5
-                            leftPadding: 10
+                            padding: 7
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -1040,6 +1067,7 @@ ColumnLayout {
                         id: textProtocolParameter
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1054,6 +1082,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1110,8 +1139,10 @@ ColumnLayout {
                         id: textTrojanServerName
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1139,8 +1170,10 @@ ColumnLayout {
                         id: textTrojanServerAddr
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1157,8 +1190,10 @@ ColumnLayout {
                         id: textTrojanServerPort
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1175,6 +1210,7 @@ ColumnLayout {
                         id: textTrojanPassword
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1203,6 +1239,7 @@ ColumnLayout {
                         id: textTrojanSni
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1230,10 +1267,12 @@ ColumnLayout {
                     TextField {
                         id: textTrojanAlpn
                         color: "white"
+                        padding: 7
                         font.pointSize: 10.5
                         Layout.fillWidth: true
                         Layout.columnSpan: 3
                         placeholderText: qsTr("Example: h2; http/1.1")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1247,6 +1286,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1293,8 +1333,10 @@ ColumnLayout {
                         id: textSubsriptionUrl
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: https://url/to/subscription or vmess://abcdefg")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1308,6 +1350,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1338,8 +1381,10 @@ ColumnLayout {
                         id: textConfigFilePath
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 7
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /path/to/config.json")
+                        placeholderTextColor: "white"
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
                             border.color: Qt.rgba(120, 130, 140, .2)
@@ -1353,6 +1398,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1370,6 +1416,7 @@ ColumnLayout {
                             text: parent.text
                             color: "white"
                             font.pointSize: 10.5
+                            padding: 4
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1451,6 +1498,7 @@ ColumnLayout {
                         text: parent.text
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 4
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -1472,6 +1520,7 @@ ColumnLayout {
                         text: parent.text
                         color: "white"
                         font.pointSize: 10.5
+                        padding: 4
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1493,8 +1542,8 @@ ColumnLayout {
                 }
                 color: "#652424"
                 font.pointSize: 10.5
+                padding: 7
                 Layout.fillWidth: true
-                padding: 10
                 visible: false
                 wrapMode: Text.Wrap
             }
@@ -1536,7 +1585,7 @@ ColumnLayout {
                                 color: "white"
                                 font.pointSize: 10.5
                                 font.bold: true
-                                padding: 10
+                                padding: 7
                                 width: listViewSubscriptions.getColumnWidth(index)
                                 background: Rectangle {
                                     color: "#354759"
@@ -1560,13 +1609,15 @@ ColumnLayout {
                                         color: "white"
                                         font.pointSize: 10.5
                                         text: parent.text
+                                        topPadding: 7
+                                        bottomPadding: 7
                                     }
                                     background: MouseArea {
                                         anchors.fill: parent
                                         acceptedButtons: Qt.RightButton
                                         onClicked: function() {
-                                            // menuSubscription.x = parent.x + mouseX
-                                            // menuSubscription.y = parent.parent.parent.y + mouseY
+                                            menuSubscription.x = parent.x + mouseX
+                                            menuSubscription.y = parent.parent.parent.y + mouseY
                                             menuSubscription.currentSubscription = parent.parent.data[1].text
                                             menuSubscription.open()
                                         }
@@ -1592,7 +1643,7 @@ ColumnLayout {
 
             Menu {
                 id: menuSubscription
-                // padding: 5
+                padding: 5
                 property var currentSubscription
 
                 MenuItem {

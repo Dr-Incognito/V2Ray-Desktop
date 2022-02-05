@@ -40,6 +40,7 @@ ColumnLayout {
                 text: parent.text
                 color: "white"
                 font.pointSize: 10.5
+                padding: 4
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#c0392b" : "#e74c3c") : "#bdc3c7"

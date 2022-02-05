@@ -18,9 +18,9 @@ ColumnLayout {
         }
 
         Text {
-            text: Qt.platform.os == "osx" ? qsTr("Preferences") : qsTr("Settings")
+            text: Qt.platform.os === "osx" ? qsTr("Preferences") : qsTr("Settings")
             color: "white"
-            font.pointSize: Qt.platform.os == "windows" ? 20 : 24
+            font.pointSize: Qt.platform.os === "windows" ? 20 : 24
         }
     }
 
@@ -88,7 +88,7 @@ ColumnLayout {
                 text: comboLanguage.displayText
                 color: "white"
                 font.pointSize: 10.5
-                leftPadding: 10
+                padding: 7
                 verticalAlignment: Text.AlignVCenter
             }
         }
@@ -117,7 +117,7 @@ ColumnLayout {
                 text: comboProxyMode.displayText
                 color: "white"
                 font.pointSize: 10.5
-                leftPadding: 10
+                padding: 7
                 verticalAlignment: Text.AlignVCenter
             }
         }
@@ -132,8 +132,10 @@ ColumnLayout {
             id: textServerIpAddr
             color: "white"
             font.pointSize: 10.5
+            padding: 7
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 127.0.0.1")
+            placeholderTextColor: "white"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -150,8 +152,10 @@ ColumnLayout {
             id: textDnsServers
             color: "white"
             font.pointSize: 10.5
+            padding: 7
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
+            placeholderTextColor: "white"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -168,8 +172,10 @@ ColumnLayout {
             id: textSocksPort
             color: "white"
             font.pointSize: 10.5
+            padding: 7
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1080")
+            placeholderTextColor: "white"
             text: "1080"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
@@ -187,8 +193,10 @@ ColumnLayout {
             id: textHttpPort
             color: "white"
             font.pointSize: 10.5
+            padding: 7
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1087")
+            placeholderTextColor: "white"
             text: "1087"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
@@ -206,9 +214,11 @@ ColumnLayout {
             id: textGfwListUrl
             color: "white"
             font.pointSize: 10.5
+            padding: 7
             Layout.fillWidth: true
             Layout.columnSpan: 3
             placeholderText: qsTr("Example: https://url/to/gfwlist.yml")
+            placeholderTextColor: "white"
             background: Rectangle {
                 color: Qt.rgba(255, 255, 255, .1)
                 border.color: Qt.rgba(120, 130, 140, .2)
@@ -222,6 +232,7 @@ ColumnLayout {
                 text: parent.text
                 color: "white"
                 font.pointSize: 10.5
+                padding: 4
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
