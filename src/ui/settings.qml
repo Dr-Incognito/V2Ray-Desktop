@@ -30,6 +30,7 @@ ColumnLayout {
             color: "#ee8989"
         }
         color: "#652424"
+        font.pointSize: 10.5
         Layout.fillWidth: true
         padding: 10
         visible: false
@@ -45,6 +46,7 @@ ColumnLayout {
         Label {
             text: qsTr("Launch V2Ray Desktop at Login")
             color: "white"
+            font.pointSize: 10.5
         }
 
         CheckBox {
@@ -55,6 +57,7 @@ ColumnLayout {
         Label {
             text: qsTr("Hide Window on Start Up")
             color: "white"
+            font.pointSize: 10.5
         }
 
         CheckBox {
@@ -65,6 +68,7 @@ ColumnLayout {
         Label {
             text: qsTr("Language")
             color: "white"
+            font.pointSize: 10.5
         }
 
         ComboBox {
@@ -83,6 +87,7 @@ ColumnLayout {
             contentItem: Text {
                 text: comboLanguage.displayText
                 color: "white"
+                font.pointSize: 10.5
                 leftPadding: 10
                 verticalAlignment: Text.AlignVCenter
             }
@@ -91,6 +96,7 @@ ColumnLayout {
         Label {
             text: qsTr("Proxy Mode")
             color: "white"
+            font.pointSize: 10.5
         }
 
         ComboBox {
@@ -110,6 +116,7 @@ ColumnLayout {
             contentItem: Text {
                 text: comboProxyMode.displayText
                 color: "white"
+                font.pointSize: 10.5
                 leftPadding: 10
                 verticalAlignment: Text.AlignVCenter
             }
@@ -118,11 +125,13 @@ ColumnLayout {
         Label {
             text: qsTr("Listening IP Address")
             color: "white"
+            font.pointSize: 10.5
         }
 
         TextField {
             id: textServerIpAddr
             color: "white"
+            font.pointSize: 10.5
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 127.0.0.1")
             background: Rectangle {
@@ -134,11 +143,13 @@ ColumnLayout {
         Label {
             text: qsTr("DNS Servers")
             color: "white"
+            font.pointSize: 10.5
         }
 
         TextField {
             id: textDnsServers
             color: "white"
+            font.pointSize: 10.5
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 8.8.8.8,8.8.4.4")
             background: Rectangle {
@@ -150,11 +161,13 @@ ColumnLayout {
         Label {
             text: qsTr("SOCKS Port")
             color: "white"
+            font.pointSize: 10.5
         }
 
         TextField {
             id: textSocksPort
             color: "white"
+            font.pointSize: 10.5
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1080")
             text: "1080"
@@ -167,11 +180,13 @@ ColumnLayout {
         Label {
             text: qsTr("HTTP Port")
             color: "white"
+            font.pointSize: 10.5
         }
 
         TextField {
             id: textHttpPort
             color: "white"
+            font.pointSize: 10.5
             Layout.fillWidth: true
             placeholderText: qsTr("Example: 1087")
             text: "1087"
@@ -184,11 +199,13 @@ ColumnLayout {
         Label {
             text: qsTr("GFW List URL")
             color: "white"
+            font.pointSize: 10.5
         }
 
         TextField {
             id: textGfwListUrl
             color: "white"
+            font.pointSize: 10.5
             Layout.fillWidth: true
             Layout.columnSpan: 3
             placeholderText: qsTr("Example: https://url/to/gfwlist.yml")
@@ -204,6 +221,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"

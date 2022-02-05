@@ -34,12 +34,14 @@ ColumnLayout {
             text: qsTr("V2Ray Desktop Version")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             id: labelAppVersion
             text: "N/a"
             color: "white"
+            font.pointSize: 10.5
             property string value: "N/a"
         }
 
@@ -49,6 +51,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: parent.enabled ? "#3498db" : "#ccc"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"
@@ -70,6 +73,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: parent.enabled ? "#3498db" : "#ccc"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"
@@ -86,12 +90,14 @@ ColumnLayout {
             text: qsTr("Clash Version")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             id: labelV2rayVersion
             text: "N/a"
             color: "white"
+            font.pointSize: 10.5
             property string value: "N/a"
         }
 
@@ -101,6 +107,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: parent.enabled ? "#3498db" : "#ccc"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: "#2e3e4e"
@@ -117,10 +124,12 @@ ColumnLayout {
             text: qsTr("Project Page")
             color: "white"
             font.bold: true
+            font.pointSize: 10.5
         }
 
         Label {
             color: "white"
+            font.pointSize: 10.5
             text: "https://github.com/Dr-Incognito/V2Ray-Desktop"
         }
     }

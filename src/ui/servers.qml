@@ -38,6 +38,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -57,6 +58,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -138,6 +140,7 @@ ColumnLayout {
                     Label {
                         text: modelData
                         color: "white"
+                        font.pointSize: 10.5
                         font.bold: true
                         padding: 10
                         width: listViewServers.getColumnWidth(index)
@@ -210,6 +213,7 @@ ColumnLayout {
                                     clip: true
                                     color: "white"
                                     text: parent.text
+                                    font.pointSize: 10.5
                                 }
                                 background: MouseArea {
                                     anchors.fill: parent
@@ -363,6 +367,7 @@ ColumnLayout {
                         id: labelAddServerMethod
                         text: qsTr("Add new servers by ")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -403,6 +408,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboAddServerMethod.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -435,6 +441,7 @@ ColumnLayout {
                         color: "#ee8989"
                     }
                     color: "#652424"
+                    font.pointSize: 10.5
                     Layout.fillWidth: true
                     padding: 10
                     visible: false
@@ -453,11 +460,13 @@ ColumnLayout {
                         id: labelShadowsocksServerName
                         text: qsTr("Server Name")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -469,6 +478,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -479,11 +489,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -495,11 +507,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
                         background: Rectangle {
@@ -511,11 +525,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("ID")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayId
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.minimumWidth: 200
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 27848739-7e62-4138-9fd3-098a63964b6b")
@@ -528,11 +544,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Alter ID")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayAlterId
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 4")
                         background: Rectangle {
@@ -544,6 +562,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -565,6 +584,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RaySecurity.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -573,6 +593,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Enable UDP")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -583,6 +604,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Network Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -601,6 +623,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayNetworkSecurity.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -609,6 +632,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Allow Insecure")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -619,6 +643,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Network")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -638,6 +663,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayNetwork.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -665,6 +691,7 @@ ColumnLayout {
                         id: labelV2RayTcpHeaderType
                         text: qsTr("TCP Header")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -684,6 +711,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboV2RayTcpHeaderType.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -693,11 +721,13 @@ ColumnLayout {
                         id: labelV2RayNetworkHost
                         text: qsTr("Host")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayNetworktHost
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: example.com")
                         background: Rectangle {
@@ -710,11 +740,13 @@ ColumnLayout {
                         id: labelV2RayNetworkPath
                         text: qsTr("Path")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textV2RayNetworkPath
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /ray")
                         background: Rectangle {
@@ -729,6 +761,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -778,6 +811,7 @@ ColumnLayout {
                     TextField {
                         id: textShadowsocksServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -789,6 +823,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -799,11 +834,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -815,11 +852,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 8388")
                         background: Rectangle {
@@ -831,6 +870,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Security")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -868,6 +908,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboShadowsocksEncryptionMethod.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -876,11 +917,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Password")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textShadowsocksPassword
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -891,6 +934,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Obfuscate Mode")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -916,6 +960,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboObfsMode.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -939,11 +984,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Obfuscate Parameter")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textObfsParameter
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -955,6 +1002,7 @@ ColumnLayout {
                         id: labelProtocol
                         text: qsTr("Protocol")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     ComboBox {
@@ -975,6 +1023,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: comboProtocol.displayText
                             color: "white"
+                            font.pointSize: 10.5
                             leftPadding: 10
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -984,11 +1033,13 @@ ColumnLayout {
                         id: labelProtocolParameter
                         text: qsTr("Protocol Parameter")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textProtocolParameter
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1002,6 +1053,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1050,12 +1102,14 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Name")
                         color: "white"
+                        font.pointSize: 10.5
                         width: labelAddServerMethod.width
                     }
 
                     TextField {
                         id: textTrojanServerName
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: HongKong-Server-1")
                         background: Rectangle {
@@ -1067,6 +1121,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Auto Connect")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1077,11 +1132,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Address")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanServerAddr
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: hk.example.com")
                         background: Rectangle {
@@ -1093,11 +1150,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Server Port")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanServerPort
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: 443")
                         background: Rectangle {
@@ -1109,11 +1168,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Password")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanPassword
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1124,6 +1185,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("UDP")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1134,11 +1196,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("SNI")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanSni
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         background: Rectangle {
                             color: Qt.rgba(255, 255, 255, .1)
@@ -1149,6 +1213,7 @@ ColumnLayout {
                     Label {
                         text: qsTr("Allow Insecure")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     CheckBox {
@@ -1159,11 +1224,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("ALPN Protocols")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textTrojanAlpn
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         Layout.columnSpan: 3
                         placeholderText: qsTr("Example: h2; http/1.1")
@@ -1179,6 +1246,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1217,12 +1285,14 @@ ColumnLayout {
                     Label {
                         text: qsTr("Subscription URL")
                         color: "white"
+                        font.pointSize: 10.5
                         rightPadding: 2
                     }
 
                     TextField {
                         id: textSubsriptionUrl
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: https://url/to/subscription or vmess://abcdefg")
                         background: Rectangle {
@@ -1237,6 +1307,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1260,11 +1331,13 @@ ColumnLayout {
                     Label {
                         text: qsTr("Config File Path")
                         color: "white"
+                        font.pointSize: 10.5
                     }
 
                     TextField {
                         id: textConfigFilePath
                         color: "white"
+                        font.pointSize: 10.5
                         Layout.fillWidth: true
                         placeholderText: qsTr("Example: /path/to/config.json")
                         background: Rectangle {
@@ -1279,6 +1352,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1295,6 +1369,7 @@ ColumnLayout {
                         contentItem: Text {
                             text: parent.text
                             color: "white"
+                            font.pointSize: 10.5
                         }
                         background: Rectangle {
                             color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1378,6 +1453,7 @@ ColumnLayout {
                     contentItem: Text {
                         text: parent.text
                         color: "white"
+                        font.pointSize: 10.5
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#8e44ad" : "#9b59b6") : "#bdc3c7"
@@ -1398,6 +1474,7 @@ ColumnLayout {
                     contentItem: Text {
                         text: parent.text
                         color: "white"
+                        font.pointSize: 10.5
                     }
                     background: Rectangle {
                         color: parent.enabled ? (parent.down ? "#2980b9" : "#3498db") : "#bdc3c7"
@@ -1418,6 +1495,7 @@ ColumnLayout {
                     color: "#ee8989"
                 }
                 color: "#652424"
+                font.pointSize: 10.5
                 Layout.fillWidth: true
                 padding: 10
                 visible: false
@@ -1459,6 +1537,7 @@ ColumnLayout {
                             Label {
                                 text: modelData
                                 color: "white"
+                                font.pointSize: 10.5
                                 font.bold: true
                                 padding: 10
                                 width: listViewSubscriptions.getColumnWidth(index)
@@ -1482,6 +1561,7 @@ ColumnLayout {
                                     contentItem: Text {
                                         clip: true
                                         color: "white"
+                                        font.pointSize: 10.5
                                         text: parent.text
                                     }
                                     background: MouseArea {

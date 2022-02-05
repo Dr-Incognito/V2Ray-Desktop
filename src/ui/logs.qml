@@ -39,6 +39,7 @@ ColumnLayout {
             contentItem: Text {
                 text: parent.text
                 color: "white"
+                font.pointSize: 10.5
             }
             background: Rectangle {
                 color: parent.enabled ? (parent.down ? "#c0392b" : "#e74c3c") : "#bdc3c7"
@@ -90,6 +91,7 @@ ColumnLayout {
                     readOnly: true
                     selectByMouse: true
                     text: qsTr("Loading logs ...")
+                    font.pointSize: 10.5
                     textMargin: 10
                     wrapMode: Text.Wrap
                     width: flick.width
